@@ -32,6 +32,7 @@ const Register = () => {
       });
       toast.success("Registration successful. Please login.");
       setLoading(false);
+      router.push("/login");
     } catch (err) {
       toast.error(err.response.data);
       setLoading(false);
