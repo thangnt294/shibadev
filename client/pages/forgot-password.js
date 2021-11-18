@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 const ForgotPassword = () => {
   // state
   const [email, setEmail] = useState("");
-  const [success, setSuccess] = useState("");
+  const [success, setSuccess] = useState(false);
   const [code, setCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -33,7 +33,28 @@ const ForgotPassword = () => {
       setLoading(true);
       const { data } = await axios.post("/api/forgot-password", { email });
       setSuccess(true);
+      setLoading(false);
       toast("Check your email for the secret code");
+    } catch (err) {
+      setLoading(false);
+      toast.error(err.response.data);
+    }
+  };
+
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const { data } = await axios.post("/api/reset-password", {
+        email,
+        code,
+        newPassword,
+      });
+      setEmail("");
+      setCode("");
+      setNewPassword("");
+      setLoading(false);
+      toast.success("Great! Now you can log in with your new password");
     } catch (err) {
       setLoading(false);
       toast.error(err.response.data);
@@ -47,7 +68,7 @@ const ForgotPassword = () => {
       </h1>
 
       <div className="container col-md-4 offset-md-4 pb-5">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={success ? handleResetPassword : handleSubmit}>
           <input
             type="email"
             className="form-control mb-4 p-4"
@@ -56,6 +77,26 @@ const ForgotPassword = () => {
             placeholder="Enter email"
             required
           />
+          {success && (
+            <>
+              <input
+                type="text"
+                className="form-control mb-4 p-4"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                placeholder="Enter secret code"
+                required
+              />
+              <input
+                type="password"
+                className="form-control mb-4 p-4"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="New password"
+                required
+              />
+            </>
+          )}
           <br />
           <button
             type="submit"
