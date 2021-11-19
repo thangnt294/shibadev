@@ -22,7 +22,7 @@ const BecomeInstructor = () => {
     setLoading(true);
     // TODO make this async await
     axios
-      .post("/api/make-instructor")
+      .post("/api/become-instructor")
       .then((res) => {
         console.log(res);
         // open stripe
