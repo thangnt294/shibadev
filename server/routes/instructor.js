@@ -9,5 +9,6 @@ import { requireSignin } from "../middlewares";
 import { becomeInstructor } from "../controllers/instructor";
 
 router.post("/become-instructor", requireSignin, becomeInstructor);
+router.get("current-instructor", requireSignin, getCurrentInstructor);
 
 module.exports = router;

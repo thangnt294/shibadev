@@ -24,9 +24,14 @@ const BecomeInstructor = () => {
     axios
       .post("/api/become-instructor")
       .then((res) => {
-        console.log(res);
         // open stripe
         // window.location.href = res.data;
+        dispatchEvent({
+          type: "LOGIN",
+          payload: res.data,
+        });
+        window.localStorage.setItem("user", JSON.stringify(res.data));
+        window.location.href = "/instructor";
       })
       .catch((err) => {
         console.log(err.response.status);
