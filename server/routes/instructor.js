@@ -6,9 +6,12 @@ const router = express.Router();
 import { requireSignin } from "../middlewares";
 
 // controllers
-import { becomeInstructor } from "../controllers/instructor";
+import {
+  becomeInstructor,
+  getCurrentInstructor,
+} from "../controllers/instructor";
 
 router.post("/become-instructor", requireSignin, becomeInstructor);
-router.get("current-instructor", requireSignin, getCurrentInstructor);
+router.get("/current-instructor", requireSignin, getCurrentInstructor);
 
 module.exports = router;

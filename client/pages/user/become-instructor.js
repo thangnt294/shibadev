@@ -15,6 +15,7 @@ const BecomeInstructor = () => {
   const [loading, setLoading] = useState(false);
   const {
     state: { user },
+    dispatch,
   } = useContext(Context);
 
   const becomeInstructor = () => {
@@ -26,7 +27,7 @@ const BecomeInstructor = () => {
       .then((res) => {
         // open stripe
         // window.location.href = res.data;
-        dispatchEvent({
+        dispatch({
           type: "LOGIN",
           payload: res.data,
         });
@@ -34,7 +35,6 @@ const BecomeInstructor = () => {
         window.location.href = "/instructor";
       })
       .catch((err) => {
-        console.log(err.response.status);
         toast.error("Something went wrong. Please try again.");
         setLoading(false);
       });
@@ -48,10 +48,10 @@ const BecomeInstructor = () => {
           <div className="col-md-6 offset-md-3 text-center">
             <UserSwitchOutlined className="display-1 pb-3" />
             <br />
-            <h2>Set up payout to publish courses on Elearn</h2>
+            <h2>Become an instructor to publish courses on Elearn</h2>
             <p className="lead text-warning">
-              Elearn partners with multiple payment service to transfer earnings
-              to your bank account
+              Elearn is the most suitable platform for you to share your
+              knowledge across the world
             </p>
             <Button
               className="mb-3"
@@ -66,10 +66,10 @@ const BecomeInstructor = () => {
                 loading
               }
             >
-              {loading ? "Processing..." : "Payment Setup"}
+              {loading ? "Processing..." : "Become Instructor"}
             </Button>
             <p className="lead">
-              You will be redirected to another page to complete onboarding
+              You will be redirected to another page to complete the onboarding
               process
             </p>
           </div>

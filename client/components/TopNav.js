@@ -95,11 +95,24 @@ const TopNav = () => {
         </>
       )}
 
+      {user && user.role && user.role.includes("Instructor") && (
+        <Item
+          key="/instructor"
+          onClick={(e) => setCurrent(e.key)}
+          icon={<TeamOutlined />}
+          className="ms-auto"
+        >
+          <Link href="/instructor">
+            <a>Instructor</a>
+          </Link>
+        </Item>
+      )}
+
       {user && (
         <SubMenu
           icon={<CoffeeOutlined />}
           title={user && user.name}
-          className="ms-auto"
+          // className="ms-auto"
         >
           <ItemGroup>
             <Item key="/user">
@@ -112,19 +125,6 @@ const TopNav = () => {
             </Item>
           </ItemGroup>
         </SubMenu>
-      )}
-
-      {user && user.role && user.role.includes("Instructor") && (
-        <Item
-          key="/instructor"
-          onClick={(e) => setCurrent(e.key)}
-          icon={<TeamOutlined />}
-          className="ms-auto"
-        >
-          <Link href="/instructor">
-            <a>Instructor</a>
-          </Link>
-        </Item>
       )}
     </Menu>
   );
