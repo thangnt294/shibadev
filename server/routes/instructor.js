@@ -9,9 +9,11 @@ import { requireSignin } from "../middlewares";
 import {
   becomeInstructor,
   getCurrentInstructor,
+  getInstructorCourses,
 } from "../controllers/instructor";
 
 router.post("/become-instructor", requireSignin, becomeInstructor);
 router.get("/current-instructor", requireSignin, getCurrentInstructor);
+router.get("/instructor-courses", requireSignin, getInstructorCourses);
 
 module.exports = router;

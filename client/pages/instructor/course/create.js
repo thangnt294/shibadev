@@ -4,6 +4,7 @@ import InstructorRoute from "../../../components/routes/InstructorRoute";
 import CourseCreateForm from "../../../components/forms/CourseCreateForm";
 import Resizer from "react-image-file-resizer";
 import { toast } from "react-toastify";
+import { useRouter } from "next/router";
 
 const CourseCreate = () => {
   // state
@@ -20,6 +21,9 @@ const CourseCreate = () => {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState("");
   const [uploadBtnText, setUploadBtnText] = useState("Upload Image");
+
+  // router
+  const router = useRouter();
 
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
@@ -64,9 +68,19 @@ const CourseCreate = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(values);
+    try {
+      const { data } = await axios.post("/api/course", {
+        ...values,
+        price: paid ? price : 0,
+        image,
+      });
+      toast.success("Great! Now you can start adding lessons");
+      router.push("/instructor");
+    } catch (err) {
+      toast.error(err.response.data);
+    }
   };
 
   return (
@@ -86,7 +100,6 @@ const CourseCreate = () => {
           handleRemoveImage={handleRemoveImage}
         />
       </div>
-      <pre>{JSON.stringify(values, null, 4)}</pre>
     </InstructorRoute>
   );
 };

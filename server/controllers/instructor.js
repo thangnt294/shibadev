@@ -1,4 +1,5 @@
 import User from "../models/user";
+import Course from "../models/course";
 
 export const becomeInstructor = async (req, res) => {
   // make user instructor
@@ -25,6 +26,20 @@ export const getCurrentInstructor = async (req, res) => {
     } else {
       res.json({ ok: true });
     }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getInstructorCourses = async (req, res) => {
+  try {
+    const courses = await Course.find({
+      instructor: req.user._id,
+    })
+      .sort({ createdAt: -1 })
+      .exec();
+
+    res.json(courses);
   } catch (err) {
     console.log(err);
   }
