@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { Select, Button, Avatar } from "antd";
+import { Select, Button, Avatar, Badge } from "antd";
 
 const { Option } = Select;
 
@@ -13,6 +12,7 @@ const CourseCreateForm = ({
   uploadBtnText,
   loading,
   uploading,
+  handleRemoveImage,
 }) => {
   const children = [];
   for (let i = 9.99; i <= 100.99; i += 10) {
@@ -100,7 +100,11 @@ const CourseCreateForm = ({
           </div>
         </div>
 
-        {preview && <Avatar width={200} src={preview} />}
+        {preview && (
+          <Badge count="x" onClick={handleRemoveImage} className="pointer">
+            <Avatar width={200} src={preview} />
+          </Badge>
+        )}
       </div>
 
       <div className="row">
