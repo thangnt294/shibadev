@@ -63,31 +63,16 @@ const CourseEdit = () => {
     });
   };
 
-  const handleRemoveImage = async () => {
-    try {
-      setLoading(true);
-      const res = await axios.post("/api/course/remove-image", { image });
-      setImage({});
-      setPreview("");
-      setUploadBtnText("Upload Image");
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-      toast.error("Image remove failed. Please try again later.");
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post("/api/course", {
+      const { data } = await axios.put("/api/course", {
         ...values,
         price: paid ? price : 0,
         image,
       });
-      toast.success("Great! Now you can start adding lessons");
-      router.push("/instructor");
+      toast.success("Course updated!");
+      // router.push("/instructor");
     } catch (err) {
       toast.error(err.response.data);
     }
@@ -107,7 +92,7 @@ const CourseEdit = () => {
           uploadBtnText={uploadBtnText}
           loading={loading}
           uploading={uploading}
-          handleRemoveImage={handleRemoveImage}
+          editPage={true}
         />
       </div>
     </InstructorRoute>
