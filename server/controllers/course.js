@@ -3,6 +3,7 @@ import { nanoid } from "nanoid";
 import Course from "../models/course";
 import slugify from "slugify";
 import { readFileSync } from "fs";
+import { KeyObject } from "crypto";
 
 const awsConfig = {
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -127,6 +128,29 @@ export const uploadVideo = async (req, res) => {
         res.sendStatus(400);
       }
       res.send(data);
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const removeVideo = async (req, res) => {
+  try {
+    const { Bucket, Key } = req.body;
+
+    // video params
+    const params = {
+      Bucket: Bucket,
+      Key: Key,
+    };
+
+    // delete form S3
+    S3.deleteObject(params, (err, data) => {
+      if (err) {
+        console.log(err);
+        res.sendStatus(400);
+      }
+      res.send({ ok: true });
     });
   } catch (err) {
     console.log(err);

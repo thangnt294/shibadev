@@ -65,6 +65,23 @@ const CourseView = () => {
     }
   };
 
+  const handleRemoveVideo = async () => {
+    try {
+      setUploading(true);
+      const { data } = await axios.post(
+        "/api/course/video-remove",
+        values.video
+      );
+      setValues({ ...values, video: {} });
+      setUploading(false);
+      setUploadBtnText("Upload Video");
+    } catch (err) {
+      console.log(err);
+      setUploading(false);
+      toast.error("Video remove failed");
+    }
+  };
+
   return (
     <InstructorRoute>
       <div className="container-fluid pt-3">
@@ -131,6 +148,8 @@ const CourseView = () => {
                 uploading={uploading}
                 uploadBtnText={uploadBtnText}
                 handleVideo={handleVideo}
+                progress={progress}
+                handleRemoveVideo={handleRemoveVideo}
               />
             </Modal>
           </div>
