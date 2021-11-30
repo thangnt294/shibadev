@@ -11,6 +11,7 @@ import {
   uploadImage,
   removeImage,
   create,
+  update,
   getCourse,
   uploadVideo,
   removeVideo,
@@ -22,6 +23,7 @@ router.post("/course/upload-image", uploadImage);
 router.post("/course/remove-image", removeImage);
 // course
 router.post("/course", requireSignin, isInstructor, create);
+router.post("/course/:slug", requireSignin, update);
 router.get("/course/:slug", getCourse);
 router.post(
   "/course/video-upload/:instructorId",

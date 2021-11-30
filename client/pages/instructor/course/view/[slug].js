@@ -7,7 +7,8 @@ import { EditOutlined, CheckOutlined, UploadOutlined } from "@ant-design/icons";
 import ReactMarkdown from "react-markdown";
 import AddLessonForm from "../../../../components/forms/AddLessonForm";
 import { toast } from "react-toastify";
-import Item from "antd/lib/list/Item";
+
+const { Item } = List;
 
 const CourseView = () => {
   const [course, setCourse] = useState({});
