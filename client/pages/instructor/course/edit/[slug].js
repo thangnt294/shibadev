@@ -5,7 +5,10 @@ import CourseCreateForm from "../../../../components/forms/CourseCreateForm";
 import Resizer from "react-image-file-resizer";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
-import { List, Avatar } from "antd";
+import { List, Avatar, Modal } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
+import UpdateLessonForm from "../../../../components/forms/UpdateLessonForm";
+import { set } from "mongoose";
 
 const { Item } = List;
 
@@ -25,6 +28,13 @@ const CourseEdit = () => {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState("");
   const [uploadBtnText, setUploadBtnText] = useState("Upload Image");
+
+  // state for lessons update
+  const [visible, setVisible] = useState(false);
+  const [current, setCurrent] = useState([]);
+  const [uploadVideoBtnText, setUploadVideoBtnText] = useState("Upload Video");
+  const [progress, setProgress] = useState(0);
+  const [uploading, setUploading] = useState(false);
 
   // router
   const router = useRouter();
@@ -122,6 +132,75 @@ const CourseEdit = () => {
     toast.success("Lessons rearranged successfully!");
   };
 
+  const handleDeleteLesson = async (index) => {
+    const answer = window.confirm(
+      "Are you sure you want to delete the lesson?"
+    );
+    if (!answer) return;
+    let allLessons = values.lessons;
+    const removed = allLessons.splice(index, 1);
+    setValues({ ...values, lessons: allLessons });
+    // send request to server
+    const { data } = await axios.put(`/api/course/${slug}/${removed[0]._id}`);
+    toast.success("Deleted lesson");
+  };
+
+  /**
+   * Lesson update functions
+   */
+
+  const handleVideo = async (e) => {
+    // remove previous video
+    if (current.video && current.video.Location) {
+      const res = await axios.post(
+        `/api/course/video-remove/${values.instructor._id}`,
+        current.video
+      );
+    }
+
+    // upload new one
+    const file = e.target.files[0];
+    setUploadVideoBtnText(file.name);
+    setUploading(true);
+
+    // send video as form data
+    const videoData = new FormData();
+    videoData.append("video", file);
+    videoData.append("courseId", values._id);
+
+    // save progress bar and send video as form data to backend
+    const { data } = await axios.post(
+      `/api/course/video-upload/${values.instructor._id}`,
+      videoData,
+      {
+        onUploadProgress: (e) =>
+          setProgress(Math.round((100 * e.loaded) / e.total)),
+      }
+    );
+    setCurrent({ ...current, video: data });
+    setUploading(false);
+  };
+
+  const handleUpdateLesson = async (e) => {
+    e.preventDefault();
+    const { data } = await axios.put(
+      `/api/course/lesson/${slug}/${current._id}`,
+      current
+    );
+    setUploadVideoBtnText("Upload Video");
+    setVisible(false);
+    setCurrent({});
+    toast.success("Lesson Updated");
+
+    // update the UI
+    if (data.ok) {
+      let arr = values.lessons;
+      const index = arr.findIndex((el) => el._id === current._id);
+      arr[index] = current;
+      setValues({ ...values, lessons: arr });
+    }
+  };
+
   return (
     <InstructorRoute>
       <h1 className="jumbotron text-center square">Edit Course</h1>
@@ -157,14 +236,44 @@ const CourseEdit = () => {
                 onDrop={(e) => handleDrop(e, index)}
               >
                 <Item.Meta
+                  onClick={() => {
+                    setVisible(true);
+                    setCurrent(item);
+                  }}
                   avatar={<Avatar>{index + 1}</Avatar>}
                   title={item.title}
                 ></Item.Meta>
+
+                <DeleteOutlined
+                  onClick={() => handleDeleteLesson(index)}
+                  className="text-danger float-right"
+                />
               </Item>
             )}
           ></List>
         </div>
       </div>
+
+      <Modal
+        title="Update lesson"
+        centered
+        visible={visible}
+        onCancel={() => {
+          setVisible(false);
+          setCurrent({});
+        }}
+        footer={null}
+      >
+        <UpdateLessonForm
+          current={current}
+          setCurrent={setCurrent}
+          handleVideo={handleVideo}
+          handleUpdateLesson={handleUpdateLesson}
+          uploadVideoBtnText={uploadVideoBtnText}
+          progress={progress}
+          uploading={uploading}
+        />
+      </Modal>
     </InstructorRoute>
   );
 };
