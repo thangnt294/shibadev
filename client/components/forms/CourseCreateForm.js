@@ -24,7 +24,7 @@ const CourseCreateForm = ({
     <>
       {values && (
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
+          <div className="form-group pb-3">
             <input
               type="text"
               name="name"
@@ -35,7 +35,7 @@ const CourseCreateForm = ({
             />
           </div>
 
-          <div className="form-group">
+          <div className="form-group pb-3">
             <textarea
               name="description"
               cols="7"
@@ -46,7 +46,7 @@ const CourseCreateForm = ({
             />
           </div>
 
-          <div className="form-row">
+          <div className="form-row pb-3">
             <div className="col">
               <div className="form-group">
                 <Select
@@ -76,7 +76,7 @@ const CourseCreateForm = ({
             )}
           </div>
 
-          <div className="form-group">
+          <div className="form-group pb-3">
             <input
               type="text"
               name="category"
@@ -87,7 +87,7 @@ const CourseCreateForm = ({
             />
           </div>
 
-          <div className="form-row">
+          <div className="form-row pb-3">
             <div className="col">
               <div className="form-group">
                 <label className="btn btn-outline-secondary btn-block text-left">

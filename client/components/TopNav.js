@@ -49,27 +49,28 @@ const TopNav = () => {
         </Link>
       </Item>
 
-      {user && user.role && user.role.includes("Instructor") ? (
-        <Item
-          key="/instructor/course/create"
-          onClick={(e) => setCurrent(e.key)}
-          icon={<CarryOutOutlined />}
-        >
-          <Link href="/instructor/course/create">
-            <a>Create course</a>
-          </Link>
-        </Item>
-      ) : (
-        <Item
-          key="/user/become-instructor"
-          onClick={(e) => setCurrent(e.key)}
-          icon={<TeamOutlined />}
-        >
-          <Link href="/user/become-instructor">
-            <a>Become Instructor</a>
-          </Link>
-        </Item>
-      )}
+      {user &&
+        (user.role && user.role.includes("Instructor") ? (
+          <Item
+            key="/instructor/course/create"
+            onClick={(e) => setCurrent(e.key)}
+            icon={<CarryOutOutlined />}
+          >
+            <Link href="/instructor/course/create">
+              <a>Create course</a>
+            </Link>
+          </Item>
+        ) : (
+          <Item
+            key="/user/become-instructor"
+            onClick={(e) => setCurrent(e.key)}
+            icon={<TeamOutlined />}
+          >
+            <Link href="/user/become-instructor">
+              <a>Become Instructor</a>
+            </Link>
+          </Item>
+        ))}
 
       {!user && (
         <>
@@ -77,6 +78,7 @@ const TopNav = () => {
             key="/login"
             onClick={(e) => setCurrent(e.key)}
             icon={<LoginOutlined />}
+            className="ms-auto"
           >
             <Link href="/login">
               <a>Login</a>
@@ -112,7 +114,11 @@ const TopNav = () => {
         <SubMenu
           icon={<CoffeeOutlined />}
           title={user && user.name}
-          // className="ms-auto"
+          className={
+            user && user.role && user.role.includes("Instructor")
+              ? ""
+              : "ms-auto"
+          }
         >
           <ItemGroup>
             <Item key="/user">

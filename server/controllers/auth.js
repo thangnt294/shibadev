@@ -54,11 +54,11 @@ export const login = async (req, res) => {
 
     // check if db has user with that email
     const user = await User.findOne({ email }).exec();
-    if (!user) return res.status(400).send("No user found");
+    if (!user) return res.status(400).send("Incorrect username or password");
 
     // check password
     const match = await comparePassword(password, user.password);
-    if (!match) return res.status(400).send("Incorrect password");
+    if (!match) return res.status(400).send("Incorrect username or password");
 
     // create signed jwt
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
