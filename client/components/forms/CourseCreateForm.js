@@ -43,6 +43,7 @@ const CourseCreateForm = ({
               value={values.description}
               className="form-control"
               onChange={handleChange}
+              placeholder="Description"
             />
           </div>
 

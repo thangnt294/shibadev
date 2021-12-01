@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import InstructorRoute from "../../components/routes/InstructorRoute";
-import { Avatar } from "antd";
-import { Link } from "next/link";
+import { Avatar, Tooltip } from "antd";
+import Link from "next/link";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 
 const InstructorIndex = () => {
@@ -14,7 +14,11 @@ const InstructorIndex = () => {
 
   const loadCourses = async () => {
     const { data } = await axios.get("/api/instructor-courses");
-    setCourses(data);
+    if (data) {
+      console.log("data: ", data);
+
+      setCourses(data);
+    }
   };
 
   const myStyle = { marginTop: "-15px", fontSize: "10px" };
@@ -25,14 +29,14 @@ const InstructorIndex = () => {
 
       {courses &&
         courses.map((course) => (
-          <>
-            <div className="media pt-2">
+          <React.Fragment key={course._id}>
+            <div className="pt-2 d-flex">
               <Avatar
                 size={80}
                 src={course.image ? course.image.Location : "/course.png"}
               />
 
-              <div className="media-body pt-2">
+              <div className="ps-3 w-100">
                 <div className="row">
                   <div className="col">
                     <Link
@@ -63,19 +67,19 @@ const InstructorIndex = () => {
                   </div>
                   <div className="col-md-3 mt-3 text-center">
                     {course.published ? (
-                      <div>
+                      <Tooltip title="Published">
                         <CheckCircleOutlined className="h5 pointer text-success" />
-                      </div>
+                      </Tooltip>
                     ) : (
-                      <div>
+                      <Tooltip title="Unpublished">
                         <CloseCircleOutlined className="h5 pointer text-warning" />
-                      </div>
+                      </Tooltip>
                     )}
                   </div>
                 </div>
               </div>
             </div>
-          </>
+          </React.Fragment>
         ))}
     </InstructorRoute>
   );

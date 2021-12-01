@@ -57,7 +57,7 @@ const UpdateLessonForm = ({
         )}
 
         <div className="d-flex justify-content-between">
-          <span className="pt-3 badge">Preview</span>
+          <span className="pt-3 badge text-dark">Preview</span>
           <Switch
             className="float-right mt-2"
             disabled={uploading}

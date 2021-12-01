@@ -8,7 +8,6 @@ import { useRouter } from "next/router";
 import { List, Avatar, Modal } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import UpdateLessonForm from "../../../../components/forms/UpdateLessonForm";
-import { set } from "mongoose";
 
 const { Item } = List;
 
@@ -34,7 +33,6 @@ const CourseEdit = () => {
   const [current, setCurrent] = useState([]);
   const [uploadVideoBtnText, setUploadVideoBtnText] = useState("Upload Video");
   const [progress, setProgress] = useState(0);
-  const [uploading, setUploading] = useState(false);
 
   // router
   const router = useRouter();
@@ -66,7 +64,6 @@ const CourseEdit = () => {
         let { data } = await axios.post("/api/course/upload-image", {
           image: uri,
         });
-        console.log("IMAGE UPLOADED", data);
         // set image in the state, set loading to false
         setImage(data);
         setLoading(false);
@@ -98,13 +95,14 @@ const CourseEdit = () => {
     try {
       const { data } = await axios.put(`/api/course/${slug}`, {
         ...values,
-        price: paid ? price : 0,
+        price: values.paid ? price : 0,
         image,
       });
       toast.success("Course updated!");
       // router.push("/instructor");
     } catch (err) {
-      toast.error(err.response.data);
+      console.log(err);
+      toast.error("Something went wrong. Please try again later.");
     }
   };
 

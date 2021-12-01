@@ -73,13 +73,14 @@ const CourseCreate = () => {
     try {
       const { data } = await axios.post("/api/course", {
         ...values,
-        price: paid ? price : 0,
+        price: values.paid ? price : 0,
         image,
       });
       toast.success("Great! Now you can start adding lessons");
       router.push("/instructor");
     } catch (err) {
-      toast.error(err.response.data);
+      toast.error("Something went wrong. Please try again later.");
+      console.log(err);
     }
   };
 

@@ -17,7 +17,7 @@ const InstructorRoute = ({ children }) => {
   const fetchInstructor = async () => {
     try {
       const { data } = await axios.get("/api/current-instructor");
-      setHidden(!data.ok);
+      if (data && data.ok) setHidden(false);
     } catch (err) {
       console.log(err);
       setHidden(true);
