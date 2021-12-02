@@ -1,16 +1,27 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
+import SingleCourseJumbotron from "../../components/cards/SingleCourseJumbotron";
 
 const SingleCourse = ({ course }) => {
+  // state
+  const [showModal, setShowModal] = useState(false);
+  const [preview, setPreview] = useState("");
+
   const router = useRouter();
   const { slug } = router.query;
 
   return (
     <>
-      <div className="container-fluid">
-        <div className="row">{course}</div>
-      </div>
+      <SingleCourseJumbotron
+        course={course}
+        showModal={showModal}
+        setShowModal={setShowModal}
+        preview={preview}
+        setPreview={setPreview}
+      />
+
+      {showModal ? lessons[0].video.Location : "dont show"}
     </>
   );
 };
