@@ -379,3 +379,15 @@ export const paidEnroll = async (req, res) => {
     return res.status(400).send("Enrollment failed");
   }
 };
+
+export const getUserCourses = async (req, res) => {
+  const user = await User.findById(req.user._id).exec();
+
+  const userCourses = await Course.find({
+    _id: { $in: user.enrolled_courses },
+  })
+    .populate("instructor", "_id name")
+    .exec();
+
+  res.json(userCourses);
+};
