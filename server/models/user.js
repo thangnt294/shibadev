@@ -31,9 +31,9 @@ const userSchema = new mongoose.Schema(
       enum: ["Subscriber", "Instructor", "Admin"],
     },
     enrolled_courses: [{ type: ObjectId, ref: "Course" }],
-    stripe_account_id: "",
-    stripe_seller: {},
-    stripeSession: {},
+    profit: {
+      type: Number,
+    },
     passwordResetCode: {
       data: String,
       default: "",

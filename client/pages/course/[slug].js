@@ -31,11 +31,7 @@ const SingleCourse = ({ course }) => {
   const router = useRouter();
   const { slug } = router.query;
 
-  const handlePaidEnrollment = () => {
-    console.log("Paid Enrollment");
-  };
-
-  const handleFreeEnrollment = (e) => {
+  const handleEnrollment = async (e, paid) => {
     e.preventDefault();
     try {
       // check if user is logged in
@@ -44,7 +40,9 @@ const SingleCourse = ({ course }) => {
       if (enrolled.status)
         return router.push(`/user/course/${enrolled.course.slug}`); // TODO maybe not return the course in the backend and instead use the slug above?
       setLoading(true);
-      const { data } = await axios.post(`/api/free-enrollment/${course._id}`);
+      const { data } = await axios.post(
+        `/api/${paid ? "paid-enrollment" : "free-enrollment"}/${course._id}`
+      );
       toast.success("Congratulations! you have successfully enrolled");
       setLoading(false);
       router.push(`/user/course/${data.slug}`);
@@ -65,8 +63,7 @@ const SingleCourse = ({ course }) => {
         setPreview={setPreview}
         user={user}
         loading={loading}
-        handlePaidEnrollment={handlePaidEnrollment}
-        handleFreeEnrollment={handleFreeEnrollment}
+        handleEnrollment={handleEnrollment}
         enrolled={enrolled}
         setEnrolled={setEnrolled}
       />

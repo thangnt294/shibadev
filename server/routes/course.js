@@ -23,6 +23,7 @@ import {
   getPublishedCourses,
   checkEnrollment,
   freeEnroll,
+  paidEnroll,
 } from "../controllers/course";
 
 router.get("/courses", getPublishedCourses);
@@ -54,5 +55,6 @@ router.get("/check-enrollment/:courseId", requireSignin, checkEnrollment);
 
 // enrollment
 router.post("/free-enrollment/:courseId", requireSignin, freeEnroll);
+router.post("paid-enrollment/:courseId", requireSignin, paidEnroll);
 
 module.exports = router;

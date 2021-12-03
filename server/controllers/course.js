@@ -342,3 +342,40 @@ export const freeEnroll = async (req, res) => {
     return res.status(400).send("Enrollment failed");
   }
 };
+
+export const paidEnroll = async (req, res) => {
+  try {
+    // check if course is free or paid
+    const course = await Course.findById(req.params.courseId)
+      .populate("instructor")
+      .exec();
+    if (!course.paid) return;
+
+    // application fee 30%
+    const fee = (course.price * 30) / 100;
+
+    // add fee to admin
+    const admin = await User.findOneAndUpdate(
+      { role: "Admin" },
+      { $inc: { profit: fee } }
+    );
+
+    // add profit to instructor
+    const instructor = await User.findByIdAndUpdate(course.instructor._id, {
+      $inc: { profit: course.price - fee },
+    });
+
+    // enroll user
+    const result = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        $addToSet: { enrolled_courses: course._id },
+      },
+      { new: true }
+    ).exec();
+    res.json(course);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send("Enrollment failed");
+  }
+};

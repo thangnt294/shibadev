@@ -11,8 +11,7 @@ const SingleCourseJumbotron = ({
   setPreview,
   user,
   loading,
-  handlePaidEnrollment,
-  handleFreeEnrollment,
+  handleEnrollment,
   enrolled,
   setEnrolled,
 }) => {
@@ -83,7 +82,7 @@ const SingleCourseJumbotron = ({
               icon={<SafetyOutlined />}
               size="large"
               disabled={loading}
-              onClick={paid ? handlePaidEnrollment : handleFreeEnrollment}
+              onClick={(e) => handleEnrollment(e, paid)}
             >
               {user
                 ? enrolled.status
