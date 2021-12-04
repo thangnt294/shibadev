@@ -422,3 +422,32 @@ export const markCompleted = async (req, res) => {
   }
   res.json({ ok: true });
 };
+
+export const markIncomplete = async (req, res) => {
+  try {
+    const { courseId, lessonId } = req.body;
+
+    const updated = await Completed.findOneAndUpdate(
+      { user: req.user._id, course: courseId },
+      {
+        $pull: { lessons: lessonId },
+      }
+    ).exec();
+    res.json({ ok: true });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const listCompleted = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const list = await Completed.findOne({
+      user: req.user._id,
+      course: courseId,
+    }).exec();
+    res.json(list.lessons);
+  } catch (err) {
+    console.log(err);
+  }
+};

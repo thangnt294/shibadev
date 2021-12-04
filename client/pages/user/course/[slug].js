@@ -9,7 +9,10 @@ import {
   PlayCircleOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  CheckCircleFilled,
+  MinusCircleFilled,
 } from "@ant-design/icons";
+import { toast } from "react-toastify";
 
 const { Item } = Menu;
 
@@ -18,6 +21,9 @@ const SingleCourse = () => {
   const [collapse, setCollapse] = useState(false);
   const [loading, setLoading] = useState(false);
   const [course, setCourse] = useState({ lessons: [] });
+  const [completedLessons, setCompletedLessons] = useState([]);
+  // force state update
+  const [updateState, setUpdateState] = useState(false);
 
   // router
   const router = useRouter();
@@ -27,17 +33,52 @@ const SingleCourse = () => {
     if (slug) loadCourse();
   }, [slug]);
 
+  useEffect(() => {
+    if (course) loadCompletedLessons();
+  }, [course]);
+
   const loadCourse = async () => {
     const { data } = await axios.get(`/api/user/course/${slug}`);
     setCourse(data);
   };
 
+  const loadCompletedLessons = async () => {
+    const { data } = await axios.get(`/api/list-completed/${course._id}`);
+    setCompletedLessons(data);
+  };
+
   const markCompleted = async () => {
-    const { data } = await axios.post(`/api/mark-completed`, {
-      courseId: course._id,
-      lessonId: course.lessons[clicked]._id,
-    });
-    console.log(data);
+    try {
+      const { data } = await axios.post("/api/mark-completed", {
+        courseId: course._id,
+        lessonId: course.lessons[clicked]._id,
+      });
+      setCompletedLessons([...completedLessons, course.lessons[clicked]._id]);
+      toast.success("Mark as completed successfully");
+    } catch (err) {
+      console.log(err);
+      toast.error("Something went wrong. Please try again later.");
+    }
+  };
+
+  const markIncomplete = async () => {
+    try {
+      const { data } = await axios.post("/api/mark-incomplete", {
+        courseId: course._id,
+        lessonId: course.lessons[clicked]._id,
+      });
+      const all = completedLessons;
+      const index = all.indexOf(course.lessons[clicked]._id);
+      if (index > -1) {
+        all.splice(index, 1);
+        setCompletedLessons(all);
+        setUpdateState(!updateState);
+      }
+      toast.success("Mark as incomplete successfully");
+    } catch (err) {
+      console.log(err);
+      toast.error("Something went wrong. Please try again later.");
+    }
   };
 
   return (
@@ -62,7 +103,18 @@ const SingleCourse = () => {
                 onClick={() => setClicked(index)}
                 icon={<Avatar>{index + 1}</Avatar>}
               >
-                {lesson.title.substring(0, 30)}
+                {lesson.title.substring(0, 30)}{" "}
+                {completedLessons.includes(lesson._id) ? (
+                  <CheckCircleFilled
+                    className="float-right text-success ms-2"
+                    style={{ marginTop: "13px" }}
+                  />
+                ) : (
+                  <MinusCircleFilled
+                    className="float-right text-danger ms-2"
+                    style={{ marginTop: "13px" }}
+                  />
+                )}
               </Item>
             ))}
           </Menu>
@@ -72,9 +124,23 @@ const SingleCourse = () => {
             <>
               <div className="col alert alert-primary square">
                 <b>{course.lessons[clicked].title.substring(0, 30)}</b>
-                <span className="float-right pointer" onClick={markCompleted}>
-                  Mark as completed
-                </span>
+                {completedLessons.includes(
+                  course.lessons[clicked]._id ? (
+                    <span
+                      className="float-right pointer"
+                      onClick={markIncomplete}
+                    >
+                      Mark as incomplete
+                    </span>
+                  ) : (
+                    <span
+                      className="float-right pointer"
+                      onClick={markCompleted}
+                    >
+                      Mark as completed
+                    </span>
+                  )
+                )}
               </div>
 
               {course.lessons[clicked].video &&
@@ -87,6 +153,7 @@ const SingleCourse = () => {
                         width="100%"
                         height="100%"
                         controls
+                        onEnded={markCompleted}
                       />
                     </div>
                   </>
