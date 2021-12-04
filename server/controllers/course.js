@@ -5,6 +5,7 @@ import slugify from "slugify";
 import { readFileSync } from "fs";
 import { KeyObject } from "crypto";
 import User from "../models/user";
+import Completed from "../models/completed";
 
 const awsConfig = {
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -390,4 +391,34 @@ export const getUserCourses = async (req, res) => {
     .exec();
 
   res.json(userCourses);
+};
+
+export const markCompleted = async (req, res) => {
+  const { courseId, lessonId } = req.body;
+  // check if user with that course is already created
+  const existing = await Completed.findOne({
+    user: req.user._id,
+    course: courseId,
+  }).exec();
+
+  if (existing) {
+    // update
+    const updated = await Completed.findOneAndUpdate(
+      {
+        user: req.user._id,
+        course: courseId,
+      },
+      {
+        $addToSet: { lessons: lessonId },
+      }
+    ).exec();
+  } else {
+    // create
+    const created = await new Completed({
+      user: req.user._id,
+      course: courseId,
+      lessons: [lessonId],
+    }).save();
+  }
+  res.json({ ok: true });
 };

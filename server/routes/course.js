@@ -25,6 +25,7 @@ import {
   freeEnroll,
   paidEnroll,
   getUserCourses,
+  markCompleted,
 } from "../controllers/course";
 
 router.get("/courses", getPublishedCourses);
@@ -60,5 +61,8 @@ router.post("paid-enrollment/:courseId", requireSignin, paidEnroll);
 
 router.get("/user-courses", requireSignin, getUserCourses);
 router.get("/user/course/:slug", requireSignin, isEnrolled, getCourse);
+
+// mark completed
+router.post("/mark-completed", requireSignin, markCompleted);
 
 module.exports = router;
