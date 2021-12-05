@@ -358,12 +358,12 @@ export const paidEnroll = async (req, res) => {
     // add fee to admin
     const admin = await User.findOneAndUpdate(
       { role: "Admin" },
-      { $inc: { profit: fee } }
+      { $inc: { balance: fee } }
     );
 
     // add profit to instructor
     const instructor = await User.findByIdAndUpdate(course.instructor._id, {
-      $inc: { profit: course.price - fee },
+      $inc: { balance: course.price - fee },
     });
 
     // enroll user

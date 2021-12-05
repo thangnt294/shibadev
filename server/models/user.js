@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema(
       enum: ["Subscriber", "Instructor", "Admin"],
     },
     enrolled_courses: [{ type: ObjectId, ref: "Course" }],
-    profit: {
+    balance: {
       type: Number,
     },
     passwordResetCode: {
