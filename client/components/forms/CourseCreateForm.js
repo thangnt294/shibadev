@@ -23,8 +23,6 @@ const CourseCreateForm = ({
     children.push(<Option key={i.toFixed(2)}>${i.toFixed(2)}</Option>);
   }
 
-  const [focus, setFocus] = useState(false);
-
   return (
     <>
       {values && (
@@ -89,7 +87,6 @@ const CourseCreateForm = ({
                     name="price"
                     placeholder="Price"
                     defaultValue="9.99"
-                    // style={{ width: "100%" }}
                     onChange={(v) => setValues({ ...values, price: v })}
                     min={9.99}
                     max={500}
