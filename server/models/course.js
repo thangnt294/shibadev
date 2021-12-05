@@ -51,7 +51,7 @@ const courseSchema = new mongoose.Schema(
       default: 9.99,
     },
     image: {},
-    category: String,
+    tags: [],
     published: {
       type: Boolean,
       default: false,

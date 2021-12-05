@@ -54,7 +54,7 @@ const TopNav = () => {
         </Link>
       </Item>
 
-      {user &&
+      {/* {user &&
         (user.role && user.role.includes("Instructor") ? (
           <Item
             key="/instructor/course/create"
@@ -75,7 +75,19 @@ const TopNav = () => {
               <a>Become Instructor</a>
             </Link>
           </Item>
-        ))}
+        ))} */}
+
+      {user && user.role && !user.role.includes("Instructor") && (
+        <Item
+          key="/user/become-instructor"
+          onClick={(e) => setCurrent(e.key)}
+          icon={<TeamOutlined />}
+        >
+          <Link href="/user/become-instructor">
+            <a>Become Instructor</a>
+          </Link>
+        </Item>
+      )}
 
       {!user && (
         <>

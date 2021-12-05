@@ -3,9 +3,9 @@ import { nanoid } from "nanoid";
 import Course from "../models/course";
 import slugify from "slugify";
 import { readFileSync } from "fs";
-import { KeyObject } from "crypto";
 import User from "../models/user";
 import Completed from "../models/completed";
+import { tags } from "../constants";
 
 const awsConfig = {
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -450,4 +450,8 @@ export const listCompleted = async (req, res) => {
   } catch (err) {
     console.log(err);
   }
+};
+
+export const getTags = (req, res) => {
+  res.json(tags);
 };

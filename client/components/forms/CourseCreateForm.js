@@ -1,4 +1,5 @@
-import { Select, Button, Avatar, Badge } from "antd";
+import { useState } from "react";
+import { Select, Button, Avatar, Badge, InputNumber } from "antd";
 
 const { Option } = Select;
 
@@ -14,11 +15,15 @@ const CourseCreateForm = ({
   uploading,
   handleRemoveImage = (f) => f,
   editPage = false,
+  tags,
+  handleSelectTag,
 }) => {
   const children = [];
   for (let i = 9.99; i <= 100.99; i += 10) {
     children.push(<Option key={i.toFixed(2)}>${i.toFixed(2)}</Option>);
   }
+
+  const [focus, setFocus] = useState(false);
 
   return (
     <>
@@ -47,8 +52,22 @@ const CourseCreateForm = ({
             />
           </div>
 
-          <div className="form-row pb-3">
-            <div className="col">
+          <div className="col form-group pb-3">
+            <Select
+              mode="tags"
+              allowClear
+              style={{ width: "100%" }}
+              placeholder="Tags"
+              size="large"
+              onChange={handleSelectTag}
+              value={values.tags}
+            >
+              {tags && tags.map((tag) => <Option key={tag}>{tag}</Option>)}
+            </Select>
+          </div>
+
+          <div className="form-row pb-3 d-flex">
+            <div className="col-md-1">
               <div className="form-group">
                 <Select
                   style={{ width: "100%" }}
@@ -63,29 +82,26 @@ const CourseCreateForm = ({
             </div>
 
             {values.paid && (
-              <div className="form-group">
-                <Select
-                  defaultValue="$9.99"
-                  style={{ width: "100%" }}
-                  onChange={(v) => setValues({ ...values, price: v })}
-                  tokenSeparators={[,]}
-                  size="large"
-                >
-                  {children}
-                </Select>
+              <div className="col ms-3">
+                <div className="form-group">
+                  <InputNumber
+                    value={values.price}
+                    name="price"
+                    placeholder="Price"
+                    defaultValue="9.99"
+                    // style={{ width: "100%" }}
+                    onChange={(v) => setValues({ ...values, price: v })}
+                    min={9.99}
+                    max={500}
+                    size="large"
+                    formatter={(value) =>
+                      `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
+                    parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                  />
+                </div>
               </div>
             )}
-          </div>
-
-          <div className="form-group pb-3">
-            <input
-              type="text"
-              name="category"
-              className="form-control"
-              placeholder="Category"
-              value={values.category}
-              onChange={handleChange}
-            />
           </div>
 
           <div className="form-row pb-3">

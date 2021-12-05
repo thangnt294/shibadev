@@ -3,7 +3,11 @@ import axios from "axios";
 import InstructorRoute from "../../components/routes/InstructorRoute";
 import { Avatar, Tooltip } from "antd";
 import Link from "next/link";
-import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  SolutionOutlined,
+} from "@ant-design/icons";
 
 const InstructorIndex = () => {
   const [courses, setCourses] = useState([]);
@@ -15,8 +19,6 @@ const InstructorIndex = () => {
   const loadCourses = async () => {
     const { data } = await axios.get("/api/instructor-courses");
     if (data) {
-      console.log("data: ", data);
-
       setCourses(data);
     }
   };
@@ -26,8 +28,7 @@ const InstructorIndex = () => {
   return (
     <InstructorRoute>
       <h1 className="jumbotron text-center square">Instructor Dashboard</h1>
-
-      {courses &&
+      {courses && courses.length > 0 ? (
         courses.map((course) => (
           <React.Fragment key={course._id}>
             <div className="pt-2 d-flex">
@@ -80,7 +81,20 @@ const InstructorIndex = () => {
               </div>
             </div>
           </React.Fragment>
-        ))}
+        ))
+      ) : (
+        <div className="d-flex justify-content-center p-5">
+          <div className="text-center p-5">
+            <SolutionOutlined className="text-muted display-1 p-4" />
+            <p className="lead">
+              You haven't created any course yet.
+              <Link href="/instructor/course/create" className="lead">
+                <a> Create one.</a>
+              </Link>
+            </p>
+          </div>
+        </div>
+      )}
     </InstructorRoute>
   );
 };

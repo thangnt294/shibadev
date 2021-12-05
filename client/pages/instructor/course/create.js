@@ -13,7 +13,7 @@ const CourseCreate = () => {
     description: "",
     price: "9.99",
     paid: false,
-    category: "",
+    tags: [],
   });
 
   const [image, setImage] = useState({});
@@ -21,12 +21,26 @@ const CourseCreate = () => {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState("");
   const [uploadBtnText, setUploadBtnText] = useState("Upload Image");
+  const [tags, setTags] = useState([]);
+
+  useEffect(() => {
+    getTags();
+  }, []);
+
+  const getTags = async () => {
+    const { data } = await axios.get("/api/course-tags");
+    setTags(data);
+  };
 
   // router
   const router = useRouter();
 
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
+  };
+
+  const handleSelectTag = (value) => {
+    setValues({ ...values, tags: value.slice(0, 5) });
   };
 
   const handleImage = (e) => {
@@ -99,6 +113,8 @@ const CourseCreate = () => {
           loading={loading}
           uploading={uploading}
           handleRemoveImage={handleRemoveImage}
+          handleSelectTag={handleSelectTag}
+          tags={tags}
         />
       </div>
     </InstructorRoute>

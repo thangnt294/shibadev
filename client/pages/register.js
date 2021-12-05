@@ -52,7 +52,7 @@ const Register = () => {
             className="form-control mb-4 p-4"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Enter name"
+            placeholder="Name"
             required
           />
           <input
@@ -60,7 +60,7 @@ const Register = () => {
             className="form-control mb-4 p-4"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter email"
+            placeholder="Email"
             required
           />
           <input
@@ -68,7 +68,7 @@ const Register = () => {
             className="form-control mb-4 p-4"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter password"
+            placeholder="Password"
             required
           />
 
@@ -78,7 +78,7 @@ const Register = () => {
             className="btn w-100 btn-primary"
             disabled={!name || !email || !password || loading}
           >
-            {loading ? <SyncOutlined spin /> : "Submit"}
+            {loading ? <SyncOutlined spin /> : "Register"}
           </button>
         </form>
 

@@ -7,8 +7,8 @@ import { Context } from "../context/index";
 import { useRouter } from "next/router";
 
 const Login = () => {
-  const [email, setEmail] = useState("elearn@qa.team");
-  const [password, setPassword] = useState("123456");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   // state
@@ -57,7 +57,7 @@ const Login = () => {
             className="form-control mb-4 p-4"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter email"
+            placeholder="Email"
             required
           />
           <input
@@ -65,7 +65,7 @@ const Login = () => {
             className="form-control mb-4 p-4"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter password"
+            placeholder="Password"
             required
           />
 
@@ -75,7 +75,7 @@ const Login = () => {
             className="btn w-100 btn-primary"
             disabled={!email || !password || loading}
           >
-            {loading ? <SyncOutlined spin /> : "Submit"}
+            {loading ? <SyncOutlined spin /> : "Log in"}
           </button>
         </form>
 

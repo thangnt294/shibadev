@@ -28,9 +28,11 @@ import {
   markCompleted,
   markIncomplete,
   listCompleted,
+  getTags,
 } from "../controllers/course";
 
 router.get("/courses", getPublishedCourses);
+router.get("/course-tags", getTags);
 
 // image
 router.post("/course/upload-image", uploadImage);
@@ -42,7 +44,7 @@ router.get("/course/:slug", getCourse);
 router.post(
   "/course/video-upload/:instructorId",
   requireSignin,
-  formidable(),
+  formidable({ maxFileSize: 500 * 1024 * 1024 }),
   uploadVideo
 );
 router.post("/course/video-remove/:instructorId", requireSignin, removeVideo);
