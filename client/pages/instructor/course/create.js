@@ -86,10 +86,11 @@ const CourseCreate = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(values);
     try {
       const { data } = await axios.post("/api/course", {
         ...values,
-        price: values.paid ? price : 0,
+        price: values.paid ? values.price : 0,
         image,
       });
       toast.success("Great! Now you can start adding lessons");
