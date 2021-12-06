@@ -131,9 +131,6 @@ const CourseCreateForm = ({
                 </Button>
               </div>
             )}
-            {editPage && values.image && (
-              <Avatar width={200} src={values.image.Location} />
-            )}
           </div>
 
           <div className="row">

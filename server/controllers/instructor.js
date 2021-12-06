@@ -48,8 +48,10 @@ export const getInstructorCourses = async (req, res) => {
 export const countStudent = async (req, res) => {
   try {
     const { courseId } = req.params;
-    const users = await User.find({ courses: courseId }).select("_id").exec(); // TODO can just count
-    res.json(users);
+    const count = await User.countDocuments({
+      enrolled_courses: courseId,
+    });
+    res.json(count);
   } catch (err) {
     console.log(err);
   }

@@ -8,8 +8,6 @@ import { requireSignin, isInstructor, isEnrolled } from "../middlewares";
 
 // controllers
 import {
-  uploadImage,
-  removeImage,
   create,
   update,
   getCourse,
@@ -34,9 +32,6 @@ import {
 router.get("/courses", getPublishedCourses);
 router.get("/course-tags", getTags);
 
-// image
-router.post("/course/upload-image", uploadImage);
-router.post("/course/remove-image", removeImage);
 // course
 router.post("/course", requireSignin, isInstructor, create);
 router.put("/course/:slug", requireSignin, update);
