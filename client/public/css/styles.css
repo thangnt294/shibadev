@@ -11,3 +11,7 @@
 .pointer {
   cursor: pointer;
 }
+
+svg {
+  vertical-align: baseline;
+}
