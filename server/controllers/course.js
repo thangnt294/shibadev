@@ -6,6 +6,7 @@ import { readFileSync } from "fs";
 import User from "../models/user";
 import Completed from "../models/completed";
 import { tags } from "../constants";
+import { isObjectEmpty } from "../utils/helpers";
 
 const awsConfig = {
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -19,8 +20,23 @@ const S3 = new AWS.S3(awsConfig);
 export const uploadImage = async (req, res) => {
   // console.log(req.body);
   try {
-    const { image } = req.body;
+    const { image, oldImage } = req.body;
     if (!image) return res.status(400).send("No image");
+
+    // remove old image
+    if (!isObjectEmpty(oldImage)) {
+      const removeImageParams = {
+        Bucket: oldImage.Bucket,
+        Key: oldImage.Key,
+      };
+
+      S3.deleteObject(removeImageParams, (err, data) => {
+        if (err) {
+          console.log(err);
+          return res.sendStatus(400);
+        }
+      });
+    }
 
     // prepare the image
     const base64Data = new Buffer.from(

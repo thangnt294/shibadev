@@ -45,26 +45,28 @@ const CourseCreate = () => {
 
   const handleImage = (e) => {
     let file = e.target.files[0];
-    setPreview(window.URL.createObjectURL(file));
-    setUploadBtnText(file.name);
-    setLoading(true);
-
-    // resize image
-    Resizer.imageFileResizer(file, 720, 500, "JPEG", 100, 0, async (uri) => {
-      try {
-        let { data } = await axios.post("/api/course/upload-image", {
-          image: uri,
-        });
-        console.log("IMAGE UPLOADED", data);
-        // set image in the state, set loading to false
-        setImage(data);
-        setLoading(false);
-      } catch (err) {
-        console.log(err);
-        setLoading(false);
-        toast.error("Image upload failed. Please try again later.");
-      }
-    });
+    if (file) {
+      setPreview(window.URL.createObjectURL(file));
+      setUploadBtnText(file.name);
+      setLoading(true);
+      // resize image
+      Resizer.imageFileResizer(file, 720, 500, "JPEG", 100, 0, async (uri) => {
+        try {
+          let { data } = await axios.post("/api/course/upload-image", {
+            image: uri,
+            oldImage: image,
+          });
+          console.log("IMAGE UPLOADED", data);
+          // set image in the state, set loading to false
+          setImage(data);
+          setLoading(false);
+        } catch (err) {
+          console.log(err);
+          setLoading(false);
+          toast.error("Image upload failed. Please try again later.");
+        }
+      });
+    }
   };
 
   const handleRemoveImage = async () => {

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Select, Button, Avatar, Badge, InputNumber } from "antd";
+import { Select, Button, Avatar, Badge, InputNumber, Image } from "antd";
 
 const { Option } = Select;
 
@@ -101,28 +101,36 @@ const CourseCreateForm = ({
             )}
           </div>
 
-          <div className="form-row pb-3">
-            <div className="col">
-              <div className="form-group">
-                <label className="btn btn-outline-secondary btn-block text-left">
-                  {uploadBtnText}
-                  <input
-                    type="file"
-                    name="image"
-                    onChange={handleImage}
-                    accept="image/*"
-                    hidden
-                  />
-                </label>
-              </div>
+          <Image width={200} src={preview} placeholder fallback="/course.png" />
+
+          <div className="form-row pb-3 pt-3 d-flex">
+            <div className="form-group">
+              <label className="btn btn-outline-secondary text-left">
+                {uploadBtnText}
+                <input
+                  type="file"
+                  name="image"
+                  onChange={handleImage}
+                  accept="image/*"
+                  hidden
+                />
+              </label>
             </div>
-
             {preview && (
-              <Badge count="x" onClick={handleRemoveImage} className="pointer">
-                <Avatar width={200} src={preview} />
-              </Badge>
+              <div className="form-group ms-3">
+                <Button
+                  onClick={handleRemoveImage}
+                  disabled={loading || uploading}
+                  className="btn btn-primary"
+                  type="danger"
+                  size="large"
+                  style={{ borderRadius: "5px" }}
+                  // shape="round"
+                >
+                  Remove Image
+                </Button>
+              </div>
             )}
-
             {editPage && values.image && (
               <Avatar width={200} src={values.image.Location} />
             )}
