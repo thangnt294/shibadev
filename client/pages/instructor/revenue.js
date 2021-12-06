@@ -31,17 +31,17 @@ const InstructorRevenue = () => {
         <div className="row pt-2">
           <div className="col-md-8 offset-md-2 bg-light p-5">
             <h2>
-              Revenue report <DollarOutlined className="float-right" />
+              Revenue report <DollarOutlined className="ms-auto" />
             </h2>
-            <small>Some text about payments</small>
+            <small>This shows you how much you've earned on Elearn.</small>
             <hr />
             <h4>
               Balance{" "}
-              <span className="float-right">
+              <span className="ms-auto">
                 {currencyFormatter({ amount: balance, currency: "usd" })}
               </span>
             </h4>
-            <small>For 48 hours</small>
+            <small>This is your current balance.</small>
             <hr />
             <h4>
               Payout{" "}
