@@ -6,6 +6,4 @@ export const currencyFormatter = (data) => {
 };
 
 export const isObjectEmpty = (obj) =>
-  obj && // null and undefined check
-  Object.keys(obj).length === 0 &&
-  Object.getPrototypeOf(obj) === Object.prototype;
+  obj === null || obj === undefined || Object.keys(obj).length === 0;

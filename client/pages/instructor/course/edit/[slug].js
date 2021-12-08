@@ -141,14 +141,18 @@ const CourseEdit = () => {
   };
 
   const handleDeleteLesson = async (index) => {
-    let allLessons = values.lessons;
-    const removed = allLessons.splice(index, 1);
-    setValues({ ...values, lessons: allLessons });
-    // send request to server
-    const { data } = await axios.put(
-      `/api/course/${slug}/remove-lesson/${removed[0]._id}`
-    );
-    toast.success("Deleted the lesson successfully");
+    try {
+      let allLessons = values.lessons;
+      const removed = allLessons.splice(index, 1);
+      setValues({ ...values, lessons: allLessons });
+      // send request to server
+      const { data } = await axios.put(
+        `/api/course/${slug}/remove-lesson/${removed[0]._id}`
+      );
+      toast.success("Deleted the lesson successfully");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   /**
@@ -187,10 +191,7 @@ const CourseEdit = () => {
     setCurrent({ ...current, video: data });
 
     // update lesson since video changed
-    const { data } = await axios.put(
-      `/api/course/lesson/${slug}/${current._id}`,
-      current
-    );
+    await axios.put(`/api/course/lesson/${slug}/${current._id}`, current);
     setUploading(false);
   };
 

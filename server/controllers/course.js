@@ -70,9 +70,7 @@ export const update = async (req, res) => {
     const updatedCourse = req.body;
 
     if (uploadImage) {
-      console.log("UPLOAD NEW IMAGE");
       if (removedImage) {
-        console.log("REMOVED OLD IMAGE");
         const { image } = req.body;
 
         await removeImageFromS3(image);
@@ -89,9 +87,7 @@ export const update = async (req, res) => {
 
       res.json(updated);
     } else {
-      console.log("NOT UPLOAD NEW IMAGE");
       if (removedImage) {
-        console.log("REMOVED OLD IMAGE");
         const { image } = req.body;
 
         await removeImageFromS3(image);
@@ -199,6 +195,7 @@ export const removeLesson = async (req, res) => {
   const lesson = course.lessons.find(
     (lesson) => lesson._id.toString() === lessonId
   );
+
   if (!isObjectEmpty(lesson.video)) {
     await removeVideoFromS3({
       Bucket: lesson.video.Bucket,

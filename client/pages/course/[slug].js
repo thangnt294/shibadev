@@ -70,7 +70,7 @@ const SingleCourse = ({ course }) => {
 
       <PreviewModal
         preview={preview}
-        showModal={setShowModal}
+        showModal={showModal}
         setShowModal={setShowModal}
       />
 

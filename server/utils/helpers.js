@@ -3,9 +3,7 @@ import { nanoid } from "nanoid";
 import { readFileSync } from "fs";
 
 export const isObjectEmpty = (obj) =>
-  obj && // null and undefined check
-  Object.keys(obj).length === 0 &&
-  Object.getPrototypeOf(obj) === Object.prototype;
+  obj === null || obj === undefined || Object.keys(obj).length === 0;
 
 const awsConfig = {
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,

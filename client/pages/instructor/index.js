@@ -5,7 +5,7 @@ import { Avatar, Tooltip } from "antd";
 import Link from "next/link";
 import {
   CheckCircleOutlined,
-  CloseCircleOutlined,
+  MinusCircleOutlined,
   SolutionOutlined,
 } from "@ant-design/icons";
 
@@ -73,7 +73,7 @@ const InstructorIndex = () => {
                       </Tooltip>
                     ) : (
                       <Tooltip title="Unpublished">
-                        <CloseCircleOutlined className="h5 pointer text-warning" />
+                        <MinusCircleOutlined className="h5 pointer text-warning" />
                       </Tooltip>
                     )}
                   </div>

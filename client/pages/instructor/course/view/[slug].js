@@ -2,12 +2,10 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import InstructorRoute from "../../../../components/routes/InstructorRoute";
 import axios from "axios";
-import { Avatar, Tooltip, Button, Modal, List } from "antd";
+import { Avatar, Tooltip, Button, Modal, List, Popconfirm } from "antd";
 import {
   EditOutlined,
-  CheckOutlined,
   UploadOutlined,
-  CloseOutlined,
   UserSwitchOutlined,
   StopOutlined,
   PlusCircleOutlined,
@@ -137,30 +135,24 @@ const CourseView = () => {
     clearState();
   };
 
-  const handlePublish = async (e, courseId) => {
+  const handlePublish = async (courseId) => {
     try {
-      let answer = window.confirm(
-        "Once you publish your course, it will be live on the marketplace for users to enroll."
-      );
-      if (!answer) return;
-      const { data } = await axios.put(`api/course/publish/${courseId}`);
+      const { data } = await axios.put(`/api/course/publish/${courseId}`);
       setCourse(data);
       toast.success("Congrats! Your course is now live on the marketplace");
     } catch (err) {
+      console.log(err);
       toast.error("Something went wrong. Please try again later.");
     }
   };
 
-  const handleUnpublish = async (e, courseId) => {
+  const handleUnpublish = async (courseId) => {
     try {
-      let answer = window.confirm(
-        "Once you unpublish your course, it will not be available for users to enroll."
-      );
-      if (!answer) return;
-      const { data } = await axios.put(`api/course/unpublish/${courseId}`);
+      const { data } = await axios.put(`/api/course/unpublish/${courseId}`);
       setCourse(data);
       toast.success("Your course is unpublished");
     } catch (err) {
+      console.log(err);
       toast.error("Something went wrong. Please try again later.");
     }
   };
@@ -210,19 +202,27 @@ const CourseView = () => {
                           <StopOutlined className="h5 pointer text-warning" />
                         </Tooltip>
                       ) : course.published ? (
-                        <Tooltip title="Unpublish">
-                          <CloseOutlined
-                            onClick={(e) => handleUnpublish(e, course._id)}
-                            className="h5 pointer text-danger"
-                          />
-                        </Tooltip>
+                        <Popconfirm
+                          title="Once you unpublish your course, it will not be available for users to enroll."
+                          onConfirm={() => handleUnpublish(course._id)}
+                          okText="Unpublish"
+                          cancelText="Cancel"
+                        >
+                          <Tooltip title="Unpublish">
+                            <StopOutlined className="h5 pointer text-danger" />
+                          </Tooltip>
+                        </Popconfirm>
                       ) : (
-                        <Tooltip>
-                          <CheckOutlined
-                            onClick={(e) => handlePublish(e, course._id)}
-                            className="h5 pointer text-success"
-                          />
-                        </Tooltip>
+                        <Popconfirm
+                          title="Once you publish your course, it will be live on the marketplace for users to enroll."
+                          onConfirm={() => handlePublish(course._id)}
+                          okText="Publish"
+                          cancelText="Cancel"
+                        >
+                          <Tooltip title="Publish">
+                            <UploadOutlined className="h5 pointer text-success" />
+                          </Tooltip>
+                        </Popconfirm>
                       )}
                     </div>
                   </div>
