@@ -5,7 +5,7 @@ import CourseCreateForm from "../../../../components/forms/CourseCreateForm";
 import Resizer from "react-image-file-resizer";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
-import { List, Avatar, Modal } from "antd";
+import { List, Avatar, Modal, Popconfirm } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import UpdateLessonForm from "../../../../components/forms/UpdateLessonForm";
 
@@ -47,8 +47,12 @@ const CourseEdit = () => {
 
   const loadCourse = async () => {
     const { data } = await axios.get(`/api/course/${slug}`);
+    console.log("DATA", data);
     if (data) setValues(data);
-    if (data && data.image) setPreview(data.image.Location);
+    if (data && data.image) {
+      setPreview(data.image.Location);
+      console.log("AAA: ", data.image.Location);
+    }
   };
 
   const handleChange = (e) => {
@@ -116,7 +120,7 @@ const CourseEdit = () => {
   };
 
   const handleDrag = (e, index) => {
-    e.dataTransfer.setItem("itemIndex", index);
+    e.dataTransfer.setData("itemIndex", index);
   };
 
   const handleDrop = async (e, index) => {
@@ -133,23 +137,20 @@ const CourseEdit = () => {
     // save the new lessons order in database
     const { data } = await axios.put(`/api/course/${slug}`, {
       ...values,
-      price: paid ? price : 0,
-      image,
+      price: values.paid ? values.price : 0,
     });
     toast.success("Lessons rearranged successfully!");
   };
 
   const handleDeleteLesson = async (index) => {
-    const answer = window.confirm(
-      "Are you sure you want to delete the lesson?"
-    );
-    if (!answer) return;
     let allLessons = values.lessons;
     const removed = allLessons.splice(index, 1);
     setValues({ ...values, lessons: allLessons });
     // send request to server
-    const { data } = await axios.put(`/api/course/${slug}/${removed[0]._id}`);
-    toast.success("Deleted lesson");
+    const { data } = await axios.put(
+      `/api/course/${slug}/remove-lesson/${removed[0]._id}`
+    );
+    toast.success("Deleted the lesson");
   };
 
   /**
@@ -238,6 +239,7 @@ const CourseEdit = () => {
             dataSource={values && values.lessons}
             renderItem={(item, index) => (
               <Item
+                className="pointer"
                 draggable
                 onDragStart={(e) => handleDrag(e, index)}
                 onDrop={(e) => handleDrop(e, index)}
@@ -251,10 +253,14 @@ const CourseEdit = () => {
                   title={item.title}
                 ></Item.Meta>
 
-                <DeleteOutlined
-                  onClick={() => handleDeleteLesson(index)}
-                  className="text-danger float-right"
-                />
+                <Popconfirm
+                  title="Are you sure you want to delete this lesson?"
+                  onConfirm={() => handleDeleteLesson(index)}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <DeleteOutlined className="text-danger float-right" />
+                </Popconfirm>
               </Item>
             )}
           ></List>

@@ -10,6 +10,8 @@ import {
   isObjectEmpty,
   uploadImageToS3,
   removeImageFromS3,
+  uploadVideoToS3,
+  removeVideoFromS3,
 } from "../utils/helpers";
 
 const awsConfig = {
@@ -142,22 +144,8 @@ export const uploadVideo = async (req, res) => {
     }
 
     // video params
-    const params = {
-      Bucket: "elearn-thangnt294",
-      Key: `${nanoid()}.${video.type.split("/")[1]}`,
-      Body: readFileSync(video.path),
-      ACL: "public-read",
-      ContentType: video.type,
-    };
-
-    // upload to S3
-    S3.upload(params, (err, data) => {
-      if (err) {
-        console.log(err);
-        res.sendStatus(400);
-      }
-      res.send(data);
-    });
+    const data = await uploadVideoToS3(video);
+    res.send(data);
   } catch (err) {
     console.log(err);
   }
@@ -168,22 +156,9 @@ export const removeVideo = async (req, res) => {
     if (req.user._id !== req.params.instructorId) {
       return res.status(400).send("Unauthorized");
     }
-    const { Bucket, Key } = req.body;
 
-    // video params
-    const params = {
-      Bucket,
-      Key,
-    };
-
-    // delete form S3
-    S3.deleteObject(params, (err, data) => {
-      if (err) {
-        console.log(err);
-        res.sendStatus(400);
-      }
-      res.send({ ok: true });
-    });
+    const data = await removeVideoFromS3(req.body);
+    res.send({ ok: true });
   } catch (err) {
     console.log(err);
   }
@@ -219,6 +194,17 @@ export const removeLesson = async (req, res) => {
   const course = await Course.findOne({ slug }).exec();
   if (req.user._id != course.instructor) {
     return res.status(400).send("Unauthorized");
+  }
+
+  // remove video if exist
+  const lesson = course.lessons.find(
+    (lesson) => lesson._id.toString() === lessonId
+  );
+  if (!isObjectEmpty(lesson.video)) {
+    await removeVideoFromS3({
+      Bucket: lesson.video.Bucket,
+      Key: lesson.video.Key,
+    });
   }
 
   const updatedCourse = await Course.findByIdAndUpdate(course._id, {

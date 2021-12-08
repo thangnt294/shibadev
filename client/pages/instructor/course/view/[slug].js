@@ -15,6 +15,7 @@ import {
 import ReactMarkdown from "react-markdown";
 import AddLessonForm from "../../../../components/forms/AddLessonForm";
 import { toast } from "react-toastify";
+import { isObjectEmpty } from "../../../../utils/helpers";
 
 const { Item } = List;
 
@@ -60,6 +61,13 @@ const CourseView = () => {
     setLoading(false);
   };
 
+  const clearState = () => {
+    setVisible(false);
+    setValues({ ...values, title: "", content: "", video: {} });
+    setProgress(0);
+    setUploadBtnText("Upload Video");
+  };
+
   // Function for adding lesson
   const handleAddLesson = async (e) => {
     e.preventDefault();
@@ -68,15 +76,12 @@ const CourseView = () => {
         `/api/course/lesson/${slug}/${course.instructor._id}`,
         values
       );
-      setValues({ ...values, title: "", content: "", video: "" });
-      setProgress(0);
-      setUploadBtnText("Upload Video");
-      setVisible(false);
+      clearState();
       setCourse(data);
-      toast.success("Lesson added");
+      toast.success("New lesson added");
     } catch (err) {
       console.log(err);
-      toast.error("Add lesson failed");
+      toast.error("Something went wrong. Please try again later.");
     }
   };
 
@@ -99,14 +104,13 @@ const CourseView = () => {
         }
       );
       // once response is received
-      console.log(data);
       setValues({ ...values, video: data });
       setUploading(false);
       toast.success("Uploaded video successfully");
     } catch (err) {
       console.log(err);
       setUploading(false);
-      toast.error("Video upload failed");
+      toast.error("Something went wrong. Please try again later.");
     }
   };
 
@@ -120,11 +124,17 @@ const CourseView = () => {
       setValues({ ...values, video: {} });
       setUploading(false);
       setUploadBtnText("Upload Video");
+      setProgress(0);
     } catch (err) {
       console.log(err);
       setUploading(false);
-      toast.error("Video remove failed");
+      toast.error("Something went wrong. Please try again later.");
     }
+  };
+
+  const handleCloseModal = async () => {
+    if (!isObjectEmpty(values.video)) await handleRemoveVideo();
+    clearState();
   };
 
   const handlePublish = async (e, courseId) => {
@@ -240,7 +250,7 @@ const CourseView = () => {
                 title="Add a new lesson"
                 centered
                 visible={visible}
-                onCancel={() => setVisible(false)}
+                onCancel={handleCloseModal}
                 footer={null}
               >
                 <AddLessonForm

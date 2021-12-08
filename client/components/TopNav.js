@@ -82,6 +82,7 @@ const TopNav = () => {
           key="/user/become-instructor"
           onClick={(e) => setCurrent(e.key)}
           icon={<TeamOutlined />}
+          className="ms-auto"
         >
           <Link href="/user/become-instructor">
             <a>Become Instructor</a>
