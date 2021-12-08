@@ -31,7 +31,7 @@ const UpdateLessonForm = ({
           value={current.content}
         ></textarea>
 
-        <div>
+        <div className="text-center">
           {!uploading && current.video && current.video.Location && (
             <div className="pt-2 d-flex justify-content-center">
               <ReactPlayer
@@ -42,7 +42,7 @@ const UpdateLessonForm = ({
               />
             </div>
           )}
-          <label className="btn btn-dark btn-block text-left mt-3">
+          <label className="btn btn-dark btn-block text-center mt-3">
             {uploadVideoBtnText}
             <input onChange={handleVideo} type="file" accept="video/*" hidden />
           </label>

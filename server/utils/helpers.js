@@ -1,5 +1,6 @@
 import AWS from "aws-sdk";
 import { nanoid } from "nanoid";
+import { readFileSync } from "fs";
 
 export const isObjectEmpty = (obj) =>
   obj && // null and undefined check

@@ -47,11 +47,9 @@ const CourseEdit = () => {
 
   const loadCourse = async () => {
     const { data } = await axios.get(`/api/course/${slug}`);
-    console.log("DATA", data);
     if (data) setValues(data);
     if (data && data.image) {
       setPreview(data.image.Location);
-      console.log("AAA: ", data.image.Location);
     }
   };
 
@@ -150,7 +148,7 @@ const CourseEdit = () => {
     const { data } = await axios.put(
       `/api/course/${slug}/remove-lesson/${removed[0]._id}`
     );
-    toast.success("Deleted the lesson");
+    toast.success("Deleted the lesson successfully");
   };
 
   /**
@@ -158,6 +156,7 @@ const CourseEdit = () => {
    */
 
   const handleVideo = async (e) => {
+    if (e.target.files.length === 0) return;
     // remove previous video
     if (current.video && current.video.Location) {
       const res = await axios.post(
@@ -186,6 +185,12 @@ const CourseEdit = () => {
       }
     );
     setCurrent({ ...current, video: data });
+
+    // update lesson since video changed
+    const { data } = await axios.put(
+      `/api/course/lesson/${slug}/${current._id}`,
+      current
+    );
     setUploading(false);
   };
 

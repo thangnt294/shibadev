@@ -2,7 +2,6 @@ import AWS from "aws-sdk";
 import { nanoid } from "nanoid";
 import Course from "../models/course";
 import slugify from "slugify";
-import { readFileSync } from "fs";
 import User from "../models/user";
 import Completed from "../models/completed";
 import { tags } from "../constants";
