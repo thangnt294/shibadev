@@ -176,7 +176,7 @@ const CourseView = () => {
                       <p style={{ marginTop: "-10px" }}>
                         {course.lessons && course.lessons.length} Lessons
                       </p>
-                      <p style={{ marginTop: "-15px", fontSize: "10px" }}>
+                      <p style={{ marginTop: "-10px", fontSize: "10px" }}>
                         {course.tags &&
                           course.tags.map((tag) => (
                             <Badge
@@ -221,7 +221,7 @@ const CourseView = () => {
                         </Popconfirm>
                       ) : (
                         <Popconfirm
-                          title="Once you publish your course, it will be live on the marketplace for users to enroll."
+                          title="Once you publish your course, it will be live on the marketplace for users to enroll anymore."
                           onConfirm={() => handlePublish(course._id)}
                           okText="Publish"
                           cancelText="Cancel"
@@ -289,6 +289,11 @@ const CourseView = () => {
                             </Avatar>
                           }
                           title={item.title}
+                          description={
+                            item.content.length > 200
+                              ? item.content.substring(0, 200) + "..."
+                              : item.content
+                          }
                         ></Item.Meta>
                       </Item>
                     )}

@@ -287,7 +287,10 @@ export const unpublishCourse = async (req, res) => {
 };
 
 export const getPublishedCourses = async (req, res) => {
-  const publishedCourses = await Course.find({ published: true })
+  console.log(req.user);
+  const publishedCourses = await Course.find({
+    published: true,
+  })
     .populate("instructor", "_id name")
     .exec();
   res.json(publishedCourses);
@@ -298,13 +301,11 @@ export const checkEnrollment = async (req, res) => {
   // find courses of the currently logged in user
   const user = await User.findById(req.user._id).exec();
   // check if course id is found in user courses array
-  let ids = [];
   const enrolled = user.enrolled_courses.some(
     (course) => course._id == courseId
   );
   res.json({
     status: enrolled,
-    course: await Course.findById(courseId).exec(),
   });
 };
 
@@ -338,7 +339,7 @@ export const paidEnroll = async (req, res) => {
     if (!course.paid) return;
 
     // application fee 30%
-    const fee = ((course.price * 30) / 100).toFixed(2); // TODO check
+    const fee = ((course.price * 30) / 100).toFixed(2);
 
     // add fee to admin
     const admin = await User.findOneAndUpdate(

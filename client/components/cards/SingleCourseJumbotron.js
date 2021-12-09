@@ -1,7 +1,12 @@
 import { currencyFormatter } from "../../utils/helpers";
 import { Badge, Modal, Button } from "antd";
 import ReactPlayer from "react-player";
-import { LoadingOutlined, SafetyOutlined } from "@ant-design/icons";
+import {
+  LoadingOutlined,
+  SafetyOutlined,
+  ArrowRightOutlined,
+  UserAddOutlined,
+} from "@ant-design/icons";
 
 const SingleCourseJumbotron = ({
   course,
@@ -12,8 +17,7 @@ const SingleCourseJumbotron = ({
   user,
   loading,
   handleEnrollment,
-  enrolled,
-  setEnrolled,
+  status,
 }) => {
   const {
     name,
@@ -24,7 +28,6 @@ const SingleCourseJumbotron = ({
     image,
     price,
     paid,
-    status,
     tags,
   } = course;
   return (
@@ -87,16 +90,22 @@ const SingleCourseJumbotron = ({
               type="primary"
               block
               shape="round"
-              icon={<SafetyOutlined />}
+              icon={
+                user ? (
+                  status ? (
+                    <ArrowRightOutlined />
+                  ) : (
+                    <SafetyOutlined />
+                  )
+                ) : (
+                  <UserAddOutlined />
+                )
+              }
               size="large"
               disabled={loading}
               onClick={(e) => handleEnrollment(e, paid)}
             >
-              {user
-                ? enrolled.status
-                  ? "Go to course"
-                  : "Enroll"
-                : "Log in to enroll"}
+              {user ? (status ? "Go to course" : "Enroll") : "Log in to enroll"}
             </Button>
           )}
         </div>

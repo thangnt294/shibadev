@@ -2,11 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { Context } from "../../context";
 import InstructorRoute from "../../components/routes/InstructorRoute";
 import axios from "axios";
-import {
-  DollarOutlined,
-  SettingOutlined,
-  LoadingOutlined,
-} from "@ant-design/icons";
+import { DollarOutlined, RightCircleOutlined } from "@ant-design/icons";
 import { currencyFormatter } from "../../utils/helpers";
 
 const InstructorRevenue = () => {
@@ -22,7 +18,7 @@ const InstructorRevenue = () => {
   };
 
   const handlePayoutSetting = async () => {
-    console.log("handle payout setting");
+    alert("Bank transfer succeeded!");
   };
 
   return (
@@ -31,13 +27,13 @@ const InstructorRevenue = () => {
         <div className="row pt-2">
           <div className="col-md-8 offset-md-2 bg-light p-5">
             <h2>
-              Revenue report <DollarOutlined className="ms-auto" />
+              Revenue report <DollarOutlined className="float-end" />
             </h2>
             <small>This shows you how much you've earned on Elearn.</small>
             <hr />
             <h4>
               Balance{" "}
-              <span className="ms-auto">
+              <span className="float-end">
                 {currencyFormatter({ amount: balance, currency: "usd" })}
               </span>
             </h4>
@@ -45,12 +41,14 @@ const InstructorRevenue = () => {
             <hr />
             <h4>
               Payout{" "}
-              <SettingOutlined
-                className="float-right pointer"
+              <RightCircleOutlined
+                className="float-end pointer"
                 onClick={handlePayoutSetting}
               />
             </h4>
-            <small>Update your account details or view previous payouts</small>
+            <small>
+              Click here to transfer your balance to your bank account
+            </small>
           </div>
         </div>
       </div>

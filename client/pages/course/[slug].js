@@ -12,7 +12,7 @@ const SingleCourse = ({ course }) => {
   const [showModal, setShowModal] = useState(false);
   const [preview, setPreview] = useState("");
   const [loading, setLoading] = useState(false);
-  const [enrolled, setEnrolled] = useState({});
+  const [status, setStatus] = useState(false);
 
   //context
   const {
@@ -25,8 +25,7 @@ const SingleCourse = ({ course }) => {
 
   const checkEnrollment = async () => {
     const { data } = await axios.get(`/api/check-enrollment/${course._id}`);
-    console.log("COURSE", data);
-    setEnrolled(data);
+    setStatus(data);
   };
 
   const router = useRouter();
@@ -38,8 +37,7 @@ const SingleCourse = ({ course }) => {
       // check if user is logged in
       if (!user) router.push("/login");
       // check if already enrolled
-      if (enrolled.status)
-        return router.push(`/user/course/${enrolled.course.slug}`); // TODO maybe not return the course in the backend and instead use the slug above?
+      if (status) return router.push(`/user/course/${slug}`);
       setLoading(true);
       const { data } = await axios.post(
         `/api/${paid ? "paid-enrollment" : "free-enrollment"}/${course._id}`
@@ -65,8 +63,7 @@ const SingleCourse = ({ course }) => {
         user={user}
         loading={loading}
         handleEnrollment={handleEnrollment}
-        enrolled={enrolled}
-        setEnrolled={setEnrolled}
+        status={status}
       />
 
       <PreviewModal
