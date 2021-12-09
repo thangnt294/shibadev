@@ -5,11 +5,12 @@ import { currencyFormatter } from "../../utils/helpers";
 const { Meta } = Card;
 
 const CourseCard = ({ course }) => {
-  const { name, instructor, price, image, slug, paid, category } = course;
+  const { name, instructor, price, image, slug, paid, tags } = course;
   return (
     <Link href={`/course/${slug}`}>
       <a>
         <Card
+          hoverable={true}
           className="mb-4"
           cover={
             <img
@@ -22,11 +23,15 @@ const CourseCard = ({ course }) => {
         >
           <h2 className="font-weight-bold">{name}</h2>
           <p>by {instructor.name}</p>
-          <Badge
-            count={category}
-            style={{ backgroundColor: "#03a9f4" }}
-            className="pb-2 me-2"
-          />
+          {tags &&
+            tags.map((tag) => (
+              <Badge
+                count={tag}
+                style={{ backgroundColor: "#03a9f4" }}
+                className="pb-2 me-2"
+              />
+            ))}
+
           <h4 className="pt-2">
             {paid
               ? currencyFormatter({ amount: price, currency: "usd" })

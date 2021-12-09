@@ -80,7 +80,7 @@ const SingleCourseJumbotron = ({
           ) : (
             <Button
               className="mb-3 mt-3"
-              type="danger"
+              type="primary"
               block
               shape="round"
               icon={<SafetyOutlined />}
