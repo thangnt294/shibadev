@@ -41,14 +41,14 @@ const UserIndex = () => {
       <h1 className="jumbotron text-center square">User dashboard</h1>
       {courses &&
         courses.map((course) => (
-          <div key={course._id} className="media pt-2 pb-1">
+          <div key={course._id} className="d-flex pt-2 pb-1">
             <Avatar
               size={80}
               shape="square"
               src={course.image ? course.image.Location : "/course.png"}
             />
 
-            <div className="media-body ps-2">
+            <div className="ps-3 w-100">
               <div className="row">
                 <div className="col">
                   <Link

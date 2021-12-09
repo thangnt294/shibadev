@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import InstructorRoute from "../../../../components/routes/InstructorRoute";
 import axios from "axios";
-import { Avatar, Tooltip, Button, Modal, List, Popconfirm } from "antd";
+import { Avatar, Tooltip, Button, Modal, List, Popconfirm, Badge } from "antd";
 import {
   EditOutlined,
   UploadOutlined,
@@ -177,7 +177,14 @@ const CourseView = () => {
                         {course.lessons && course.lessons.length} Lessons
                       </p>
                       <p style={{ marginTop: "-15px", fontSize: "10px" }}>
-                        {course.category}
+                        {course.tags &&
+                          course.tags.map((tag) => (
+                            <Badge
+                              count={tag}
+                              style={{ backgroundColor: "#03a9f4" }}
+                              className="pb-4 me-2"
+                            />
+                          ))}
                       </p>
                     </div>
                     <div className="col-md-4 d-flex pt-4">
@@ -276,7 +283,11 @@ const CourseView = () => {
                     renderItem={(item, index) => (
                       <Item>
                         <Item.Meta
-                          avatar={<Avatar>{index + 1}</Avatar>}
+                          avatar={
+                            <Avatar style={{ backgroundColor: "#0388fc" }}>
+                              {index + 1}
+                            </Avatar>
+                          }
                           title={item.title}
                         ></Item.Meta>
                       </Item>

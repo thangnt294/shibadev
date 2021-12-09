@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 const { ObjectId } = mongoose.Schema;
 
-const completedSchema = new mongoose.Schema(
+const completedLessonSchema = new mongoose.Schema(
   {
     user: {
       type: ObjectId,
@@ -16,4 +16,4 @@ const completedSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("Completed", completedSchema);
+export default mongoose.model("CompletedLesson", completedLessonSchema);

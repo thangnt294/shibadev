@@ -25,7 +25,7 @@ const SingleCourseJumbotron = ({
     price,
     paid,
     status,
-    category,
+    tags,
   } = course;
   return (
     <div className="jumbotron bg-primary square">
@@ -35,11 +35,15 @@ const SingleCourseJumbotron = ({
           <p className="lead">
             {description && description.substring(0, 160)}...
           </p>
-          <Badge
-            count={category}
-            style={{ backgroundColor: "#03a9f4" }}
-            className="pb-4 me-2"
-          />
+          {tags &&
+            tags.map((tag) => (
+              <Badge
+                count={tag}
+                style={{ backgroundColor: "#03a9f4" }}
+                className="pb-4 me-2"
+              />
+            ))}
+
           <p>Created by {instructor.name}</p>
           <p>Last updated {new Date(updatedAt).toLocaleDateString()}</p>
           <h4 className="text-light">
@@ -51,9 +55,9 @@ const SingleCourseJumbotron = ({
         <div className="col-md-4">
           {lessons[0].video && lessons[0].video.Location ? (
             <div
-              onCLick={() => {
+              onClick={() => {
                 setPreview(lessons[0].video.Location);
-                setShowModal(!showModal);
+                setShowModal(true);
               }}
             >
               <ReactPlayer

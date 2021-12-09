@@ -60,7 +60,7 @@ router.get("/check-enrollment/:courseId", requireSignin, checkEnrollment);
 
 // enrollment
 router.post("/free-enrollment/:courseId", requireSignin, freeEnroll);
-router.post("paid-enrollment/:courseId", requireSignin, paidEnroll);
+router.post("/paid-enrollment/:courseId", requireSignin, paidEnroll);
 
 router.get("/user-courses", requireSignin, getUserCourses);
 router.get("/user/course/:slug", requireSignin, isEnrolled, getCourse);

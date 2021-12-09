@@ -25,6 +25,7 @@ const SingleCourse = ({ course }) => {
 
   const checkEnrollment = async () => {
     const { data } = await axios.get(`/api/check-enrollment/${course._id}`);
+    console.log("COURSE", data);
     setEnrolled(data);
   };
 

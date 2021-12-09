@@ -27,7 +27,7 @@ export const isEnrolled = async (req, res, next) => {
 
     // check if course id is found in user enrolled_courses array
     const isEnrolled = user.enrolled_courses.some(
-      (enrolledCourse) => enrolledCourse == course._id
+      (enrolledCourse) => enrolledCourse.toString() === course._id.toString()
     );
 
     if (isEnrolled) {
