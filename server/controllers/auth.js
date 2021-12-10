@@ -29,6 +29,13 @@ export const register = async (req, res) => {
       return res.status(400).send("Email is taken");
     }
 
+    // send email to verify
+    const params = {
+      EmailAddress: email,
+    };
+
+    await SES.verifyEmailIdentity(params).promise();
+
     // hash password
     const hashedPassword = await hashPassword(password);
 
@@ -59,6 +66,23 @@ export const login = async (req, res) => {
     // check password
     const match = await comparePassword(password, user.password);
     if (!match) return res.status(400).send("Incorrect username or password");
+
+    if (!user.is_verified) {
+      // check if email verified or not
+      const params = {
+        Identities: [email],
+      };
+      const data = await SES.getIdentityVerificationAttributes(
+        params
+      ).promise();
+      if (
+        data.VerificationAttributes[email] &&
+        data.VerificationAttributes[email].VerificationStatus !== "Success"
+      ) {
+        return res.status(400).send("Please verify your email");
+      }
+      await User.findByIdAndUpdate(user._id, { is_verified: true }).exec();
+    }
 
     // create signed jwt
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
@@ -139,15 +163,11 @@ export const forgotPassword = async (req, res) => {
       },
     };
 
-    const emailSent = SES.sendEmail(params).promise();
-    emailSent
-      .then((data) => {
-        console.log(data);
-        res.json({ ok: true });
-      })
-      .catch((err) => console.log(err));
+    const emailSent = await SES.sendEmail(params).promise();
+    res.json({ ok: true });
   } catch (err) {
     console.log(err);
+    res.status(400).send("Something went wrong. Please try again later.");
   }
 };
 

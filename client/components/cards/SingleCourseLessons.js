@@ -19,7 +19,11 @@ const SingleCourseLessons = ({
             renderItem={(item, index) => (
               <Item>
                 <Item.Meta
-                  avatar={<Avatar>{index + 1}</Avatar>}
+                  avatar={
+                    <Avatar style={{ backgroundColor: "#fc7703" }}>
+                      {index + 1}
+                    </Avatar>
+                  }
                   title={item.title}
                 />
                 {item.video && item.free_preview && (

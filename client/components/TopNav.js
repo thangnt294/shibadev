@@ -54,29 +54,6 @@ const TopNav = () => {
         </Link>
       </Item>
 
-      {/* {user &&
-        (user.role && user.role.includes("Instructor") ? (
-          <Item
-            key="/instructor/course/create"
-            onClick={(e) => setCurrent(e.key)}
-            icon={<CarryOutOutlined />}
-          >
-            <Link href="/instructor/course/create">
-              <a>Create course</a>
-            </Link>
-          </Item>
-        ) : (
-          <Item
-            key="/user/become-instructor"
-            onClick={(e) => setCurrent(e.key)}
-            icon={<TeamOutlined />}
-          >
-            <Link href="/user/become-instructor">
-              <a>Become Instructor</a>
-            </Link>
-          </Item>
-        ))} */}
-
       {user && user.role && !user.role.includes("Instructor") && (
         <Item
           key="/user/become-instructor"
@@ -132,11 +109,7 @@ const TopNav = () => {
         <SubMenu
           icon={<CoffeeOutlined />}
           title={user && user.name}
-          className={
-            user && user.role && user.role.includes("Instructor")
-              ? ""
-              : "ms-auto"
-          }
+          className={user && user.role ? "" : "ms-auto"}
         >
           <ItemGroup>
             <Item key="/user">

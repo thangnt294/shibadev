@@ -30,7 +30,9 @@ const Register = () => {
         email,
         password,
       });
-      toast.success("Registration successful. Please login.");
+      toast.success(
+        "Registration successful. Please verify your email before logging in."
+      );
       setName("");
       setEmail("");
       setPassword("");
