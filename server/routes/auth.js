@@ -17,7 +17,7 @@ import {
 
 router.post("/register", register);
 router.post("/login", login);
-router.get("/logout", logout);
+router.post("/logout", logout);
 router.get("/current-user", requireSignin, getCurrentUser);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);

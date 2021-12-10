@@ -56,9 +56,7 @@ const SingleCourse = ({ course }) => {
     <>
       <SingleCourseJumbotron
         course={course}
-        showModal={showModal}
         setShowModal={setShowModal}
-        preview={preview}
         setPreview={setPreview}
         user={user}
         loading={loading}

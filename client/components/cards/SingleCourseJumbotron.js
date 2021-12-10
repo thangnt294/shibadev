@@ -1,5 +1,5 @@
 import { currencyFormatter } from "../../utils/helpers";
-import { Badge, Modal, Button } from "antd";
+import { Badge, Button } from "antd";
 import ReactPlayer from "react-player";
 import {
   LoadingOutlined,
@@ -10,9 +10,7 @@ import {
 
 const SingleCourseJumbotron = ({
   course,
-  showModal,
   setShowModal,
-  preview,
   setPreview,
   user,
   loading,
@@ -36,7 +34,9 @@ const SingleCourseJumbotron = ({
         <div className="col-md-8">
           <h1 className="text-light font-weight-bold">{name}</h1>
           <p className="lead">
-            {description && description.substring(0, 160)}...
+            {description && description.length > 200
+              ? description.substring(0, 200) + "..."
+              : description}
           </p>
           {tags &&
             tags.map((tag) => (

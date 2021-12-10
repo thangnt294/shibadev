@@ -34,7 +34,7 @@ const ForgotPassword = () => {
       const { data } = await axios.post("/api/forgot-password", { email });
       setSuccess(true);
       setLoading(false);
-      toast("Check your email for the secret code");
+      toast.success("Check your email for the secret code");
     } catch (err) {
       setLoading(false);
       toast.error(err.response.data);
@@ -55,6 +55,7 @@ const ForgotPassword = () => {
       setNewPassword("");
       setLoading(false);
       toast.success("Great! Now you can log in with your new password");
+      router.push("/login");
     } catch (err) {
       setLoading(false);
       toast.error(err.response.data);

@@ -6,11 +6,9 @@ import { Button, Menu, Avatar } from "antd";
 import ReactPlayer from "react-player";
 import ReactMarkdown from "react-markdown";
 import {
-  PlayCircleOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   CheckCircleFilled,
-  MinusCircleFilled,
   CodeOutlined,
 } from "@ant-design/icons";
 import { toast } from "react-toastify";

@@ -1,17 +1,12 @@
 import User from "../models/user";
 import { hashPassword, comparePassword } from "../utils/auth";
+import {
+  checkEmailVerifiedSES,
+  sendResetPasswordEmail,
+  verifyEmail,
+} from "../utils/helpers";
 import jwt from "jsonwebtoken";
-import AWS from "aws-sdk";
 import { nanoid } from "nanoid";
-
-const awsConfig = {
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_REGION,
-  apiVersion: process.env.AWS_API_VERSION,
-};
-
-const SES = new AWS.SES(awsConfig);
 
 export const register = async (req, res) => {
   try {
@@ -24,17 +19,14 @@ export const register = async (req, res) => {
         .send("Password is required and should be min 6 characters long");
     }
 
-    let userExist = await User.findOne({ email }).exec();
+    let userExist = await User.findOne({ email });
     if (userExist) {
-      return res.status(400).send("Email is taken");
+      return res
+        .status(400)
+        .send("This email is already taken. Please use another email.");
     }
 
-    // send email to verify
-    const params = {
-      EmailAddress: email,
-    };
-
-    await SES.verifyEmailIdentity(params).promise();
+    await verifyEmail(email);
 
     // hash password
     const hashedPassword = await hashPassword(password);
@@ -51,7 +43,7 @@ export const register = async (req, res) => {
     return res.json({ ok: true });
   } catch (err) {
     console.log(err);
-    return res.status(400).send("Error. Try again.");
+    res.status(400).send("Something went wrong. Please try again later.");
   }
 };
 
@@ -60,7 +52,7 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
 
     // check if db has user with that email
-    const user = await User.findOne({ email }).exec();
+    const user = await User.findOne({ email });
     if (!user) return res.status(400).send("Incorrect username or password");
 
     // check password
@@ -68,20 +60,10 @@ export const login = async (req, res) => {
     if (!match) return res.status(400).send("Incorrect username or password");
 
     if (!user.is_verified) {
-      // check if email verified or not
-      const params = {
-        Identities: [email],
-      };
-      const data = await SES.getIdentityVerificationAttributes(
-        params
-      ).promise();
-      if (
-        data.VerificationAttributes[email] &&
-        data.VerificationAttributes[email].VerificationStatus !== "Success"
-      ) {
+      const emailVerified = await checkEmailVerifiedSES(email);
+      if (!emailVerified)
         return res.status(400).send("Please verify your email");
-      }
-      await User.findByIdAndUpdate(user._id, { is_verified: true }).exec();
+      await User.findByIdAndUpdate(user._id, { is_verified: true });
     }
 
     // create signed jwt
@@ -96,18 +78,17 @@ export const login = async (req, res) => {
       httpOnly: true,
       // secure: true, // only works on https
     });
-    // send user as json response
     res.json(user);
   } catch (err) {
     console.log(err);
-    return res.status(400).send("Error. Try again.");
+    res.status(400).send("Something went wrong. Please try again later.");
   }
 };
 
 export const logout = async (req, res) => {
   try {
     res.clearCookie("token");
-    return res.json({ message: "Logout success" });
+    return res.json({ ok: true });
   } catch (err) {
     console.log(err);
   }
@@ -115,8 +96,7 @@ export const logout = async (req, res) => {
 
 export const getCurrentUser = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select("-password").exec();
-    console.log("CURRENT USER", user);
+    const user = await User.findById(req.user._id).select("-password");
     return res.json({ ok: true });
   } catch (err) {
     console.log(err);
@@ -127,43 +107,22 @@ export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
     const resetCode = nanoid(6).toUpperCase();
-    const user = await User.findOneAndUpdate(
-      { email },
-      { passwordResetCode: resetCode }
-    );
-
-    if (!user) return res.status(400).send("User not found");
+    const user = await User.findOne({ email });
+    if (!user)
+      return res.status(400).send("Incorrect email. Please try again.");
+    if (!user.is_verified) {
+      const emailVerified = await checkEmailVerifiedSES(email);
+      if (!emailVerified) {
+        return res
+          .status(400)
+          .send("This email is not verified. Please verify your email first.");
+      }
+      await User.findByIdAndUpdate(user._id, { is_verified: true });
+    }
+    await User.findByIdAndUpdate(user._id, { passwordResetCode: resetCode });
 
     // prepare for email
-    const params = {
-      Source: process.env.EMAIL_FROM,
-      Destination: {
-        ToAddresses: [email],
-      },
-      ReplyToAddresses: [process.env.EMAIL_FROM],
-      Message: {
-        Body: {
-          Html: {
-            Charset: "UTF-8",
-            Data: `
-              <html>
-                <h1>Reset password</h1>
-                <p>Use this code to reset your password</p>
-                <h2 style="color:red;">${resetCode}</h2>
-                <br>
-                <i>elearning.com</i>
-              </html>
-            `,
-          },
-        },
-        Subject: {
-          Charset: "UTF-8",
-          Data: "Reset Password",
-        },
-      },
-    };
-
-    const emailSent = await SES.sendEmail(params).promise();
+    await sendResetPasswordEmail(email, resetCode);
     res.json({ ok: true });
   } catch (err) {
     console.log(err);
@@ -176,13 +135,15 @@ export const resetPassword = async (req, res) => {
     const { email, code, newPassword } = req.body;
     const hashedPassword = await hashPassword(newPassword);
 
-    const user = User.findOneAndUpdate(
+    const user = await User.findOneAndUpdate(
       { email, passwordResetCode: code },
       { password: hashedPassword, passwordResetCode: "" }
-    ).exec();
+    );
+    if (!user)
+      return res.status(400).send("Reset code incorrect. Please try again.");
     res.json({ ok: true });
   } catch (err) {
     console.log(err);
-    return res.status(400).send("Error! Try again.");
+    res.status(400).send("Something went wrong. Please try again later.");
   }
 };
