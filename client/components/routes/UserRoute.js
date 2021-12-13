@@ -16,7 +16,7 @@ const UserRoute = ({ children, showNav = true }) => {
 
   const fetchUser = async () => {
     try {
-      const { data } = await axios.get("/api/current-user");
+      const { data } = await axios.get("/api/current-user"); // TODO look at this
       setHidden(!data.ok);
     } catch (err) {
       console.log(err);
