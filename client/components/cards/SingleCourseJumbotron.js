@@ -44,6 +44,7 @@ const SingleCourseJumbotron = ({
                 count={tag}
                 style={{ backgroundColor: "#03a9f4" }}
                 className="pb-4 me-2"
+                key={tag}
               />
             ))}
 
