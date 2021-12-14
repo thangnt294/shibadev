@@ -47,7 +47,7 @@ const Provider = ({ children }) => {
         // axios documentation
         return new Promise((resolve, reject) => {
           axios
-            .get("/api/logout")
+            .post("/api/logout")
             .then((data) => {
               console.log("/401 ERROR -> LOGOUT");
               dispatch({ type: "LOGOUT" });

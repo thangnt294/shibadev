@@ -5,6 +5,7 @@ import axios from "axios";
 import { Avatar } from "antd";
 import Link from "next/link";
 import { SyncOutlined, PlayCircleOutlined } from "@ant-design/icons";
+import { toast } from "react-toastify";
 
 const UserIndex = () => {
   const [courses, setCourses] = useState([]);

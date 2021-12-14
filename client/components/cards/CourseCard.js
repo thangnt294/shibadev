@@ -29,6 +29,7 @@ const CourseCard = ({ course }) => {
                 count={tag}
                 style={{ backgroundColor: "#03a9f4" }}
                 className="pb-2 me-2"
+                key={tag}
               />
             ))}
 
