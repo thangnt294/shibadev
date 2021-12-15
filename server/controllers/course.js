@@ -1,5 +1,4 @@
 import AWS from "aws-sdk";
-import { nanoid } from "nanoid";
 import Course from "../models/course";
 import slugify from "slugify";
 import User from "../models/user";
@@ -42,14 +41,10 @@ export const create = async (req, res) => {
     if (uploadImage) {
       const data = await uploadImageToS3(uploadImage);
       newCourse.image = data;
-      delete newCourse.uploadImage;
-      const course = await new Course(newCourse).save();
-      res.json(course);
-    } else {
-      delete newCourse.uploadImage;
-      const course = await new Course(newCourse).save();
-      res.json(course);
     }
+    delete newCourse.uploadImage;
+    const course = await new Course(newCourse).save();
+    res.json(course);
   } catch (err) {
     console.log(err);
     return res
@@ -92,24 +87,15 @@ export const update = async (req, res) => {
 
         await removeImageFromS3(image);
         updatedCourse.image = null;
-        delete updatedCourse.uploadImage;
-        delete updatedCourse.removedImage;
-
-        const updated = await Course.findOneAndUpdate({ slug }, updatedCourse, {
-          new: true,
-        }).exec();
-
-        res.json(updated);
-      } else {
-        delete updatedCourse.uploadImage;
-        delete updatedCourse.removedImage;
-
-        const updated = await Course.findOneAndUpdate({ slug }, updatedCourse, {
-          new: true,
-        }).exec();
-
-        res.json(updated);
       }
+      delete updatedCourse.uploadImage;
+      delete updatedCourse.removedImage;
+
+      const updated = await Course.findOneAndUpdate({ slug }, updatedCourse, {
+        new: true,
+      }).exec();
+
+      res.json(updated);
     }
   } catch (err) {
     console.log(err);
