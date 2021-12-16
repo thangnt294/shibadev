@@ -6,13 +6,12 @@ import {
   LoginOutlined,
   UserAddOutlined,
   CoffeeOutlined,
-  CarryOutOutlined,
   TeamOutlined,
 } from "@ant-design/icons";
 import { Context } from "../context/index";
 import axios from "axios";
-import { toast } from "react-toastify";
 import { useRouter } from "next/router";
+import { Avatar } from "antd";
 
 const { Item, SubMenu, ItemGroup } = Menu; // instead of Menu.Item
 
@@ -46,10 +45,10 @@ const TopNav = () => {
       <Item
         key="/"
         onClick={(e) => setCurrent(e.key)}
-        icon={<AppstoreOutlined />}
+        icon={<Avatar src="/logo.png" size="large" />}
       >
         <Link href="/">
-          <a>SHIBADEV</a>
+          <a></a>
         </Link>
       </Item>
 
