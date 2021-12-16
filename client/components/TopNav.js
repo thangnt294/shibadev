@@ -49,7 +49,7 @@ const TopNav = () => {
         icon={<AppstoreOutlined />}
       >
         <Link href="/">
-          <a>ELEARN</a>
+          <a>SHIBADEV</a>
         </Link>
       </Item>
 

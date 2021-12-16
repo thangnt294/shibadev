@@ -8,7 +8,6 @@ import {
   LoadingOutlined,
 } from "@ant-design/icons";
 import { toast } from "react-toastify";
-import UserRoute from "../../components/routes/UserRoute";
 
 const BecomeInstructor = () => {
   // state
@@ -43,12 +42,14 @@ const BecomeInstructor = () => {
           <div className="col-md-6 offset-md-3 text-center">
             <UserSwitchOutlined className="display-1 pb-3" />
             <br />
-            <h2>Become an instructor to start publishing courses on Elearn!</h2>
+            <h2>
+              Become an instructor to start publishing courses on ShibaDev!
+            </h2>
             <p className="lead text-warning">
-              Elearn is the most suitable platform for you to share your
+              ShibaDev is the most suitable platform for you to share your
               knowledge across the world. At Elearn, you can easily create and
               publish your courses, and start earning profits as more students
-              enroll. Knowledge is most useful when it's shared to other people!
+              enroll. Knowledge is most useful when shared to others!
             </p>
             <Button
               className="mb-3"

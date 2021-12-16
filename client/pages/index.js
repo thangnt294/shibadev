@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
 import axios from "axios";
 import CourseCard from "../components/cards/CourseCard";
 
@@ -15,7 +15,7 @@ const Index = ({ courses }) => {
   return (
     <>
       <h1 className="jumbotron text-center bg-primary square">
-        ELearn Education Marketplace
+        ShibaDev Education Marketplace
       </h1>
       <div className="container-fluid">
         <div className="row">
