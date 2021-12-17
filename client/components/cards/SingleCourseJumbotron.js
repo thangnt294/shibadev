@@ -83,7 +83,7 @@ const SingleCourseJumbotron = ({
           )}
           {loading ? (
             <div className="d-flex justify-content-center">
-              <LoadingOutlined className="h1 text-danger" />
+              <LoadingOutlined className="h1 text-danger mt-2" />
             </div>
           ) : (
             <Button

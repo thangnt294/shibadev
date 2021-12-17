@@ -42,11 +42,11 @@ const SingleCourse = ({ course }) => {
     if (paid) {
       setVisible(true);
     } else {
-      await enroll(paid);
+      await enroll();
     }
   };
 
-  const enroll = async (paid) => {
+  const enroll = async () => {
     try {
       setLoading(true);
       const { data } = await axios.post(`/api/enroll/${course._id}`);
@@ -78,7 +78,7 @@ const SingleCourse = ({ course }) => {
       <Modal
         title="Publish Course"
         visible={visible}
-        onOk={() => enroll(course.paid)}
+        onOk={enroll}
         confirmLoading={loading}
         onCancel={() => setVisible(false)}
       >
