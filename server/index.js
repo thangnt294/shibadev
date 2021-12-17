@@ -4,9 +4,9 @@ import { readdirSync } from "fs";
 import mongoose from "mongoose";
 import csrf from "csurf";
 import cookieParser from "cookie-parser";
-import { errorHandler } from "./middlewares";
 const morgan = require("morgan");
 require("dotenv").config({ path: `.env.local` });
+import { errorHandler } from "./middlewares";
 
 const csrfProtection = csrf({ cookie: true });
 

@@ -21,7 +21,7 @@ const awsConfig = {
 
 const S3 = new AWS.S3(awsConfig);
 
-export const create = async (req, res) => {
+export const create = async (req, res, next) => {
   try {
     const courseExist = await Course.findOne({
       slug: slugify(req.body.name.toLowerCase()),
@@ -50,7 +50,7 @@ export const create = async (req, res) => {
   }
 };
 
-export const update = async (req, res) => {
+export const update = async (req, res, next) => {
   try {
     const { slug } = req.params;
     const course = await Course.findOne({ slug }).exec();
@@ -99,7 +99,7 @@ export const update = async (req, res) => {
   }
 };
 
-export const getCourse = async (req, res) => {
+export const getCourse = async (req, res, next) => {
   try {
     const course = await Course.findOne({ slug: req.params.slug })
       .populate("instructor", "_id name")
@@ -110,7 +110,7 @@ export const getCourse = async (req, res) => {
   }
 };
 
-export const uploadVideo = async (req, res) => {
+export const uploadVideo = async (req, res, next) => {
   try {
     if (req.user._id !== req.params.instructorId) {
       return res.status(400).send("Unauthorized");
@@ -128,7 +128,7 @@ export const uploadVideo = async (req, res) => {
   }
 };
 
-export const removeVideo = async (req, res) => {
+export const removeVideo = async (req, res, next) => {
   try {
     if (req.user._id !== req.params.instructorId) {
       return res.status(400).send("Unauthorized");
@@ -141,7 +141,7 @@ export const removeVideo = async (req, res) => {
   }
 };
 
-export const addLesson = async (req, res) => {
+export const addLesson = async (req, res, next) => {
   try {
     const { slug, instructorId } = req.params;
     const { title, content, video } = req.body;
@@ -165,7 +165,7 @@ export const addLesson = async (req, res) => {
   }
 };
 
-export const removeLesson = async (req, res) => {
+export const removeLesson = async (req, res, next) => {
   try {
     const { slug, lessonId } = req.params;
     const course = await Course.findOne({ slug }).exec();
@@ -194,7 +194,7 @@ export const removeLesson = async (req, res) => {
   }
 };
 
-export const updateLesson = async (req, res) => {
+export const updateLesson = async (req, res, next) => {
   try {
     const { slug, instructorId } = req.params;
     const course = await Course.findOne({ slug }).select("instructor").exec();
@@ -222,7 +222,7 @@ export const updateLesson = async (req, res) => {
   }
 };
 
-export const publishCourse = async (req, res) => {
+export const publishCourse = async (req, res, next) => {
   try {
     const { courseId } = req.params;
     const course = await Course.findById(courseId).select("instructor").exec();
@@ -245,7 +245,7 @@ export const publishCourse = async (req, res) => {
   }
 };
 
-export const unpublishCourse = async (req, res) => {
+export const unpublishCourse = async (req, res, next) => {
   try {
     const { courseId } = req.params;
     const course = await Course.findById(courseId).select("instructor").exec();
@@ -268,7 +268,7 @@ export const unpublishCourse = async (req, res) => {
   }
 };
 
-export const getPublishedCourses = async (req, res) => {
+export const getPublishedCourses = async (req, res, next) => {
   try {
     const publishedCourses = await Course.find({
       published: true,
@@ -281,7 +281,7 @@ export const getPublishedCourses = async (req, res) => {
   }
 };
 
-export const checkEnrollment = async (req, res) => {
+export const checkEnrollment = async (req, res, next) => {
   try {
     const { courseId } = req.params;
     // find courses of the currently logged in user
@@ -298,7 +298,7 @@ export const checkEnrollment = async (req, res) => {
   }
 };
 
-export const enrollCourse = async (req, res) => {
+export const enrollCourse = async (req, res, next) => {
   try {
     const course = await Course.findById(req.params.courseId)
       .populate("instructor")
@@ -334,7 +334,7 @@ export const enrollCourse = async (req, res) => {
   }
 };
 
-export const getUserCourses = async (req, res) => {
+export const getUserCourses = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id).exec();
 
@@ -350,7 +350,7 @@ export const getUserCourses = async (req, res) => {
   }
 };
 
-export const markCompleted = async (req, res) => {
+export const markCompleted = async (req, res, next) => {
   try {
     const { courseId, lessonId } = req.body;
     // check if user with that course is already created
@@ -384,7 +384,7 @@ export const markCompleted = async (req, res) => {
   }
 };
 
-export const markIncomplete = async (req, res) => {
+export const markIncomplete = async (req, res, next) => {
   try {
     const { courseId, lessonId } = req.body;
 
@@ -400,7 +400,7 @@ export const markIncomplete = async (req, res) => {
   }
 };
 
-export const listCompleted = async (req, res) => {
+export const listCompleted = async (req, res, next) => {
   try {
     const { courseId } = req.params;
     const list = await CompletedLesson.findOne({
@@ -413,6 +413,6 @@ export const listCompleted = async (req, res) => {
   }
 };
 
-export const getTags = (req, res) => {
+export const getTags = (req, res, next) => {
   res.json(tags);
 };

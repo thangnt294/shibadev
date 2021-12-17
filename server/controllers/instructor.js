@@ -1,7 +1,7 @@
 import User from "../models/user";
 import Course from "../models/course";
 
-export const becomeInstructor = async (req, res) => {
+export const becomeInstructor = async (req, res, next) => {
   try {
     const instructor = await User.findByIdAndUpdate(
       req.user._id,
@@ -20,7 +20,7 @@ export const becomeInstructor = async (req, res) => {
   }
 };
 
-export const getCurrentInstructor = async (req, res) => {
+export const getCurrentInstructor = async (req, res, next) => {
   try {
     let user = await User.findById(req.user._id).select("-password").exec();
     if (!user.role.includes("Instructor")) {
@@ -34,7 +34,7 @@ export const getCurrentInstructor = async (req, res) => {
   }
 };
 
-export const getInstructorCourses = async (req, res) => {
+export const getInstructorCourses = async (req, res, next) => {
   try {
     const courses = await Course.find({
       instructor: req.user._id,
@@ -48,7 +48,7 @@ export const getInstructorCourses = async (req, res) => {
   }
 };
 
-export const countStudent = async (req, res) => {
+export const countStudent = async (req, res, next) => {
   try {
     const { courseId } = req.params;
     const count = await User.countDocuments({
@@ -60,7 +60,7 @@ export const countStudent = async (req, res) => {
   }
 };
 
-export const getInstructorBalance = async (req, res) => {
+export const getInstructorBalance = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id).exec();
     res.json(user.balance);

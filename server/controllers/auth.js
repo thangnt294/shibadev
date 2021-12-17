@@ -8,7 +8,7 @@ import {
 import jwt from "jsonwebtoken";
 import { nanoid } from "nanoid";
 
-export const register = async (req, res) => {
+export const register = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
     // validation
@@ -42,12 +42,11 @@ export const register = async (req, res) => {
 
     return res.json({ ok: true });
   } catch (err) {
-    console.log(err);
-    res.status(400).send("Something went wrong. Please try again later.");
+    next(err);
   }
 };
 
-export const login = async (req, res) => {
+export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
@@ -84,7 +83,7 @@ export const login = async (req, res) => {
   }
 };
 
-export const logout = async (req, res) => {
+export const logout = async (req, res, next) => {
   try {
     res.clearCookie("token");
     return res.json({ ok: true });
@@ -93,7 +92,7 @@ export const logout = async (req, res) => {
   }
 };
 
-export const getCurrentUser = async (req, res) => {
+export const getCurrentUser = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id).select("-password");
     return res.json({ ok: true });
@@ -102,7 +101,7 @@ export const getCurrentUser = async (req, res) => {
   }
 };
 
-export const forgotPassword = async (req, res) => {
+export const forgotPassword = async (req, res, next) => {
   try {
     const { email } = req.body;
     const resetCode = nanoid(6).toUpperCase();
@@ -128,7 +127,7 @@ export const forgotPassword = async (req, res) => {
   }
 };
 
-export const resetPassword = async (req, res) => {
+export const resetPassword = async (req, res, next) => {
   try {
     const { email, code, newPassword } = req.body;
     const hashedPassword = await hashPassword(newPassword);
