@@ -6,13 +6,15 @@ import {
   UserAddOutlined,
   CoffeeOutlined,
   TeamOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 import { Context } from "../context/index";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { Avatar } from "antd";
+import { Avatar, Input } from "antd";
 
-const { Item, SubMenu, ItemGroup } = Menu; // instead of Menu.Item
+const { Item, SubMenu, ItemGroup } = Menu;
+const { Search } = Input;
 
 const TopNav = () => {
   const [current, setCurrent] = useState("");
@@ -50,6 +52,15 @@ const TopNav = () => {
           <a></a>
         </Link>
       </Item>
+      {current === "/" && (
+        <Item className="search-bar-item">
+          <Input
+            placeholder="Search..."
+            className="search-bar"
+            suffix={<SearchOutlined />}
+          />
+        </Item>
+      )}
 
       {user && user.role && !user.role.includes("Instructor") && (
         <Item

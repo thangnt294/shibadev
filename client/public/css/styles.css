@@ -15,3 +15,16 @@
 svg {
   vertical-align: baseline;
 }
+
+.search-bar-item {
+  background-color: #001529;
+  cursor: default;
+}
+
+.search-bar-item:hover {
+  background-color: #001529 !important;
+}
+
+.search-bar {
+  border-radius: 9999em !important;
+}
