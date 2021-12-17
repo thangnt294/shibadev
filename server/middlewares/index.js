@@ -1,12 +1,14 @@
-import expressJwt from "express-jwt";
+import jwt from "express-jwt";
 import Course from "../models/course";
 import User from "../models/user";
 
-export const requireSignin = expressJwt({
+export const requireSignin = jwt({
   getToken: (req, res) => req.cookies.token,
   secret: process.env.JWT_SECRET,
   algorithms: ["HS256"],
 });
+
+// export const requireSignin = () => {};
 
 export const isInstructor = async (req, res, next) => {
   try {
