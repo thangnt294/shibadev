@@ -8,8 +8,6 @@ export const requireSignin = jwt({
   algorithms: ["HS256"],
 });
 
-// export const requireSignin = () => {};
-
 export const isInstructor = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id).exec();
@@ -40,11 +38,4 @@ export const isEnrolled = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-};
-
-export const errorHandler = (err, req, res, next) => {
-  console.log("Error Handling Middleware called");
-  console.log("Path: ", req.path);
-  console.error("Error: ", err);
-  res.status(500).send("Internal server error");
 };
