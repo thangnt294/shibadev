@@ -2,19 +2,22 @@ import User from "../models/user";
 import Course from "../models/course";
 
 export const becomeInstructor = async (req, res) => {
-  // make user instructor
-  const instructor = await User.findByIdAndUpdate(
-    req.user._id,
-    {
-      $addToSet: { role: "Instructor" },
-    },
-    {
-      new: true,
-    }
-  )
-    .select("-password")
-    .exec();
-  res.json(instructor);
+  try {
+    const instructor = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        $addToSet: { role: "Instructor" },
+      },
+      {
+        new: true,
+      }
+    )
+      .select("-password")
+      .exec();
+    res.json(instructor);
+  } catch (err) {
+    next(err);
+  }
 };
 
 export const getCurrentInstructor = async (req, res) => {
@@ -27,7 +30,7 @@ export const getCurrentInstructor = async (req, res) => {
       res.json({ ok: true });
     }
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 };
 
@@ -41,7 +44,7 @@ export const getInstructorCourses = async (req, res) => {
 
     res.json(courses);
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 };
 
@@ -53,7 +56,7 @@ export const countStudent = async (req, res) => {
     });
     res.json(count);
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 };
 
@@ -62,6 +65,6 @@ export const getInstructorBalance = async (req, res) => {
     const user = await User.findById(req.user._id).exec();
     res.json(user.balance);
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 };

@@ -46,10 +46,7 @@ export const create = async (req, res) => {
     const course = await new Course(newCourse).save();
     res.json(course);
   } catch (err) {
-    console.log(err);
-    return res
-      .status(400)
-      .send("Course create failed. Please try again later.");
+    next(err);
   }
 };
 
@@ -98,8 +95,7 @@ export const update = async (req, res) => {
       res.json(updated);
     }
   } catch (err) {
-    console.log(err);
-    return res.status(400).send(err.message);
+    next(err);
   }
 };
 
@@ -110,7 +106,7 @@ export const getCourse = async (req, res) => {
       .exec();
     res.json(course);
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 };
 
@@ -128,7 +124,7 @@ export const uploadVideo = async (req, res) => {
     const data = await uploadVideoToS3(video);
     res.send(data);
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 };
 
@@ -141,7 +137,7 @@ export const removeVideo = async (req, res) => {
     const data = await removeVideoFromS3(req.body);
     res.send({ ok: true });
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 };
 
@@ -165,34 +161,37 @@ export const addLesson = async (req, res) => {
 
     res.json(updated);
   } catch (err) {
-    console.log(err);
-    return res.status(400).send("Add lesson failed");
+    next(err);
   }
 };
 
 export const removeLesson = async (req, res) => {
-  const { slug, lessonId } = req.params;
-  const course = await Course.findOne({ slug }).exec();
-  if (req.user._id != course.instructor) {
-    return res.status(400).send("Unauthorized");
+  try {
+    const { slug, lessonId } = req.params;
+    const course = await Course.findOne({ slug }).exec();
+    if (req.user._id != course.instructor) {
+      return res.status(400).send("Unauthorized");
+    }
+
+    // remove video if exist
+    const lesson = course.lessons.find(
+      (lesson) => lesson._id.toString() === lessonId
+    );
+
+    if (!isObjectEmpty(lesson.video)) {
+      await removeVideoFromS3({
+        Bucket: lesson.video.Bucket,
+        Key: lesson.video.Key,
+      });
+    }
+
+    const updatedCourse = await Course.findByIdAndUpdate(course._id, {
+      $pull: { lessons: { _id: lessonId } },
+    }).exec();
+    res.json(updatedCourse);
+  } catch (err) {
+    next(err);
   }
-
-  // remove video if exist
-  const lesson = course.lessons.find(
-    (lesson) => lesson._id.toString() === lessonId
-  );
-
-  if (!isObjectEmpty(lesson.video)) {
-    await removeVideoFromS3({
-      Bucket: lesson.video.Bucket,
-      Key: lesson.video.Key,
-    });
-  }
-
-  const updatedCourse = await Course.findByIdAndUpdate(course._id, {
-    $pull: { lessons: { _id: lessonId } },
-  }).exec();
-  res.json(updatedCourse);
 };
 
 export const updateLesson = async (req, res) => {
@@ -219,8 +218,7 @@ export const updateLesson = async (req, res) => {
 
     res.json({ ok: true });
   } catch (err) {
-    console.log(err);
-    return res.status(400).send("Update lesson failed");
+    next(err);
   }
 };
 
@@ -243,8 +241,7 @@ export const publishCourse = async (req, res) => {
 
     res.json(updated);
   } catch (err) {
-    console.log(err);
-    return res.status(400).send("Publish course failed");
+    next(err);
   }
 };
 
@@ -267,32 +264,38 @@ export const unpublishCourse = async (req, res) => {
 
     res.json(updated);
   } catch (err) {
-    console.log(err);
-    return res.status(400).send("Unpublish course failed");
+    next(err);
   }
 };
 
 export const getPublishedCourses = async (req, res) => {
-  console.log(req.user);
-  const publishedCourses = await Course.find({
-    published: true,
-  })
-    .populate("instructor", "_id name")
-    .exec();
-  res.json(publishedCourses);
+  try {
+    const publishedCourses = await Course.find({
+      published: true,
+    })
+      .populate("instructor", "_id name")
+      .exec();
+    res.json(publishedCourses);
+  } catch (err) {
+    next(err);
+  }
 };
 
 export const checkEnrollment = async (req, res) => {
-  const { courseId } = req.params;
-  // find courses of the currently logged in user
-  const user = await User.findById(req.user._id).exec();
-  // check if course id is found in user courses array
-  const enrolled = user.enrolled_courses.some(
-    (course) => course._id == courseId
-  );
-  res.json({
-    status: enrolled,
-  });
+  try {
+    const { courseId } = req.params;
+    // find courses of the currently logged in user
+    const user = await User.findById(req.user._id).exec();
+    // check if course id is found in user courses array
+    const enrolled = user.enrolled_courses.some(
+      (course) => course._id == courseId
+    );
+    res.json({
+      status: enrolled,
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 export const enrollCourse = async (req, res) => {
@@ -327,58 +330,65 @@ export const enrollCourse = async (req, res) => {
     ).exec();
     res.json(course);
   } catch (err) {
-    console.log(err);
-    return res.status(400).send("Enrollment failed");
+    next(err);
   }
 };
 
 export const getUserCourses = async (req, res) => {
-  const user = await User.findById(req.user._id).exec();
+  try {
+    const user = await User.findById(req.user._id).exec();
 
-  const userCourses = await Course.find({
-    _id: { $in: user.enrolled_courses },
-  })
-    .populate("instructor", "_id name")
-    .exec();
+    const userCourses = await Course.find({
+      _id: { $in: user.enrolled_courses },
+    })
+      .populate("instructor", "_id name")
+      .exec();
 
-  res.json(userCourses);
+    res.json(userCourses);
+  } catch (err) {
+    next(err);
+  }
 };
 
 export const markCompleted = async (req, res) => {
-  const { courseId, lessonId } = req.body;
-  // check if user with that course is already created
-  const existing = await CompletedLesson.findOne({
-    user: req.user._id,
-    course: courseId,
-  }).exec();
-
-  if (existing) {
-    // update
-    const updated = await CompletedLesson.findOneAndUpdate(
-      {
-        user: req.user._id,
-        course: courseId,
-      },
-      {
-        $addToSet: { lessons: lessonId },
-      }
-    ).exec();
-  } else {
-    // create
-    const created = await new CompletedLesson({
+  try {
+    const { courseId, lessonId } = req.body;
+    // check if user with that course is already created
+    const existing = await CompletedLesson.findOne({
       user: req.user._id,
       course: courseId,
-      lessons: [lessonId],
-    }).save();
+    }).exec();
+
+    if (existing) {
+      // update
+      await CompletedLesson.findOneAndUpdate(
+        {
+          user: req.user._id,
+          course: courseId,
+        },
+        {
+          $addToSet: { lessons: lessonId },
+        }
+      ).exec();
+    } else {
+      // create
+      await new CompletedLesson({
+        user: req.user._id,
+        course: courseId,
+        lessons: [lessonId],
+      }).save();
+    }
+    res.json({ ok: true });
+  } catch (err) {
+    next(err);
   }
-  res.json({ ok: true });
 };
 
 export const markIncomplete = async (req, res) => {
   try {
     const { courseId, lessonId } = req.body;
 
-    const updated = await CompletedLesson.findOneAndUpdate(
+    await CompletedLesson.findOneAndUpdate(
       { user: req.user._id, course: courseId },
       {
         $pull: { lessons: lessonId },
@@ -386,7 +396,7 @@ export const markIncomplete = async (req, res) => {
     ).exec();
     res.json({ ok: true });
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 };
 
@@ -399,7 +409,7 @@ export const listCompleted = async (req, res) => {
     }).exec();
     res.json(list ? list.lessons : []);
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 };
 

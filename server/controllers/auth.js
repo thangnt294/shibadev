@@ -80,8 +80,7 @@ export const login = async (req, res) => {
     });
     res.json(user);
   } catch (err) {
-    console.log(err);
-    res.status(400).send("Something went wrong. Please try again later.");
+    next(err);
   }
 };
 
@@ -90,7 +89,7 @@ export const logout = async (req, res) => {
     res.clearCookie("token");
     return res.json({ ok: true });
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 };
 
@@ -99,7 +98,7 @@ export const getCurrentUser = async (req, res) => {
     const user = await User.findById(req.user._id).select("-password");
     return res.json({ ok: true });
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 };
 
@@ -125,8 +124,7 @@ export const forgotPassword = async (req, res) => {
     await sendResetPasswordEmail(email, resetCode);
     res.json({ ok: true });
   } catch (err) {
-    console.log(err);
-    res.status(400).send("Something went wrong. Please try again later.");
+    next(err);
   }
 };
 
@@ -143,7 +141,6 @@ export const resetPassword = async (req, res) => {
       return res.status(400).send("Reset code incorrect. Please try again.");
     res.json({ ok: true });
   } catch (err) {
-    console.log(err);
-    res.status(400).send("Something went wrong. Please try again later.");
+    next(err);
   }
 };

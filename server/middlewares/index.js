@@ -16,7 +16,7 @@ export const isInstructor = async (req, res, next) => {
     }
     next();
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 };
 
@@ -36,6 +36,13 @@ export const isEnrolled = async (req, res, next) => {
       return res.sendStatus(403);
     }
   } catch (err) {
-    console.log(err);
+    next(err);
   }
+};
+
+export const errorHandler = (err, req, res, next) => {
+  console.log("Error Handling Middleware called");
+  console.log("Path: ", req.path);
+  console.error("Error: ", err);
+  res.status(500).send("Internal server error");
 };

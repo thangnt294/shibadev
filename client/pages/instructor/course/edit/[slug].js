@@ -255,7 +255,11 @@ const CourseEdit = () => {
                     setVisible(true);
                     setCurrent(item);
                   }}
-                  avatar={<Avatar>{index + 1}</Avatar>}
+                  avatar={
+                    <Avatar style={{ backgroundColor: "#0388fc" }}>
+                      {index + 1}
+                    </Avatar>
+                  }
                   title={item.title}
                 ></Item.Meta>
 

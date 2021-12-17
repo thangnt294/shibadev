@@ -4,6 +4,7 @@ import { readdirSync } from "fs";
 import mongoose from "mongoose";
 import csrf from "csurf";
 import cookieParser from "cookie-parser";
+import { errorHandler } from "./middlewares";
 const morgan = require("morgan");
 require("dotenv").config({ path: `.env.local` });
 
@@ -31,6 +32,7 @@ app.use(morgan("dev"));
 readdirSync("./routes").map((r) => app.use("/api", require(`./routes/${r}`)));
 // csrf
 app.use(csrfProtection);
+app.use(errorHandler);
 
 app.get("/api/csrf-token", (req, res) => {
   res.json({ csrfToken: req.csrfToken() });
