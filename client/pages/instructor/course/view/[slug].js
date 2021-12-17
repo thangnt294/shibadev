@@ -211,7 +211,7 @@ const CourseView = () => {
                         </Tooltip>
                       ) : course.published ? (
                         <Popconfirm
-                          title="Once you unpublish your course, it will not be available for users to enroll."
+                          title="Once you unpublish your course, it will not be available for users to enroll anymore."
                           onConfirm={() => handleUnpublish(course._id)}
                           okText="Unpublish"
                           cancelText="Cancel"
@@ -222,7 +222,7 @@ const CourseView = () => {
                         </Popconfirm>
                       ) : (
                         <Popconfirm
-                          title="Once you publish your course, it will be live on the marketplace for users to enroll anymore."
+                          title="Once you publish your course, it will be live on the marketplace for users to enroll."
                           onConfirm={() => handlePublish(course._id)}
                           okText="Publish"
                           cancelText="Cancel"

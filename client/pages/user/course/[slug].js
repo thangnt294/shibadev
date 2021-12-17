@@ -156,7 +156,11 @@ const SingleCourse = () => {
                   Welcome! We're excited to have you here!
                 </h2>
                 <p className="lead">
-                  Click on the lessons to start learning right away
+                  Thank you for enrolling into this course. We hope that you
+                  will have a great time studying.
+                </p>
+                <p className="lead">
+                  Click on the lessons to start learning right away!
                 </p>
               </div>
             </div>

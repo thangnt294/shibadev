@@ -20,13 +20,12 @@ import {
   unpublishCourse,
   getPublishedCourses,
   checkEnrollment,
-  freeEnroll,
-  paidEnroll,
   getUserCourses,
   markCompleted,
   markIncomplete,
   listCompleted,
   getTags,
+  enrollCourse,
 } from "../controllers/course";
 
 router.get("/courses", getPublishedCourses);
@@ -59,8 +58,7 @@ router.put(
 router.get("/check-enrollment/:courseId", requireSignin, checkEnrollment);
 
 // enrollment
-router.post("/free-enrollment/:courseId", requireSignin, freeEnroll);
-router.post("/paid-enrollment/:courseId", requireSignin, paidEnroll);
+router.post("/enroll/:courseId", requireSignin, enrollCourse);
 
 router.get("/user-courses", requireSignin, getUserCourses);
 router.get("/user/course/:slug", requireSignin, isEnrolled, getCourse);
