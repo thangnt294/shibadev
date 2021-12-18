@@ -14,14 +14,13 @@ import { useRouter } from "next/router";
 import { Avatar, Input } from "antd";
 
 const { Item, SubMenu, ItemGroup } = Menu;
-const { Search } = Input;
 
 const TopNav = () => {
   const [current, setCurrent] = useState("");
 
   const { state, dispatch } = useContext(Context);
 
-  const { user } = state;
+  const { user, page, limit } = state;
 
   const router = useRouter();
 
@@ -34,6 +33,23 @@ const TopNav = () => {
     window.localStorage.removeItem("user");
     await axios.post("/api/logout");
     router.push("/login");
+  };
+
+  const handleSearchCourses = async (e) => {
+    const searchTerm = e.target.value;
+    const { data } = await axios.get(
+      `api/courses?page=${page}&limit=${limit}&term=${searchTerm}`
+    );
+    dispatch({
+      type: "UPDATE_COURSE_LIST",
+      payload: {
+        courses: data.courses,
+        total: data.total,
+        term: searchTerm,
+        page,
+        limit,
+      },
+    });
   };
 
   return (
@@ -58,6 +74,7 @@ const TopNav = () => {
             placeholder="Search..."
             className="search-bar"
             suffix={<SearchOutlined />}
+            onPressEnter={handleSearchCourses}
           />
         </Item>
       )}

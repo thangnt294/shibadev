@@ -4,6 +4,11 @@ import { useRouter } from "next/router";
 
 const initialState = {
   user: null,
+  courses: null,
+  page: 0,
+  limit: 9,
+  total: null,
+  term: ".*",
 };
 
 // create context
@@ -16,6 +21,15 @@ const rootReducer = (state, action) => {
       return { ...state, user: action.payload };
     case "LOGOUT":
       return { ...state, user: null };
+    case "UPDATE_COURSE_LIST":
+      return {
+        ...state,
+        courses: action.payload.courses,
+        total: action.payload.total,
+        page: action.payload.page,
+        limit: action.payload.limit,
+        term: action.payload.term,
+      };
     default:
       return state;
   }
