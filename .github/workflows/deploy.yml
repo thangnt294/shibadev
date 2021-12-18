@@ -29,6 +29,8 @@ jobs:
             git pull
             cd client
             npm i
+            pm2 restart server.js
             cd ../server
             npm i
+            pm2 restart server.js
             echo 'Deployment successful to digital ocean'
