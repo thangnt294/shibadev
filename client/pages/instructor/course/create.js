@@ -5,13 +5,14 @@ import CourseCreateForm from "../../../components/forms/CourseCreateForm";
 import Resizer from "react-image-file-resizer";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
+import { isEmpty } from "../../../utils/helpers";
 
 const CourseCreate = () => {
   // state
   const [values, setValues] = useState({
     name: "",
     description: "",
-    price: "9.99",
+    price: 0,
     paid: false,
     tags: [],
     image: {},
@@ -62,6 +63,10 @@ const CourseCreate = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isEmpty(values.name) || isEmpty(values.description)) {
+      toast.error("Please fill in all the required fields before saving.");
+      return;
+    }
     setLoading(true);
     try {
       if (image) {
@@ -73,30 +78,32 @@ const CourseCreate = () => {
           100,
           0,
           async (uri) => {
-            const { data } = await axios.post("/api/course", {
+            await axios.post("/api/course", {
               ...values,
               price: values.paid ? values.price : 0,
               uploadImage: uri,
             });
-            setLoading(false);
-            toast.success("Great! Now you can start adding lessons");
-            router.push("/instructor");
+            pushToInstructor();
           }
         );
       } else {
-        const { data } = await axios.post("/api/course", {
+        await axios.post("/api/course", {
           ...values,
           price: values.paid ? values.price : 0,
         });
-        setLoading(false);
-        toast.success("Great! Now you can start adding lessons");
-        router.push("/instructor");
+        pushToInstructor();
       }
     } catch (err) {
       setLoading(false);
       toast.error("Something went wrong. Please try again later.");
       console.log(err);
     }
+  };
+
+  const pushToInstructor = () => {
+    setLoading(false);
+    toast.success("Great! Now you can start adding lessons");
+    router.push("/instructor");
   };
 
   return (

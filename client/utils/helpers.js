@@ -5,5 +5,8 @@ export const currencyFormatter = (data) => {
   });
 };
 
-export const isObjectEmpty = (obj) =>
-  obj === null || obj === undefined || Object.keys(obj).length === 0;
+export const isEmpty = (obj) =>
+  obj === null ||
+  obj === undefined ||
+  obj.length === 0 ||
+  Object.keys(obj).length === 0;

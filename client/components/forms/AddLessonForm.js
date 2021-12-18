@@ -1,5 +1,6 @@
-import { Button, Progress, Tooltip } from "antd";
+import { Button, Progress, Tooltip, Form, Input } from "antd";
 import { CloseCircleFilled } from "@ant-design/icons";
+import { useEffect } from "react";
 
 const AddLessonForm = ({
   values,
@@ -10,28 +11,44 @@ const AddLessonForm = ({
   handleVideo,
   progress,
   handleRemoveVideo,
+  savingLesson,
 }) => {
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    form.setFieldsValue({ ...values });
+  }, [values]);
+
   return (
     <div className="container pt-3">
-      <form onSubmit={handleAddLesson}>
-        <input
-          type="text"
-          className="form-control square"
-          onChange={(e) => setValues({ ...values, title: e.target.value })}
-          value={values.title}
-          placeholder="Title"
-          autoFocus
-          required
-        />
+      <Form
+        onSubmit={handleAddLesson}
+        form={form}
+        initialValues={{ ...values }}
+      >
+        <Form.Item
+          name="title"
+          rules={[{ required: true, message: "Please input lesson title" }]}
+        >
+          <Input
+            type="text"
+            className="form-control square"
+            onChange={(e) => setValues({ ...values, title: e.target.value })}
+            value={values.title}
+            placeholder="Title *"
+            autoFocus
+            required
+          />
+        </Form.Item>
 
-        <textarea
-          className="form-control mt-3"
+        <Input.TextArea
+          className="form-control"
           cols="7"
           rows="7"
           onChange={(e) => setValues({ ...values, content: e.target.value })}
           value={values.content}
           placeholder="Content"
-        ></textarea>
+        />
 
         <div className="d-flex justify-content-center">
           <label className="btn btn-dark btn-block text-left mt-3">
@@ -61,12 +78,12 @@ const AddLessonForm = ({
           className="col mt-3"
           size="large"
           type="primary"
-          loading={uploading}
+          loading={uploading || savingLesson}
           shape="round"
         >
           Save
         </Button>
-      </form>
+      </Form>
     </div>
   );
 };

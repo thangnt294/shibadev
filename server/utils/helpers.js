@@ -12,8 +12,11 @@ const awsConfig = {
 const S3 = new AWS.S3(awsConfig);
 const SES = new AWS.SES(awsConfig);
 
-export const isObjectEmpty = (obj) =>
-  obj === null || obj === undefined || Object.keys(obj).length === 0;
+export const isEmpty = (obj) =>
+  obj === null ||
+  obj === undefined ||
+  obj.length === 0 ||
+  Object.keys(obj).length === 0;
 
 export const uploadImageToS3 = async (image) => {
   // prepare the image

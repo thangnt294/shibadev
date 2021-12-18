@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Select, Button, Avatar, Badge, InputNumber, Image } from "antd";
+import { useEffect } from "react";
+import { Select, Button, InputNumber, Image, Form, Input } from "antd";
 
 const { Option } = Select;
 
@@ -18,36 +18,48 @@ const CourseCreateForm = ({
   tags,
   handleSelectTag,
 }) => {
-  const children = [];
-  for (let i = 9.99; i <= 100.99; i += 10) {
-    children.push(<Option key={i.toFixed(2)}>${i.toFixed(2)}</Option>);
-  }
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    form.setFieldsValue({ name: values.name, description: values.description });
+  }, [values]);
 
   return (
     <>
       {values && (
-        <form onSubmit={handleSubmit}>
-          <div className="form-group pb-3">
-            <input
-              type="text"
+        <Form onSubmit={handleSubmit} form={form} initialValues={{ ...values }}>
+          <div className="form-group">
+            <Form.Item
               name="name"
-              className="form-control"
-              placeholder="Name"
-              value={values.name}
-              onChange={handleChange}
-            />
+              rules={[{ required: true, message: "Please input course name" }]}
+            >
+              <Input
+                name="name"
+                className="form-control"
+                placeholder="Name *"
+                value={values.name}
+                onChange={handleChange}
+              />
+            </Form.Item>
           </div>
 
           <div className="form-group pb-3">
-            <textarea
+            <Form.Item
               name="description"
-              cols="7"
-              rows="7"
-              value={values.description}
-              className="form-control"
-              onChange={handleChange}
-              placeholder="Description"
-            />
+              rules={[
+                { required: true, message: "Please input course description" },
+              ]}
+            >
+              <Input.TextArea
+                name="description"
+                cols="7"
+                rows="7"
+                value={values.description}
+                className="form-control"
+                onChange={handleChange}
+                placeholder="Description *"
+              />
+            </Form.Item>
           </div>
 
           <div className="col form-group pb-3">
@@ -125,7 +137,6 @@ const CourseCreateForm = ({
                   type="danger"
                   size="large"
                   style={{ borderRadius: "5px" }}
-                  // shape="round"
                 >
                   Remove Image
                 </Button>
@@ -148,7 +159,7 @@ const CourseCreateForm = ({
               </Button>
             </div>
           </div>
-        </form>
+        </Form>
       )}
     </>
   );

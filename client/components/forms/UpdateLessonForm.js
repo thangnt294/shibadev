@@ -1,5 +1,5 @@
-import { Button, Progress, Switch } from "antd";
-import { CloseCircleFilled } from "@ant-design/icons";
+import { Button, Input, Progress, Switch, Form } from "antd";
+import { useEffect } from "react";
 import ReactPlayer from "react-player";
 
 const UpdateLessonForm = ({
@@ -10,26 +10,41 @@ const UpdateLessonForm = ({
   uploadVideoBtnText,
   handleVideo,
   progress,
+  savingLesson,
 }) => {
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    form.setFieldsValue({ ...current });
+  }, [current]);
   return (
     <div className="container pt-3">
-      <form onSubmit={handleUpdateLesson}>
-        <input
-          type="text"
-          className="form-control square"
-          onChange={(e) => setCurrent({ ...current, title: e.target.value })}
-          value={current.title}
-          autoFocus
-          required
-        />
+      <Form
+        onSubmit={handleUpdateLesson}
+        form={form}
+        initialValues={{ ...current }}
+      >
+        <Form.Item
+          name="title"
+          rules={[{ required: true, message: "Please input lesson title" }]}
+        >
+          <Input
+            type="text"
+            className="form-control square"
+            onChange={(e) => setCurrent({ ...current, title: e.target.value })}
+            value={current.title}
+            autoFocus
+            required
+          />
+        </Form.Item>
 
-        <textarea
+        <Input.TextArea
           className="form-control mt-3"
           cols="7"
           rows="7"
           onChange={(e) => setCurrent({ ...current, content: e.target.value })}
           value={current.content}
-        ></textarea>
+        />
 
         <div className="text-center">
           {!uploading && current.video && current.video.Location && (
@@ -72,12 +87,12 @@ const UpdateLessonForm = ({
           className="col mt-3"
           size="large"
           type="primary"
-          loading={uploading}
+          loading={uploading || savingLesson}
           shape="round"
         >
           Save
         </Button>
-      </form>
+      </Form>
     </div>
   );
 };

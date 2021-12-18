@@ -5,7 +5,7 @@ import User from "../models/user";
 import CompletedLesson from "../models/completedLesson";
 import { tags } from "../constants";
 import {
-  isObjectEmpty,
+  isEmpty,
   uploadImageToS3,
   removeImageFromS3,
   uploadVideoToS3,
@@ -169,7 +169,7 @@ export const removeLesson = async (req, res, next) => {
       (lesson) => lesson._id.toString() === lessonId
     );
 
-    if (!isObjectEmpty(lesson.video)) {
+    if (!isEmpty(lesson.video)) {
       await removeVideoFromS3({
         Bucket: lesson.video.Bucket,
         Key: lesson.video.Key,

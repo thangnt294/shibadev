@@ -13,7 +13,7 @@ import {
 import ReactMarkdown from "react-markdown";
 import AddLessonForm from "../../../../components/forms/AddLessonForm";
 import { toast } from "react-toastify";
-import { isObjectEmpty } from "../../../../utils/helpers";
+import { isEmpty } from "../../../../utils/helpers";
 
 const { Item } = List;
 
@@ -30,6 +30,7 @@ const CourseView = () => {
   });
   const [uploadBtnText, setUploadBtnText] = useState("Upload Video");
   const [progress, setProgress] = useState(0);
+  const [savingLesson, setSavingLesson] = useState(false);
   // student count
   const [studentCount, setStudentCount] = useState(0);
 
@@ -63,13 +64,22 @@ const CourseView = () => {
     setVisible(false);
     setValues({ ...values, title: "", content: "", video: {} });
     setProgress(0);
+    setSavingLesson(false);
     setUploadBtnText("Upload Video");
   };
 
-  // Function for adding lesson
   const handleAddLesson = async (e) => {
     e.preventDefault();
+    if (isEmpty(values.title)) {
+      toast.error("Please fill in all the required fields before saving");
+      return;
+    }
+    if (isEmpty(values.content) && isEmpty(values.video)) {
+      toast.error("Please add some content or upload a video");
+      return;
+    }
     try {
+      setSavingLesson(true);
       const { data } = await axios.post(
         `/api/course/lesson/${slug}/${course.instructor._id}`,
         values
@@ -78,6 +88,7 @@ const CourseView = () => {
       setCourse(data);
       toast.success("New lesson added");
     } catch (err) {
+      clearState();
       console.log(err);
       toast.error("Something went wrong. Please try again later.");
     }
@@ -131,7 +142,7 @@ const CourseView = () => {
   };
 
   const handleCloseModal = async () => {
-    if (!isObjectEmpty(values.video)) await handleRemoveVideo();
+    if (!isEmpty(values.video)) await handleRemoveVideo();
     clearState();
   };
 
@@ -270,6 +281,7 @@ const CourseView = () => {
                   handleVideo={handleVideo}
                   progress={progress}
                   handleRemoveVideo={handleRemoveVideo}
+                  savingLesson={savingLesson}
                 />
               </Modal>
 
