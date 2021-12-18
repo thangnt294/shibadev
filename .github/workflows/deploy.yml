@@ -2,9 +2,9 @@ name: Deploy
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -23,8 +23,12 @@ jobs:
           host: ${{secrets.SSH_HOST}}
           key: ${{secrets.SSH_KEY}}
           username: ${{secrets.SSH_USERNAME}}
-          
+
           script: |
             cd shibadev
             git pull
+            cd client
+            npm i
+            cd ../server
+            npm i
             echo 'Deployment successful to digital ocean'
