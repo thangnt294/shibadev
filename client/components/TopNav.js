@@ -56,7 +56,7 @@ const TopNav = () => {
       theme="dark"
       mode="horizontal"
       selectedKeys={[current]}
-      className="sticky-top"
+      className={`sticky-top ${current !== "/" && "mb-2"}`}
     >
       <Item
         key="/"
@@ -131,7 +131,7 @@ const TopNav = () => {
 
       {user && (
         <SubMenu
-          icon={<CoffeeOutlined />}
+          icon={<Avatar src="/avatar.png" size="small" />}
           title={user && user.name}
           className={user && user.role ? "" : "ms-auto"}
         >
@@ -139,6 +139,11 @@ const TopNav = () => {
             <Item key="/user">
               <Link href="/user">
                 <a>Dashboard</a>
+              </Link>
+            </Item>
+            <Item key="/user/profile">
+              <Link href="/user/profile">
+                <a>Profile</a>
               </Link>
             </Item>
             <Item key="/logout" onClick={logout}>
