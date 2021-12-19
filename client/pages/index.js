@@ -39,9 +39,20 @@ const Index = ({ initialCourses, initialTotal }) => {
 
   return (
     <>
-      <h1 className="jumbotron text-center bg-primary square">
-        ShibaDev Education Marketplace
-      </h1>
+      <div className="home-page-background mb-5">
+        <div className="home-page-title">
+          <h1 className="text-white display-1">
+            ShibaDev Education Marketplace
+          </h1>
+          <h2 className="text-white">
+            The perfect platform for learning and developing your skills
+          </h2>
+          <q className="lead text-white">
+            Knowledge increases by sharing, not by saving.
+          </q>
+          <p className="text-white">- Kamari</p>
+        </div>
+      </div>
       <div className="container-fluid">
         <div className="row">
           {publishedCourses.length > 0 ? (

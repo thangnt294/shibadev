@@ -40,6 +40,9 @@ app.use((err, req, res, next) => {
   console.log("Error Handling Middleware called");
   console.log("Path: ", req.path);
   console.error("Error: ", err);
+  if (err.status === 401) {
+    res.status(401).send("Unauthorized. Please log in again.");
+  }
   res.status(500).send("Internal server error");
 });
 // app boot

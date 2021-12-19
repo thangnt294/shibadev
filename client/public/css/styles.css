@@ -5,7 +5,7 @@
 .jumbotron {
   background-image: linear-gradient(to right, #ff0000, #ff9900);
   color: #fff;
-  padding: 50px;
+  padding: 5rem;
 }
 
 .pointer {
@@ -27,4 +27,19 @@ svg {
 
 .search-bar {
   border-radius: 9999em !important;
+}
+
+.home-page-background {
+  background-image: url("../wallpaper.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: 0% 15%;
+  padding: 8rem 15rem;
+}
+
+.home-page-title {
+  position: relative;
+  right: 12%;
+  width: 50%;
 }

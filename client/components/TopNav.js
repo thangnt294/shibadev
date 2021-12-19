@@ -1,5 +1,4 @@
 import { useState, useEffect, useContext } from "react";
-import { Menu } from "antd";
 import Link from "next/link";
 import {
   LoginOutlined,
@@ -11,7 +10,7 @@ import {
 import { Context } from "../context/index";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { Avatar, Input } from "antd";
+import { Avatar, Input, Menu } from "antd";
 
 const { Item, SubMenu, ItemGroup } = Menu;
 
@@ -57,7 +56,7 @@ const TopNav = () => {
       theme="dark"
       mode="horizontal"
       selectedKeys={[current]}
-      className="mb-2"
+      className="sticky-top"
     >
       <Item
         key="/"
