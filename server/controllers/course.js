@@ -61,14 +61,6 @@ export const update = async (req, res, next) => {
 
       const data = await uploadImageToS3(uploadImage);
       updatedCourse.image = data;
-      delete updatedCourse.uploadImage;
-      delete updatedCourse.removedImage;
-
-      const updated = await Course.findOneAndUpdate({ slug }, updatedCourse, {
-        new: true,
-      }).exec();
-
-      res.json(updated);
     } else {
       if (removedImage) {
         const { image } = req.body;
@@ -76,15 +68,15 @@ export const update = async (req, res, next) => {
         await removeImageFromS3(image);
         updatedCourse.image = null;
       }
-      delete updatedCourse.uploadImage;
-      delete updatedCourse.removedImage;
-
-      const updated = await Course.findOneAndUpdate({ slug }, updatedCourse, {
-        new: true,
-      }).exec();
-
-      res.json(updated);
     }
+    delete updatedCourse.uploadImage;
+    delete updatedCourse.removedImage;
+
+    const updated = await Course.findOneAndUpdate({ slug }, updatedCourse, {
+      new: true,
+    }).exec();
+
+    res.json(updated);
   } catch (err) {
     next(err);
   }

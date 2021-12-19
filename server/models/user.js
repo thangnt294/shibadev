@@ -25,6 +25,15 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "/avatar.png",
     },
+    title: {
+      type: String,
+    },
+    address: {
+      type: String,
+    },
+    bio: {
+      type: String,
+    },
     role: {
       type: [String],
       default: ["Subscriber"],

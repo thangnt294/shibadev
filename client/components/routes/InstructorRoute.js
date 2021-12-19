@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { SyncOutlined } from "@ant-design/icons";
+import Loading from "../others/Loading";
 import InstructorNav from "../nav/InstructorNav";
 
 const InstructorRoute = ({ children }) => {
-  // state
-  const [hidden, setHidden] = useState(true);
-  // router
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -17,21 +15,18 @@ const InstructorRoute = ({ children }) => {
   const fetchInstructor = async () => {
     try {
       const { data } = await axios.get("/api/current-instructor");
-      if (data && data.ok) setHidden(false);
+      if (data && data.ok) setLoading(false);
     } catch (err) {
       console.log(err);
-      setHidden(true);
+      setLoading(true);
       router.push("/");
     }
   };
 
   return (
     <>
-      {hidden ? (
-        <SyncOutlined
-          spin
-          className="d-flex justify-content-center display-1 text-primary p-5"
-        />
+      {loading ? (
+        <Loading />
       ) : (
         <div className="container-fluid">
           <div className="row">

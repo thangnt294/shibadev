@@ -3,7 +3,7 @@ import formidable from "express-formidable";
 
 const router = express.Router();
 
-// middleware
+// middlewares
 import { requireSignin, isInstructor, isEnrolled } from "../middlewares";
 
 // controllers

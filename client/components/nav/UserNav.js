@@ -15,6 +15,11 @@ const UserNav = () => {
           Dashboard
         </a>
       </Link>
+      <Link href="/user/profile">
+        <a className={`nav-link ${current === "/user/profile" && "active"}`}>
+          Profile
+        </a>
+      </Link>
     </div>
   );
 };

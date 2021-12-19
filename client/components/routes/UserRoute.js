@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { SyncOutlined } from "@ant-design/icons";
 import UserNav from "../nav/UserNav";
+import Loading from "../others/Loading";
 
 const UserRoute = ({ children, showNav = true }) => {
-  // state
-  const [hidden, setHidden] = useState(true);
-  // router
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -16,22 +14,19 @@ const UserRoute = ({ children, showNav = true }) => {
 
   const fetchUser = async () => {
     try {
-      const { data } = await axios.get("/api/current-user"); // TODO look at this
-      setHidden(!data.ok);
+      const { data } = await axios.get("/api/current-user");
+      if (data) setLoading(false);
     } catch (err) {
       console.log(err);
-      setHidden(true);
+      setLoading(true);
       router.push("/login");
     }
   };
 
   return (
     <>
-      {hidden ? (
-        <SyncOutlined
-          spin
-          className="d-flex justify-content-center display-1 text-primary p-5"
-        />
+      {loading ? (
+        <Loading />
       ) : (
         <div className="container-fluid">
           <div className="row">

@@ -49,9 +49,12 @@ const CourseCreate = () => {
   const handleImage = (e) => {
     let file = e.target.files[0];
     if (file) {
+      const fileName = file.name;
       setPreview(window.URL.createObjectURL(file));
-      setUploadBtnText(file.name);
       setImage(file);
+      setUploadBtnText(
+        fileName.length > 12 ? `${fileName.slice(0, 12)}...` : fileName
+      );
     }
   };
 

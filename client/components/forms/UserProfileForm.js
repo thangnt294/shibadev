@@ -1,18 +1,22 @@
-import { Input } from "antd";
+import { Input, Button } from "antd";
+import { EditFilled } from "@ant-design/icons";
 
-const UserProfileForm = ({ user }) => {
+const UserProfileForm = ({ user, editing, setEditing }) => {
+  const { name, email, title, address, bio } = user;
   return (
     <>
-      <div class="row">
-        <div class="col-sm-3">
-          <h6 class="mb-0">Full Name</h6>
+      <div className="row">
+        <div className="col-sm-3">
+          <h6 className="mb-0">
+            Full Name <span className="text-danger">*</span>
+          </h6>
         </div>
-        <div class="col-sm-9 text-secondary">
+        <div className="col-sm-9 text-secondary">
           <Input
             name="name"
             className="form-control"
             placeholder="Name *"
-            value={user.name}
+            value={name}
             disabled
             bordered={false}
             // onChange={handleChange}
@@ -20,16 +24,18 @@ const UserProfileForm = ({ user }) => {
         </div>
       </div>
       <hr />
-      <div class="row">
-        <div class="col-sm-3">
-          <h6 class="mb-0">Email</h6>
+      <div className="row">
+        <div className="col-sm-3">
+          <h6 className="mb-0">
+            Email <span className="text-danger">*</span>
+          </h6>
         </div>
-        <div class="col-sm-9 text-secondary">
+        <div className="col-sm-9 text-secondary">
           <Input
             name="email"
             className="form-control"
             placeholder="Email"
-            value={user.email}
+            value={email}
             disabled
             bordered={false}
             // onChange={handleChange}
@@ -37,16 +43,16 @@ const UserProfileForm = ({ user }) => {
         </div>
       </div>
       <hr />
-      <div class="row">
-        <div class="col-sm-3">
-          <h6 class="mb-0">Title</h6>
+      <div className="row">
+        <div className="col-sm-3">
+          <h6 className="mb-0">Title</h6>
         </div>
-        <div class="col-sm-9 text-secondary">
+        <div className="col-sm-9 text-secondary">
           <Input
             name="title"
             className="form-control"
             placeholder="Title"
-            value={user.title}
+            value={title}
             disabled
             bordered={false}
             // onChange={handleChange}
@@ -54,16 +60,16 @@ const UserProfileForm = ({ user }) => {
         </div>
       </div>
       <hr />
-      <div class="row">
-        <div class="col-sm-3">
-          <h6 class="mb-0">Address</h6>
+      <div className="row">
+        <div className="col-sm-3">
+          <h6 className="mb-0">Address</h6>
         </div>
-        <div class="col-sm-9 text-secondary">
+        <div className="col-sm-9 text-secondary">
           <Input
             name="address"
             className="form-control"
             placeholder="Address"
-            value={user.address}
+            value={address}
             disabled
             bordered={false}
             // onChange={handleChange}
@@ -71,19 +77,33 @@ const UserProfileForm = ({ user }) => {
         </div>
       </div>
       <hr />
-      <div class="row">
-        <div class="col-sm-3">
-          <h6 class="mb-0">Bio</h6>
+      <div className="row">
+        <div className="col-sm-3">
+          <h6 className="mb-0">Bio</h6>
         </div>
-        <div class="col-sm-9 text-secondary">
+        <div className="col-sm-9 text-secondary">
           <Input.TextArea
             name="bio"
             className="form-control"
             placeholder="Bio"
-            value={user.bio}
+            value={bio}
             disabled
             bordered={false}
             // onChange={handleChange}
+          />
+        </div>
+      </div>
+      <hr />
+      <div className="row d-flex justify-content-between">
+        <div className="col-sm-3 align-self-center">
+          <Button type="primary" className="btn">
+            Save
+          </Button>
+        </div>
+        <div className="col me-2 align-self-center">
+          <EditFilled
+            className="float-end lead text-secondary pointer edit-icon"
+            onClick={() => setEditing(!editing)}
           />
         </div>
       </div>
