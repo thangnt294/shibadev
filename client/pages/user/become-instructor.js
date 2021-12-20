@@ -29,8 +29,9 @@ const BecomeInstructor = () => {
       window.localStorage.setItem("user", JSON.stringify(data));
       window.location.href = "/instructor";
     } catch (err) {
-      toast.error("Something went wrong. Please try again later.");
+      console.log(err);
       setLoading(false);
+      toast.error(err.response.data);
     }
   };
 

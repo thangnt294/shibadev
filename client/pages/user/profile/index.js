@@ -74,7 +74,7 @@ const UserProfile = () => {
     } catch (err) {
       console.log(err);
       setUploading(false);
-      toast.error("Something went wrong. Please try again later");
+      toast.error(err.response.data);
     }
   };
 
@@ -93,7 +93,7 @@ const UserProfile = () => {
     } catch (err) {
       console.log(err);
       setRemovingAvatar(false);
-      toast.error("Something went wrong. Please try again later");
+      toast.error(err.response.data);
     }
   };
 
@@ -104,15 +104,16 @@ const UserProfile = () => {
         toast.error("Plese fill in all the required fields before saving");
         return;
       }
-      const user = await axios.put("/api/user", user);
-      setUser(user);
-      setInitialUser(user);
+      const { data } = await axios.put("/api/user", user);
+      toast.success("Updated successfully");
+      setUser(data);
+      setInitialUser(data);
       setEditing(false);
       setUpdating(false);
     } catch (err) {
       console.log(err);
       setUpdating(false);
-      toast.error("Something went wrong. Please try again later");
+      toast.error(err.response.data);
     }
   };
 
@@ -130,7 +131,11 @@ const UserProfile = () => {
     setEditingPassword(false);
   };
 
-  const handleChangePassword = async () => {
+  const handleChangePassword = async (e) => {
+    setPassword({ ...password, [e.target.name]: e.target.value });
+  };
+
+  const handleUpdatePassword = async () => {
     try {
       if (
         isEmpty(password.oldPassword) ||
@@ -151,11 +156,16 @@ const UserProfile = () => {
       setUpdatingPassword(true);
       await axios.post("/api/change-password", password);
       setUpdatingPassword(false);
+      setPassword({
+        oldPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
       toast.success("Your password has been successfully updated");
     } catch (err) {
       console.log(err);
       setUpdatingPassword(false);
-      toast.error("Something went wrong. Please try again later");
+      toast.error(err.response.data);
     }
   };
 
@@ -252,8 +262,9 @@ const UserProfile = () => {
                       setEditingPassword={setEditingPassword}
                       updatingPassword={updatingPassword}
                       password={password}
-                      handleChangePassword={handleChangePassword}
+                      handleUpdatePassword={handleUpdatePassword}
                       handleCancelEditPassword={handleCancelEditPassword}
+                      handleChangePassword={handleChangePassword}
                     />
                   </div>
                 </div>

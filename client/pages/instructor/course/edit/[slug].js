@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { List, Avatar, Modal, Popconfirm } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import UpdateLessonForm from "../../../../components/forms/UpdateLessonForm";
+import { isEmpty } from "../../../../utils/helpers";
 
 const { Item } = List;
 
@@ -74,7 +75,7 @@ const CourseEdit = () => {
 
   const handleImage = (e) => {
     let file = e.target.files[0];
-    if (file) {
+    if (!isEmpty(file)) {
       setPreview(window.URL.createObjectURL(file));
       setUploadBtnText(file.name);
       setImage(file);
@@ -90,9 +91,9 @@ const CourseEdit = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     try {
-      if (image) {
+      setLoading(true);
+      if (!isEmpty(image)) {
         Resizer.imageFileResizer(
           image,
           720,
@@ -116,11 +117,14 @@ const CourseEdit = () => {
           price: values.paid ? values.price : 0,
           removedImage,
         });
+
         updatedCourse(data);
       }
+      setLoading(false);
     } catch (err) {
       console.log(err);
-      toast.error("Something went wrong. Please try again later.");
+      setLoading(false);
+      toast.error(err.response.data);
     }
   };
 
@@ -137,22 +141,27 @@ const CourseEdit = () => {
   };
 
   const handleDrop = async (e, index) => {
-    const movingItemIndex = e.dataTransfer.getData("itemIndex");
-    const targetItemIndex = index;
-    let allLessons = values.lessons;
+    try {
+      const movingItemIndex = e.dataTransfer.getData("itemIndex");
+      const targetItemIndex = index;
+      let allLessons = values.lessons;
 
-    let movingItem = allLessons[movingItemIndex]; //dragged lesosn
-    allLessons.splice(movingItemIndex, 1); // remove the dragged lesson from the array
-    allLessons.splice(targetItemIndex, 0, movingItem); // push the dragged lesson to the position of the target item
+      let movingItem = allLessons[movingItemIndex]; //dragged lesosn
+      allLessons.splice(movingItemIndex, 1); // remove the dragged lesson from the array
+      allLessons.splice(targetItemIndex, 0, movingItem); // push the dragged lesson to the position of the target item
 
-    setValues({ ...values, lessons: [...allLessons] });
+      setValues({ ...values, lessons: [...allLessons] });
 
-    // save the new lessons order in database
-    const { data } = await axios.put(`/api/course/${slug}`, {
-      ...values,
-      price: values.paid ? values.price : 0,
-    });
-    toast.success("Lessons rearranged successfully!");
+      // save the new lessons order in database
+      await axios.put(`/api/course/${slug}`, {
+        ...values,
+        price: values.paid ? values.price : 0,
+      });
+      toast.success("Lessons rearranged successfully!");
+    } catch (err) {
+      console.log(err);
+      toast.error(err.response.data);
+    }
   };
 
   const handleDeleteLesson = async (index) => {
@@ -164,7 +173,7 @@ const CourseEdit = () => {
       toast.success("Deleted the lesson successfully");
     } catch (err) {
       console.log(err);
-      toast.error("Something went wrong. Please try again later.");
+      toast.error(err.response.data);
     }
   };
 
@@ -175,37 +184,43 @@ const CourseEdit = () => {
   const handleVideo = async (e) => {
     if (e.target.files.length === 0) return;
     // remove previous video
-    if (current.video && current.video.Location) {
-      await axios.post(
-        `/api/course/video-remove/${values.instructor._id}`,
-        current.video
-      );
-    }
-
-    // upload new one
-    const file = e.target.files[0];
-    setUploadVideoBtnText(file.name);
-    setUploading(true);
-
-    // send video as form data
-    const videoData = new FormData();
-    videoData.append("video", file);
-    videoData.append("courseId", values._id);
-
-    // save progress bar and send video as form data to backend
-    const { data } = await axios.post(
-      `/api/course/video-upload/${values.instructor._id}`,
-      videoData,
-      {
-        onUploadProgress: (e) =>
-          setProgress(Math.round((100 * e.loaded) / e.total)),
+    try {
+      if (current.video && current.video.Location) {
+        await axios.post(
+          `/api/course/video-remove/${values.instructor._id}`,
+          current.video
+        );
       }
-    );
-    setCurrent({ ...current, video: data });
 
-    // update lesson since video changed
-    await axios.put(`/api/course/lesson/${slug}/${current._id}`, current);
-    setUploading(false);
+      // upload new one
+      const file = e.target.files[0];
+      setUploadVideoBtnText(file.name);
+      setUploading(true);
+
+      // send video as form data
+      const videoData = new FormData();
+      videoData.append("video", file);
+      videoData.append("courseId", values._id);
+
+      // save progress bar and send video as form data to backend
+      const { data } = await axios.post(
+        `/api/course/video-upload/${values.instructor._id}`,
+        videoData,
+        {
+          onUploadProgress: (e) =>
+            setProgress(Math.round((100 * e.loaded) / e.total)),
+        }
+      );
+      setCurrent({ ...current, video: data });
+
+      // update lesson since video changed
+      await axios.put(`/api/course/lesson/${slug}/${current._id}`, current);
+      setUploading(false);
+    } catch (err) {
+      console.log(err);
+      setUploading(false);
+      toast.error(err.response.data);
+    }
   };
 
   const clearModalState = () => {
@@ -236,7 +251,7 @@ const CourseEdit = () => {
     } catch (err) {
       console.log(err);
       setSavingLesson(false);
-      toast.error("Something went wrong. Please try again later");
+      toast.error(err.response.data);
     }
   };
 

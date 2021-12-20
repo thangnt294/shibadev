@@ -12,9 +12,7 @@ const CourseCreateForm = ({
   preview,
   uploadBtnText,
   loading,
-  uploading,
   handleRemoveImage = (f) => f,
-  editPage = false,
   tags,
   handleSelectTag,
 }) => {
@@ -132,7 +130,7 @@ const CourseCreateForm = ({
               <div className="form-group ms-3">
                 <Button
                   onClick={handleRemoveImage}
-                  disabled={loading || uploading}
+                  disabled={loading}
                   className="btn btn-primary"
                   type="danger"
                   size="large"
@@ -148,7 +146,7 @@ const CourseCreateForm = ({
             <div className="col">
               <Button
                 onClick={handleSubmit}
-                disabled={loading || uploading}
+                disabled={loading}
                 className="btn btn-primary"
                 loading={loading}
                 type="primary"

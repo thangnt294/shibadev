@@ -10,6 +10,7 @@ import { Context } from "../../global/Context";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { Avatar, Input, Menu } from "antd";
+import { toast } from "react-toastify";
 
 const { Item, SubMenu, ItemGroup } = Menu;
 
@@ -34,20 +35,25 @@ const TopNav = () => {
   };
 
   const handleSearchCourses = async (e) => {
-    const searchTerm = e.target.value;
-    const { data } = await axios.get(
-      `api/courses?page=${page}&limit=${limit}&term=${searchTerm}`
-    );
-    dispatch({
-      type: "UPDATE_COURSE_LIST",
-      payload: {
-        courses: data.courses,
-        total: data.total,
-        term: searchTerm,
-        page,
-        limit,
-      },
-    });
+    try {
+      const searchTerm = e.target.value;
+      const { data } = await axios.get(
+        `api/courses?page=${page}&limit=${limit}&term=${searchTerm}`
+      );
+      dispatch({
+        type: "UPDATE_COURSE_LIST",
+        payload: {
+          courses: data.courses,
+          total: data.total,
+          term: searchTerm,
+          page,
+          limit,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      toast.error(err.response.data);
+    }
   };
 
   return (

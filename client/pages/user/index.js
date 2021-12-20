@@ -21,8 +21,9 @@ const UserIndex = () => {
       setCourses(data);
       setLoading(false);
     } catch (err) {
-      toast.error("Something went wrong. Please refresh the page.");
+      console.log(err);
       setLoading(false);
+      toast.error(err.response.data);
     }
   };
 

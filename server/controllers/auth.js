@@ -173,7 +173,15 @@ export const changePassword = async (req, res, next) => {
     if (!passwordMatch) {
       return res
         .status(400)
-        .send("Your old password is incorrect. Please try again.");
+        .send("Your old password is incorrect. Please try again");
+    }
+    const samePassword = await comparePassword(newPassword, user.password);
+    if (samePassword) {
+      return res
+        .status(400)
+        .send(
+          "Your new password is the same as your old one. Please update your password before saving"
+        );
     }
     const hashedPassword = await hashPassword(newPassword);
 

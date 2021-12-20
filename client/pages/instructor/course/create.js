@@ -21,7 +21,6 @@ const CourseCreate = () => {
 
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState("");
   const [uploadBtnText, setUploadBtnText] = useState("Upload Image");
   const [tags, setTags] = useState([]);
@@ -67,7 +66,7 @@ const CourseCreate = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isEmpty(values.name) || isEmpty(values.description)) {
-      toast.error("Please fill in all the required fields before saving.");
+      toast.error("Please fill in all the required fields before saving");
       return;
     }
     setLoading(true);
@@ -97,9 +96,9 @@ const CourseCreate = () => {
         pushToInstructor();
       }
     } catch (err) {
-      setLoading(false);
-      toast.error("Something went wrong. Please try again later.");
       console.log(err);
+      setLoading(false);
+      toast.error(err.response.data);
     }
   };
 
@@ -122,7 +121,6 @@ const CourseCreate = () => {
           preview={preview}
           uploadBtnText={uploadBtnText}
           loading={loading}
-          uploading={uploading}
           handleRemoveImage={handleRemoveImage}
           handleSelectTag={handleSelectTag}
           tags={tags}

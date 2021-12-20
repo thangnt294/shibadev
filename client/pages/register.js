@@ -25,13 +25,13 @@ const Register = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const { data } = await axios.post(`/api/register`, {
+      await axios.post(`/api/register`, {
         name,
         email,
         password,
       });
       toast.success(
-        "Registration successful. Please verify your email before logging in."
+        "Registration successful. Please verify your email before logging in"
       );
       setName("");
       setEmail("");
@@ -39,8 +39,9 @@ const Register = () => {
       setLoading(false);
       router.push("/login");
     } catch (err) {
-      toast.error(err.response.data);
+      console.log(err);
       setLoading(false);
+      toast.error(err.response.data);
     }
   };
 

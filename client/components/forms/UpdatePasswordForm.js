@@ -5,9 +5,10 @@ const UpdatePasswordForm = ({
   editingPassword,
   setEditingPassword,
   updatingPassword,
-  handleChangePassword,
+  handleUpdatePassword,
   password,
   handleCancelEditPassword,
+  handleChangePassword,
 }) => {
   return (
     <>
@@ -54,6 +55,7 @@ const UpdatePasswordForm = ({
             bordered={false}
             disabled={!editingPassword}
             onChange={handleChangePassword}
+            type="password"
           />
         </div>
       </div>
@@ -73,6 +75,7 @@ const UpdatePasswordForm = ({
             value={password.newPassword}
             disabled={!editingPassword}
             onChange={handleChangePassword}
+            type="password"
           />
         </div>
       </div>
@@ -92,6 +95,7 @@ const UpdatePasswordForm = ({
             disabled={!editingPassword}
             bordered={false}
             onChange={handleChangePassword}
+            type="password"
           />
         </div>
       </div>
@@ -103,7 +107,7 @@ const UpdatePasswordForm = ({
             className="btn"
             disabled={!editingPassword}
             loading={updatingPassword}
-            onClick={handleChangePassword}
+            onClick={handleUpdatePassword}
           >
             Save
           </Button>

@@ -4,6 +4,7 @@ import axios from "axios";
 import CourseCard from "../components/cards/CourseCard";
 import { SearchOutlined } from "@ant-design/icons";
 import { Pagination } from "antd";
+import { toast } from "react-toastify";
 
 const Index = ({ initialCourses, initialTotal }) => {
   const [publishedCourses, setPublishedCourses] = useState([]);
@@ -22,19 +23,24 @@ const Index = ({ initialCourses, initialTotal }) => {
   }, [courses]);
 
   const handleSearchCourses = async (newPage) => {
-    const { data } = await axios.get(
-      `api/courses?page=${newPage - 1}&limit=${limit}&term=${term}`
-    );
-    dispatch({
-      type: "UPDATE_COURSE_LIST",
-      payload: {
-        courses: data.courses,
-        total: data.total,
-        page: newPage - 1,
-        limit,
-        term,
-      },
-    });
+    try {
+      const { data } = await axios.get(
+        `api/courses?page=${newPage - 1}&limit=${limit}&term=${term}`
+      );
+      dispatch({
+        type: "UPDATE_COURSE_LIST",
+        payload: {
+          courses: data.courses,
+          total: data.total,
+          page: newPage - 1,
+          limit,
+          term,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      toast.error(err.response.data);
+    }
   };
 
   return (

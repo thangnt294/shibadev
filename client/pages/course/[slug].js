@@ -35,14 +35,20 @@ const SingleCourse = ({ course }) => {
 
   const handleEnrollment = async (e, paid) => {
     e.preventDefault();
-    // check if user is logged in
-    if (!user) router.push("/login");
-    // check if already enrolled
-    if (status) return router.push(`/user/course/${slug}`);
-    if (paid) {
+    try {
+      // check if user is logged in
+      if (!user) router.push("/login");
+      // check if already enrolled
+      if (status) return router.push(`/user/course/${slug}`);
+      if (paid) {
+        setVisible(true);
+      } else {
+        await enroll();
+      }
+    } catch (err) {
+      console.log(err);
       setVisible(true);
-    } else {
-      await enroll();
+      toast.error(err.response.data);
     }
   };
 
@@ -57,9 +63,9 @@ const SingleCourse = ({ course }) => {
       );
       router.push(`/user/course/${data.slug}`);
     } catch (err) {
-      setLoading(false);
-      toast.error("Something went wrong. Please try again later.");
       console.log(err);
+      setLoading(false);
+      toast.error(err.response.data);
     }
   };
 

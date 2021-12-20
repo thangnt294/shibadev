@@ -40,10 +40,10 @@ const Login = () => {
       window.localStorage.setItem("user", JSON.stringify(data));
       // redirect
       router.push("/user");
-      // setLoading(false);
     } catch (err) {
-      toast.error(err.response.data);
+      console.log(err);
       setLoading(false);
+      toast.error(err.response.data);
     }
   };
 

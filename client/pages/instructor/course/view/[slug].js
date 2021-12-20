@@ -90,7 +90,7 @@ const CourseView = () => {
     } catch (err) {
       clearState();
       console.log(err);
-      toast.error("Something went wrong. Please try again later.");
+      toast.error(err.response.data);
     }
   };
 
@@ -112,21 +112,20 @@ const CourseView = () => {
           },
         }
       );
-      // once response is received
       setValues({ ...values, video: data });
       setUploading(false);
       toast.success("Uploaded video successfully");
     } catch (err) {
       console.log(err);
       setUploading(false);
-      toast.error("Something went wrong. Please try again later.");
+      toast.error(err.response.data);
     }
   };
 
   const handleRemoveVideo = async () => {
     try {
       setUploading(true);
-      const { data } = await axios.post(
+      await axios.post(
         `/api/course/video-remove/${course.instructor._id}`,
         values.video
       );
@@ -137,7 +136,7 @@ const CourseView = () => {
     } catch (err) {
       console.log(err);
       setUploading(false);
-      toast.error("Something went wrong. Please try again later.");
+      toast.error(err.response.data);
     }
   };
 
@@ -153,7 +152,7 @@ const CourseView = () => {
       toast.success("Congrats! Your course is now live on the marketplace");
     } catch (err) {
       console.log(err);
-      toast.error("Something went wrong. Please try again later.");
+      toast.error(err.response.data);
     }
   };
 
@@ -164,7 +163,7 @@ const CourseView = () => {
       toast.success("Your course is unpublished");
     } catch (err) {
       console.log(err);
-      toast.error("Something went wrong. Please try again later.");
+      toast.error(err.response.data);
     }
   };
 

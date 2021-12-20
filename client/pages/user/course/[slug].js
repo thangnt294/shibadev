@@ -18,7 +18,6 @@ const { Item } = Menu;
 const SingleCourse = () => {
   const [clicked, setClicked] = useState(-1);
   const [collapsed, setCollapsed] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [course, setCourse] = useState({ lessons: [] });
   const [completedLessons, setCompletedLessons] = useState([]);
   // force state update
@@ -48,7 +47,7 @@ const SingleCourse = () => {
 
   const markCompleted = async () => {
     try {
-      const { data } = await axios.post("/api/mark-completed", {
+      await axios.post("/api/mark-completed", {
         courseId: course._id,
         lessonId: course.lessons[clicked]._id,
       });
@@ -56,13 +55,13 @@ const SingleCourse = () => {
       toast.success("Mark as completed successfully");
     } catch (err) {
       console.log(err);
-      toast.error("Something went wrong. Please try again later.");
+      toast.error(err.response.data);
     }
   };
 
   const markIncomplete = async () => {
     try {
-      const { data } = await axios.post("/api/mark-incomplete", {
+      await axios.post("/api/mark-incomplete", {
         courseId: course._id,
         lessonId: course.lessons[clicked]._id,
       });
@@ -76,7 +75,7 @@ const SingleCourse = () => {
       toast.success("Mark as incomplete successfully");
     } catch (err) {
       console.log(err);
-      toast.error("Something went wrong. Please try again later.");
+      toast.error(err.response.data);
     }
   };
 

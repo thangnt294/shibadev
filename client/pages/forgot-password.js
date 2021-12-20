@@ -31,11 +31,12 @@ const ForgotPassword = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const { data } = await axios.post("/api/forgot-password", { email });
+      await axios.post("/api/forgot-password", { email });
       setSuccess(true);
       setLoading(false);
       toast.success("Check your email for the secret code");
     } catch (err) {
+      console.log(err);
       setLoading(false);
       toast.error(err.response.data);
     }
@@ -45,7 +46,7 @@ const ForgotPassword = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const { data } = await axios.post("/api/reset-password", {
+      await axios.post("/api/reset-password", {
         email,
         code,
         newPassword,
@@ -57,6 +58,7 @@ const ForgotPassword = () => {
       toast.success("Great! Now you can log in with your new password");
       router.push("/login");
     } catch (err) {
+      console.log(err);
       setLoading(false);
       toast.error(err.response.data);
     }
