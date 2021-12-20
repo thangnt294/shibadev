@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Image, Button } from "antd";
 import UserProfileForm from "../../../components/forms/UserProfileForm";
+import ChangePasswordForm from "../../../components/forms/ChangePasswordForm";
 import UserRoute from "../../../components/routes/UserRoute";
 import { isEmpty } from "../../../utils/helpers";
 
@@ -13,6 +14,8 @@ const UserProfile = () => {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [updating, setUpdating] = useState(false);
+  const [editingPasword, setEditingPassword] = useState(false);
+  const [updatingPassword, setUpdatingPassword] = useState(false);
 
   useEffect(() => {
     fetchUser();
@@ -166,6 +169,15 @@ const UserProfile = () => {
                       handleSubmit={handleSubmit}
                       handleCancelEdit={handleCancelEdit}
                       handleChange={handleChange}
+                    />
+                  </div>
+                </div>
+                <div className="card mb-3">
+                  <div className="card-body">
+                    <ChangePasswordForm
+                      editingPasword={editingPasword}
+                      setEditingPassword={setEditingPassword}
+                      updatingPassword={updatingPassword}
                     />
                   </div>
                 </div>

@@ -4,6 +4,7 @@ import {
   checkEmailVerifiedSES,
   sendResetPasswordEmail,
   verifyEmail,
+  isEmpty,
 } from "../utils/helpers";
 import jwt from "jsonwebtoken";
 import { nanoid } from "nanoid";
@@ -12,15 +13,17 @@ export const register = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
     // validation
-    if (!name) return res.status(400).send("Name is required");
-    if (!password || password.length < 6) {
+    if (isEmpty(name) || isEmpty(email)) {
+      return res.status(400).send("Name and email is required");
+    }
+    if (isEmpty(password) || password.length < 6) {
       return res
         .status(400)
         .send("Password is required and should be min 6 characters long");
     }
 
     let userExist = await User.findOne({ email });
-    if (userExist) {
+    if (!isEmpty(userExist)) {
       return res
         .status(400)
         .send("This email is already taken. Please try another email.");
@@ -52,11 +55,15 @@ export const login = async (req, res, next) => {
 
     // check if db has user with that email
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).send("Incorrect username or password");
+    if (isEmpty(user)) {
+      return res.status(400).send("Incorrect username or password");
+    }
 
     // check password
-    const match = await comparePassword(password, user.password);
-    if (!match) return res.status(400).send("Incorrect username or password");
+    const passwordMatch = await comparePassword(password, user.password);
+    if (!passwordMatch) {
+      return res.status(400).send("Incorrect username or password");
+    }
 
     if (!user.is_verified) {
       const emailVerified = await checkEmailVerifiedSES(email);
@@ -106,8 +113,9 @@ export const forgotPassword = async (req, res, next) => {
     const { email } = req.body;
     const resetCode = nanoid(6).toUpperCase();
     const user = await User.findOne({ email });
-    if (!user)
+    if (isEmpty(user)) {
       return res.status(400).send("Incorrect email. Please try again.");
+    }
     if (!user.is_verified) {
       const emailVerified = await checkEmailVerifiedSES(email);
       if (!emailVerified) {
@@ -119,7 +127,6 @@ export const forgotPassword = async (req, res, next) => {
     }
     await User.findByIdAndUpdate(user._id, { passwordResetCode: resetCode });
 
-    // prepare for email
     await sendResetPasswordEmail(email, resetCode);
     res.json({ ok: true });
   } catch (err) {
@@ -134,10 +141,42 @@ export const resetPassword = async (req, res, next) => {
 
     const user = await User.findOneAndUpdate(
       { email, passwordResetCode: code },
-      { password: hashedPassword, passwordResetCode: "" }
+      { password: hashedPassword, passwordResetCode: null }
     );
-    if (!user)
-      return res.status(400).send("Reset code incorrect. Please try again.");
+    if (isEmpty(user)) {
+      return res
+        .status(400)
+        .send("Your email or your reset code is incorrect. Please try again.");
+    }
+    res.json({ ok: true });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const changePassword = async (req, res, next) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    if (isEmpty(newPassword) || newPassword.length < 6) {
+      return res
+        .status(400)
+        .send("Password is required and should be min 6 characters long");
+    }
+
+    const user = await User.findById(req.user._id);
+
+    const passwordMatch = await comparePassword(oldPassword, user.password);
+    if (!passwordMatch) {
+      return res
+        .status(400)
+        .send("Your old password is incorrect. Please try again.");
+    }
+    const hashedPassword = await hashPassword(newPassword);
+
+    // change password
+    await User.findByIdAndUpdate(req.user._id, {
+      password: hashedPassword,
+    });
     res.json({ ok: true });
   } catch (err) {
     next(err);
