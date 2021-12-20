@@ -18,7 +18,7 @@ export const isEmpty = (obj) =>
   obj.length === 0 ||
   Object.keys(obj).length === 0;
 
-export const uploadImageToS3 = async (image) => {
+export const uploadImageToS3 = async (image, email) => {
   // prepare the image
   const base64Data = new Buffer.from(
     image.replace(/^data:image\/\w+;base64,/, ""),
@@ -29,7 +29,7 @@ export const uploadImageToS3 = async (image) => {
 
   // image params
   const params = {
-    Bucket: "elearn-thangnt294",
+    Bucket: `elearn-thangnt294/${email}`,
     Key: `${nanoid()}.${type}`,
     Body: base64Data,
     ACL: "public-read",
@@ -53,10 +53,10 @@ export const removeImageFromS3 = async (image) => {
   return data;
 };
 
-export const uploadVideoToS3 = async (video) => {
+export const uploadVideoToS3 = async (video, email) => {
   // video params
   const params = {
-    Bucket: "elearn-thangnt294",
+    Bucket: `elearn-thangnt294/${email}`,
     Key: `${nanoid()}.${video.type.split("/")[1]}`,
     Body: readFileSync(video.path),
     ACL: "public-read",

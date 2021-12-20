@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Image, Button } from "antd";
+import { Image, Button, Badge, Space } from "antd";
 import PersonalInformationForm from "../../../components/forms/PersonalInformationForm";
 import UpdatePasswordForm from "../../../components/forms/UpdatePasswordForm";
 import UserRoute from "../../../components/routes/UserRoute";
 import { isEmpty } from "../../../utils/helpers";
+import { toast } from "react-toastify";
 
 const UserProfile = () => {
   const [user, setUser] = useState(null);
@@ -170,6 +171,19 @@ const UserProfile = () => {
                         alt="Avatar"
                         preview={false}
                       />
+                      <div>
+                        <Space className="mt-2">
+                          {user &&
+                            user.role &&
+                            user.role.map((role) => (
+                              <Badge
+                                count={role}
+                                style={{ backgroundColor: "#2dbce3" }}
+                                key={role}
+                              />
+                            ))}
+                        </Space>
+                      </div>
                       <div className="mt-3">
                         <h4>{initialUser && initialUser.name}</h4>
                         <p className="text-secondary mb-1">

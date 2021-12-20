@@ -73,16 +73,20 @@ export const login = async (req, res, next) => {
     }
 
     // create signed jwt
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign(
+      { _id: user._id, email: email },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
 
     // return user and token to client, exclude hashed password
     user.password = undefined;
     // send token in cookie
     res.cookie("token", token, {
       httpOnly: true,
-      // secure: true, // only works on https
+      // secure: true,
     });
     res.json(user);
   } catch (err) {

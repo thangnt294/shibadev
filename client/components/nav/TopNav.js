@@ -67,7 +67,7 @@ const TopNav = () => {
         </Link>
       </Item>
       {current === "/" && (
-        <Item className="search-bar-item">
+        <Item className="search-bar-item" key="search-bar-item">
           <Input
             placeholder="Search..."
             className="search-bar"

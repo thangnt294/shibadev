@@ -30,7 +30,7 @@ export const create = async (req, res, next) => {
     const { uploadImage } = req.body;
 
     if (!isEmpty(uploadImage)) {
-      const data = await uploadImageToS3(uploadImage);
+      const data = await uploadImageToS3(uploadImage, req.user.email);
       newCourse.image = data;
     }
     delete newCourse.uploadImage;
@@ -59,7 +59,7 @@ export const update = async (req, res, next) => {
         await removeImageFromS3(image);
       }
 
-      const data = await uploadImageToS3(uploadImage);
+      const data = await uploadImageToS3(uploadImage, req.user.email);
       updatedCourse.image = data;
     } else {
       if (!isEmpty(removedImage)) {
@@ -104,7 +104,7 @@ export const uploadVideo = async (req, res, next) => {
     }
 
     // video params
-    const data = await uploadVideoToS3(video);
+    const data = await uploadVideoToS3(video, req.user.email);
     res.send(data);
   } catch (err) {
     next(err);
