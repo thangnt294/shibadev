@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { SyncOutlined } from "@ant-design/icons";
 import Link from "next/link";
-import { Context } from "../context/index";
+import { Context } from "../global/Context";
 import { useRouter } from "next/router";
 
 const Login = () => {

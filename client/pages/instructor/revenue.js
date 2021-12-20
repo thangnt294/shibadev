@@ -1,5 +1,4 @@
-import { useState, useEffect, useContext } from "react";
-import { Context } from "../../context";
+import { useState, useEffect } from "react";
 import InstructorRoute from "../../components/routes/InstructorRoute";
 import axios from "axios";
 import { DollarOutlined, RightCircleOutlined } from "@ant-design/icons";

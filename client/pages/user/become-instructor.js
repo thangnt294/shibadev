@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Context } from "../../context";
+import { Context } from "../../global/Context";
 import { Button } from "antd";
 import axios from "axios";
 import {

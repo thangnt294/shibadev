@@ -3,11 +3,10 @@ import Link from "next/link";
 import {
   LoginOutlined,
   UserAddOutlined,
-  CoffeeOutlined,
   TeamOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { Context } from "../context/index";
+import { Context } from "../../global/Context";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { Avatar, Input, Menu } from "antd";

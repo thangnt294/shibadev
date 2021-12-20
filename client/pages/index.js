@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { Context } from "../context/index";
+import { Context } from "../global/Context";
 import axios from "axios";
 import CourseCard from "../components/cards/CourseCard";
 import { SearchOutlined } from "@ant-design/icons";

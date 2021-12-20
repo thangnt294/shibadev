@@ -1,19 +1,14 @@
-import { useState, useContext, useEffect } from "react";
-import { Context } from "../../context";
+import { useState, useEffect } from "react";
 import UserRoute from "../../components/routes/UserRoute";
 import axios from "axios";
 import { Avatar } from "antd";
 import Link from "next/link";
-import { SyncOutlined, PlayCircleOutlined } from "@ant-design/icons";
+import { PlayCircleOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 
 const UserIndex = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const {
-    state: { user },
-  } = useContext(Context);
 
   useEffect(() => {
     loadCourses();

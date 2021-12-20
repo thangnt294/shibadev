@@ -1,7 +1,7 @@
 import { Input, Button, Tooltip, Popconfirm } from "antd";
 import { EditFilled, CloseCircleOutlined } from "@ant-design/icons";
 
-const UserProfileForm = ({
+const PersonalInformationForm = ({
   user,
   editing,
   setEditing,
@@ -147,4 +147,4 @@ const UserProfileForm = ({
   );
 };
 
-export default UserProfileForm;
+export default PersonalInformationForm;

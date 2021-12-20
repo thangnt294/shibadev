@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Image, Button } from "antd";
-import UserProfileForm from "../../../components/forms/UserProfileForm";
-import ChangePasswordForm from "../../../components/forms/ChangePasswordForm";
+import PersonalInformationForm from "../../../components/forms/PersonalInformationForm";
+import UpdatePasswordForm from "../../../components/forms/UpdatePasswordForm";
 import UserRoute from "../../../components/routes/UserRoute";
 import { isEmpty } from "../../../utils/helpers";
 
@@ -14,7 +14,7 @@ const UserProfile = () => {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [updating, setUpdating] = useState(false);
-  const [editingPasword, setEditingPassword] = useState(false);
+  const [editingPassword, setEditingPassword] = useState(false);
   const [updatingPassword, setUpdatingPassword] = useState(false);
   const [password, setPassword] = useState({
     oldPassword: "",
@@ -34,7 +34,7 @@ const UserProfile = () => {
       setInitialUser(data);
       setLoading(false);
     } catch (err) {
-      toast.error("Something went wrong. Please refresh the page.");
+      toast.error("Something went wrong. Please refresh the page");
       setLoading(false);
     }
   };
@@ -69,7 +69,7 @@ const UserProfile = () => {
     } catch (err) {
       console.log(err);
       setUploading(false);
-      toast.error("Something went wrong. Please try again later.");
+      toast.error("Something went wrong. Please try again later");
     }
   };
 
@@ -85,7 +85,7 @@ const UserProfile = () => {
       setUploadBtnText("Upload Image");
     } catch (err) {
       console.log(err);
-      toast.error("Something went wrong. Please try again later.");
+      toast.error("Something went wrong. Please try again later");
     }
   };
 
@@ -104,7 +104,7 @@ const UserProfile = () => {
     } catch (err) {
       console.log(err);
       setUpdating(false);
-      toast.error("Something went wrong. Please try again later.");
+      toast.error("Something went wrong. Please try again later");
     }
   };
 
@@ -122,8 +122,33 @@ const UserProfile = () => {
     setEditingPassword(false);
   };
 
-  const handleChangePassword = () => {
-    // TODO implement
+  const handleChangePassword = async () => {
+    try {
+      if (
+        isEmpty(password.oldPassword) ||
+        isEmpty(password.newPassword) ||
+        isEmpty(password.confirmPassword)
+      ) {
+        toast.error("Please fill in all the required fields before saving");
+        return;
+      }
+
+      if (password.newPassword !== password.confirmPassword) {
+        toast.error(
+          "Confirm password does not match new password. Please make sure that they match each other"
+        );
+        return;
+      }
+
+      setUpdatingPassword(true);
+      await axios.post("/api/change-password", password);
+      setUpdatingPassword(false);
+      toast.success("Your password has been successfully updated");
+    } catch (err) {
+      console.log(err);
+      setUpdatingPassword(false);
+      toast.error("Something went wrong. Please try again later");
+    }
   };
 
   return (
@@ -179,7 +204,7 @@ const UserProfile = () => {
               <div className="col-md-8">
                 <div className="card mb-3">
                   <div className="card-body">
-                    <UserProfileForm
+                    <PersonalInformationForm
                       user={user}
                       editing={editing}
                       setEditing={setEditing}
@@ -192,8 +217,8 @@ const UserProfile = () => {
                 </div>
                 <div className="card mb-3">
                   <div className="card-body">
-                    <ChangePasswordForm
-                      editingPasword={editingPasword}
+                    <UpdatePasswordForm
+                      editingPassword={editingPassword}
                       setEditingPassword={setEditingPassword}
                       updatingPassword={updatingPassword}
                       password={password}

@@ -2,7 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { SyncOutlined } from "@ant-design/icons";
-import { Context } from "../context/index";
+import { Context } from "../global/Context";
 import Link from "next/link";
 import { useRouter } from "next/router";
 

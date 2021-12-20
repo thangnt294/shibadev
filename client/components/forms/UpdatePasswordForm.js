@@ -1,7 +1,7 @@
 import { Input, Tooltip, Popconfirm, Button } from "antd";
 import { EditFilled, CloseCircleOutlined } from "@ant-design/icons";
 
-const ChangePasswordForm = ({
+const UpdatePasswordForm = ({
   editingPassword,
   setEditingPassword,
   updatingPassword,
@@ -41,7 +41,9 @@ const ChangePasswordForm = ({
       </div>
       <div className="row">
         <div className="col-sm-3">
-          <h6 className="mb-0">Old Password</h6>
+          <h6 className="mb-0">
+            Old Password <span className="text-danger">*</span>
+          </h6>
         </div>
         <div className="col-sm-9 text-secondary">
           <Input
@@ -58,7 +60,9 @@ const ChangePasswordForm = ({
       <hr />
       <div className="row">
         <div className="col-sm-3">
-          <h6 className="mb-0">New Password</h6>
+          <h6 className="mb-0">
+            New Password <span className="text-danger">*</span>
+          </h6>
         </div>
         <div className="col-sm-9 text-secondary">
           <Input
@@ -75,7 +79,9 @@ const ChangePasswordForm = ({
       <hr />
       <div className="row">
         <div className="col-sm-3">
-          <h6 className="mb-0">Confirm Password</h6>
+          <h6 className="mb-0">
+            Confirm Password <span className="text-danger">*</span>
+          </h6>
         </div>
         <div className="col-sm-9 text-secondary">
           <Input
@@ -107,4 +113,4 @@ const ChangePasswordForm = ({
   );
 };
 
-export default ChangePasswordForm;
+export default UpdatePasswordForm;
