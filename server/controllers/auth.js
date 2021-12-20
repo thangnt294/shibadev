@@ -23,7 +23,7 @@ export const register = async (req, res, next) => {
     if (userExist) {
       return res
         .status(400)
-        .send("This email is already taken. Please use another email.");
+        .send("This email is already taken. Please try another email.");
     }
 
     await verifyEmail(email);

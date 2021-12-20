@@ -29,7 +29,7 @@ export const create = async (req, res, next) => {
     // upload image to S3
     const { uploadImage } = req.body;
 
-    if (uploadImage) {
+    if (!isEmpty(uploadImage)) {
       const data = await uploadImageToS3(uploadImage);
       newCourse.image = data;
     }
@@ -52,8 +52,8 @@ export const update = async (req, res, next) => {
     const { removedImage, uploadImage } = req.body;
     const updatedCourse = req.body;
 
-    if (uploadImage) {
-      if (removedImage) {
+    if (!isEmpty(uploadImage)) {
+      if (!isEmpty(removedImage)) {
         const { image } = req.body;
 
         await removeImageFromS3(image);
@@ -62,7 +62,7 @@ export const update = async (req, res, next) => {
       const data = await uploadImageToS3(uploadImage);
       updatedCourse.image = data;
     } else {
-      if (removedImage) {
+      if (!isEmpty(removedImage)) {
         const { image } = req.body;
 
         await removeImageFromS3(image);
@@ -99,7 +99,7 @@ export const uploadVideo = async (req, res, next) => {
       return res.status(400).send("Unauthorized");
     }
     const { video } = req.files;
-    if (!video) {
+    if (isEmpty(video)) {
       return res.status(400).send("No video");
     }
 
@@ -117,7 +117,7 @@ export const removeVideo = async (req, res, next) => {
       return res.status(400).send("Unauthorized");
     }
 
-    const data = await removeVideoFromS3(req.body);
+    await removeVideoFromS3(req.body);
     res.send({ ok: true });
   } catch (err) {
     next(err);
@@ -186,7 +186,7 @@ export const updateLesson = async (req, res, next) => {
     }
 
     const { _id, title, content, video, free_preview } = req.body;
-    const updated = await Course.updateOne(
+    await Course.updateOne(
       { "lessons._id": _id },
       {
         $set: {
@@ -305,13 +305,13 @@ export const enrollCourse = async (req, res, next) => {
       const fee = ((course.price * 30) / 100).toFixed(2);
 
       // add fee to admin
-      const admin = await User.findOneAndUpdate(
+      await User.findOneAndUpdate(
         { role: "Admin" },
         { $inc: { balance: fee } }
       );
 
       // add profit to instructor
-      const instructor = await User.findByIdAndUpdate(course.instructor._id, {
+      await User.findByIdAndUpdate(course.instructor._id, {
         $inc: { balance: course.price - fee },
       });
     }

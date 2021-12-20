@@ -1,7 +1,15 @@
-import { Input, Button } from "antd";
-import { EditFilled } from "@ant-design/icons";
+import { Input, Button, Tooltip, Popconfirm } from "antd";
+import { EditFilled, CloseCircleOutlined } from "@ant-design/icons";
 
-const UserProfileForm = ({ user, editing, setEditing }) => {
+const UserProfileForm = ({
+  user,
+  editing,
+  setEditing,
+  updating,
+  handleSubmit,
+  handleCancelEdit,
+  handleChange,
+}) => {
   const { name, email, title, address, bio } = user;
   return (
     <>
@@ -17,9 +25,9 @@ const UserProfileForm = ({ user, editing, setEditing }) => {
             className="form-control"
             placeholder="Name *"
             value={name}
-            disabled
+            disabled={!editing}
             bordered={false}
-            // onChange={handleChange}
+            onChange={handleChange}
           />
         </div>
       </div>
@@ -38,7 +46,6 @@ const UserProfileForm = ({ user, editing, setEditing }) => {
             value={email}
             disabled
             bordered={false}
-            // onChange={handleChange}
           />
         </div>
       </div>
@@ -53,9 +60,9 @@ const UserProfileForm = ({ user, editing, setEditing }) => {
             className="form-control"
             placeholder="Title"
             value={title}
-            disabled
+            disabled={!editing}
             bordered={false}
-            // onChange={handleChange}
+            onChange={handleChange}
           />
         </div>
       </div>
@@ -70,9 +77,9 @@ const UserProfileForm = ({ user, editing, setEditing }) => {
             className="form-control"
             placeholder="Address"
             value={address}
-            disabled
+            disabled={!editing}
             bordered={false}
-            // onChange={handleChange}
+            onChange={handleChange}
           />
         </div>
       </div>
@@ -87,24 +94,49 @@ const UserProfileForm = ({ user, editing, setEditing }) => {
             className="form-control"
             placeholder="Bio"
             value={bio}
-            disabled
+            disabled={!editing}
             bordered={false}
-            // onChange={handleChange}
+            onChange={handleChange}
           />
         </div>
       </div>
       <hr />
       <div className="row d-flex justify-content-between">
         <div className="col-sm-3 align-self-center">
-          <Button type="primary" className="btn">
+          <Button
+            type="primary"
+            className="btn"
+            disabled={!editing}
+            loading={updating}
+            onClick={handleSubmit}
+          >
             Save
           </Button>
         </div>
         <div className="col me-2 align-self-center">
-          <EditFilled
-            className="float-end lead text-secondary pointer edit-icon"
-            onClick={() => setEditing(!editing)}
-          />
+          {editing ? (
+            <Tooltip title="Cancel">
+              <Popconfirm
+                title="All your unsaved changes will be discarded. Are you sure?"
+                onConfirm={handleCancelEdit}
+                okText="Yes"
+                cancelText="No"
+              >
+                <CloseCircleOutlined
+                  className="float-end lead text-secondary pointer edit-icon"
+                  disabled={updating}
+                />
+              </Popconfirm>
+            </Tooltip>
+          ) : (
+            <Tooltip title="Edit">
+              <EditFilled
+                className="float-end lead text-secondary pointer edit-icon"
+                onClick={() => setEditing(true)}
+                disabled={updating}
+              />
+            </Tooltip>
+          )}
         </div>
       </div>
     </>
