@@ -6,6 +6,7 @@ import UpdatePasswordForm from "../../../components/forms/UpdatePasswordForm";
 import UserRoute from "../../../components/routes/UserRoute";
 import { isEmpty } from "../../../utils/helpers";
 import { toast } from "react-toastify";
+import Resizer from "react-image-file-resizer";
 
 const UserProfile = () => {
   const [user, setUser] = useState(null);
@@ -14,6 +15,7 @@ const UserProfile = () => {
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [removingAvatar, setRemovingAvatar] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [editingPassword, setEditingPassword] = useState(false);
   const [updatingPassword, setUpdatingPassword] = useState(false);
@@ -35,19 +37,22 @@ const UserProfile = () => {
       setInitialUser(data);
       setLoading(false);
     } catch (err) {
-      toast.error("Something went wrong. Please refresh the page");
+      console.log(err);
       setLoading(false);
+      toast.error("Something went wrong. Please refresh the page");
     }
   };
 
   const handleImage = async (e) => {
+    e.preventDefault();
     try {
       let file = e.target.files[0];
       if (!isEmpty(file)) {
+        setUploading(true);
         const fileName = file.name;
-        setUploadBtnText(
-          fileName.length > 12 ? `${fileName.slice(0, 12)}...` : fileName
-        );
+        const text =
+          fileName.length > 18 ? `${fileName.slice(0, 18)}...` : fileName;
+        setUploadBtnText(text);
         Resizer.imageFileResizer(
           file,
           720,
@@ -56,13 +61,12 @@ const UserProfile = () => {
           100,
           0,
           async (uri) => {
-            setUploading(true);
-            const user = await axios.post("/api/user/upload-avatar", {
+            const { data } = await axios.post("/api/user/upload-avatar", {
               image: uri,
             });
 
-            setUser(user);
-            setInitialUser(user);
+            setUser(data);
+            setInitialUser(data);
             setUploading(false);
           }
         );
@@ -80,12 +84,15 @@ const UserProfile = () => {
 
   const handleRemoveImage = async () => {
     try {
-      const user = await axios.post("/api/user/remove-avatar");
-      setUser(user);
-      setInitialUser(user);
+      setRemovingAvatar(true);
+      const { data } = await axios.post("/api/user/remove-avatar");
+      setUser(data);
+      setInitialUser(data);
       setUploadBtnText("Upload Image");
+      setRemovingAvatar(false);
     } catch (err) {
       console.log(err);
+      setRemovingAvatar(false);
       toast.error("Something went wrong. Please try again later");
     }
   };
@@ -164,8 +171,8 @@ const UserProfile = () => {
                     <div className="d-flex flex-column align-items-center text-center">
                       <Image
                         src={
-                          user && user.image
-                            ? user.image.Location
+                          user && user.avatar
+                            ? user.avatar.Location
                             : "/avatar.png"
                         }
                         alt="Avatar"
@@ -192,21 +199,30 @@ const UserProfile = () => {
                         <p className="text-muted font-size-sm">
                           {initialUser && initialUser.address}
                         </p>
-                        <label className="btn btn-primary me-2">
-                          {uploadBtnText}
-                          <input
-                            type="file"
-                            name="image"
-                            onChange={handleImage}
-                            accept="image/*"
-                            hidden
-                          />
-                        </label>
+                        <Button
+                          className="btn bg-primary text-white me-2 pointer"
+                          size="large"
+                          disabled={removingAvatar}
+                          loading={uploading}
+                        >
+                          <label className="pointer">
+                            {uploadBtnText}
+                            <input
+                              type="file"
+                              name="image"
+                              onChange={handleImage}
+                              accept="image/*"
+                              hidden
+                            />
+                          </label>
+                        </Button>
+
                         <Button
                           className="btn bg-danger text-white"
                           size="large"
-                          disabled={!(user && user.image) || uploading}
+                          disabled={!(user && user.avatar) || uploading}
                           onClick={handleRemoveImage}
+                          loading={removingAvatar}
                         >
                           Remove Image
                         </Button>

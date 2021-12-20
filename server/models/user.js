@@ -22,8 +22,8 @@ const userSchema = new mongoose.Schema(
       max: 64,
     },
     avatar: {
-      type: String,
-      default: "/avatar.png",
+      type: Object,
+      default: null,
     },
     title: {
       type: String,

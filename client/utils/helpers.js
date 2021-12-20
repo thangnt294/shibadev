@@ -6,7 +6,4 @@ export const currencyFormatter = (data) => {
 };
 
 export const isEmpty = (obj) =>
-  obj === null ||
-  obj === undefined ||
-  obj.length === 0 ||
-  Object.keys(obj).length === 0;
+  obj === null || obj === undefined || obj.length === 0;

@@ -8,15 +8,15 @@ export const uploadAvatar = async (req, res, next) => {
       throw new Error("No image found");
     }
     const user = await User.findById(req.user._id);
-    if (!isEmpty(user.image)) {
-      await removeImageFromS3(user.image);
+    if (!isEmpty(user.avatar)) {
+      await removeImageFromS3(user.avatar);
     }
-    const uploadedImage = await uploadImageToS3(image);
+    const uploadedImage = await uploadImageToS3(image, req.user.email);
 
     const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
       {
-        image: uploadedImage,
+        avatar: uploadedImage,
       },
       { new: true }
     ).select("-password");
@@ -30,14 +30,14 @@ export const uploadAvatar = async (req, res, next) => {
 export const removeAvatar = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id);
-    if (!isEmpty(user.image)) {
-      await removeImageFromS3(user.image);
+    if (!isEmpty(user.avatar)) {
+      await removeImageFromS3(user.avatar);
     }
 
     const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
       {
-        image: null,
+        avatar: null,
       },
       { new: true }
     ).select("-password");

@@ -72,7 +72,7 @@ const CourseCreate = () => {
     }
     setLoading(true);
     try {
-      if (image) {
+      if (!isEmpty(image)) {
         Resizer.imageFileResizer(
           image,
           720,

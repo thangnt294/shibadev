@@ -133,6 +133,7 @@ const TopNav = () => {
           icon={<Avatar src="/avatar.png" size="small" />}
           title={user && user.name}
           className={user && user.role ? "" : "ms-auto"}
+          key="sub-menu"
         >
           <ItemGroup>
             <Item key="/user">
