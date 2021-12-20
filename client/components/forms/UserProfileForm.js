@@ -142,31 +142,6 @@ const UserProfileForm = ({
             Save
           </Button>
         </div>
-        {/* <div className="col me-2 align-self-center">
-          {editing ? (
-            <Tooltip title="Cancel">
-              <Popconfirm
-                title="All your unsaved changes will be discarded. Are you sure?"
-                onConfirm={handleCancelEdit}
-                okText="Yes"
-                cancelText="No"
-              >
-                <CloseCircleOutlined
-                  className="float-end lead text-secondary pointer edit-icon"
-                  disabled={updating}
-                />
-              </Popconfirm>
-            </Tooltip>
-          ) : (
-            <Tooltip title="Edit">
-              <EditFilled
-                className="float-end lead text-secondary pointer edit-icon"
-                onClick={() => setEditing(true)}
-                disabled={updating}
-              />
-            </Tooltip>
-          )}
-        </div> */}
       </div>
     </>
   );

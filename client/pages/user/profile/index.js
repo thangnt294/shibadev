@@ -16,6 +16,11 @@ const UserProfile = () => {
   const [updating, setUpdating] = useState(false);
   const [editingPasword, setEditingPassword] = useState(false);
   const [updatingPassword, setUpdatingPassword] = useState(false);
+  const [password, setPassword] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
 
   useEffect(() => {
     fetchUser();
@@ -108,6 +113,19 @@ const UserProfile = () => {
     setEditing(false);
   };
 
+  const handleCancelEditPassword = () => {
+    setPassword({
+      oldPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
+    setEditingPassword(false);
+  };
+
+  const handleChangePassword = () => {
+    // TODO implement
+  };
+
   return (
     !loading && (
       <UserRoute>
@@ -178,6 +196,9 @@ const UserProfile = () => {
                       editingPasword={editingPasword}
                       setEditingPassword={setEditingPassword}
                       updatingPassword={updatingPassword}
+                      password={password}
+                      handleChangePassword={handleChangePassword}
+                      handleCancelEditPassword={handleCancelEditPassword}
                     />
                   </div>
                 </div>

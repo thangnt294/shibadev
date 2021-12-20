@@ -1,10 +1,13 @@
-import { Input, Tooltip, Popconfirm } from "antd";
+import { Input, Tooltip, Popconfirm, Button } from "antd";
 import { EditFilled, CloseCircleOutlined } from "@ant-design/icons";
 
 const ChangePasswordForm = ({
   editingPassword,
   setEditingPassword,
-  udpatingPassword,
+  updatingPassword,
+  handleChangePassword,
+  password,
+  handleCancelEditPassword,
 }) => {
   return (
     <>
@@ -15,13 +18,13 @@ const ChangePasswordForm = ({
             <Tooltip title="Cancel">
               <Popconfirm
                 title="All your unsaved changes will be discarded. Are you sure?"
-                onConfirm={handleCancelEdit}
+                onConfirm={handleCancelEditPassword}
                 okText="Yes"
                 cancelText="No"
               >
                 <CloseCircleOutlined
                   className="float-end lead text-secondary pointer edit-icon"
-                  disabled={udpatingPassword}
+                  disabled={updatingPassword}
                 />
               </Popconfirm>
             </Tooltip>
@@ -30,7 +33,7 @@ const ChangePasswordForm = ({
               <EditFilled
                 className="float-end lead text-secondary pointer edit-icon"
                 onClick={() => setEditingPassword(true)}
-                disabled={udpatingPassword}
+                disabled={updatingPassword}
               />
             </Tooltip>
           )}
@@ -42,12 +45,13 @@ const ChangePasswordForm = ({
         </div>
         <div className="col-sm-9 text-secondary">
           <Input
-            name="name"
+            name="oldPassword"
             className="form-control"
-            placeholder="Name"
-            // value={name}
+            placeholder="Old Password"
+            value={password.oldPassword}
             bordered={false}
-            // onChange={handleChange}
+            disabled={!editingPassword}
+            onChange={handleChangePassword}
           />
         </div>
       </div>
@@ -58,13 +62,13 @@ const ChangePasswordForm = ({
         </div>
         <div className="col-sm-9 text-secondary">
           <Input
-            name="email"
+            name="newPassword"
             className="form-control"
-            placeholder="Email"
+            placeholder="New Password"
             bordered={false}
-            // value={email}
-            disabled
-            // bordered={false}
+            value={password.newPassword}
+            disabled={!editingPassword}
+            onChange={handleChangePassword}
           />
         </div>
       </div>
@@ -75,14 +79,28 @@ const ChangePasswordForm = ({
         </div>
         <div className="col-sm-9 text-secondary">
           <Input
-            name="title"
+            name="confirmPassword"
             className="form-control"
-            placeholder="Title"
-            // value={title}
-            // disabled={!editing}
+            placeholder="Confirm Password"
+            value={password.confirmPassword}
+            disabled={!editingPassword}
             bordered={false}
-            // onChange={handleChange}
+            onChange={handleChangePassword}
           />
+        </div>
+      </div>
+      <hr />
+      <div className="row d-flex justify-content-between">
+        <div className="col-sm-3 align-self-center">
+          <Button
+            type="primary"
+            className="btn"
+            disabled={!editingPassword}
+            loading={updatingPassword}
+            onClick={handleChangePassword}
+          >
+            Save
+          </Button>
         </div>
       </div>
     </>
