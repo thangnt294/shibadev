@@ -39,7 +39,7 @@ const Login = () => {
       // save in local storage
       window.localStorage.setItem("user", JSON.stringify(data));
       // redirect
-      router.push("/user");
+      router.push("/");
     } catch (err) {
       console.log(err);
       setLoading(false);
