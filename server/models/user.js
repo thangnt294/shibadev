@@ -42,6 +42,7 @@ const userSchema = new mongoose.Schema(
     enrolled_courses: [{ type: ObjectId, ref: "Course" }],
     balance: {
       type: Number,
+      default: 0,
     },
     passwordResetCode: {
       data: String,

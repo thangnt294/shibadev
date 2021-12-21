@@ -63,3 +63,14 @@ export const updateUser = async (req, res, next) => {
     next(err);
   }
 };
+
+export const transferBalance = async (req, res, next) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.user._id, {
+      balance: 0,
+    });
+    res.json({ ok: true });
+  } catch (err) {
+    next(err);
+  }
+};

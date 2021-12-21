@@ -25,7 +25,7 @@ const PersonalInformationForm = ({
                 cancelText="No"
               >
                 <CloseCircleOutlined
-                  className="float-end lead text-secondary pointer edit-icon"
+                  className="float-end lead text-secondary pointer clickable-icon"
                   disabled={updating}
                 />
               </Popconfirm>
@@ -33,7 +33,7 @@ const PersonalInformationForm = ({
           ) : (
             <Tooltip title="Edit">
               <EditFilled
-                className="float-end lead text-secondary pointer edit-icon"
+                className="float-end lead text-secondary pointer clickable-icon"
                 onClick={() => setEditing(true)}
                 disabled={updating}
               />

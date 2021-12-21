@@ -21,16 +21,7 @@ const InstructorNav = () => {
             current === "/instructor/course/create" && "active"
           }`}
         >
-          Create a course
-        </a>
-      </Link>
-      <Link href="/instructor/revenue">
-        <a
-          className={`nav-link ${
-            current === "/instructor/revenue" && "active"
-          }`}
-        >
-          Revenue
+          Create Course
         </a>
       </Link>
     </div>

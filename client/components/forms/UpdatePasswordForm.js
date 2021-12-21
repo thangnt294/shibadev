@@ -24,7 +24,7 @@ const UpdatePasswordForm = ({
                 cancelText="No"
               >
                 <CloseCircleOutlined
-                  className="float-end lead text-secondary pointer edit-icon"
+                  className="float-end lead text-secondary pointer clickable-icon"
                   disabled={updatingPassword}
                 />
               </Popconfirm>
@@ -32,7 +32,7 @@ const UpdatePasswordForm = ({
           ) : (
             <Tooltip title="Edit">
               <EditFilled
-                className="float-end lead text-secondary pointer edit-icon"
+                className="float-end lead text-secondary pointer clickable-icon"
                 onClick={() => setEditingPassword(true)}
                 disabled={updatingPassword}
               />

@@ -44,13 +44,20 @@ svg {
   width: 50%;
 }
 
-.edit-icon {
+.clickable-icon {
   display: inline-block;
   padding: 0.5em 0.6em;
 }
 
-.edit-icon:hover {
+.clickable-icon:hover {
   border-radius: 60px;
   box-shadow: 0 0 2px #888;
   background-color: lightgrey;
+}
+
+.credit-card-icon {
+  /* margin-left: 13.8em; */
+  position: relative;
+  bottom: 20%;
+  left: 2.5%;
 }

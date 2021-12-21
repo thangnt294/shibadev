@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Image, Button, Badge, Space } from "antd";
-import PersonalInformationForm from "../../../components/forms/PersonalInformationForm";
-import UpdatePasswordForm from "../../../components/forms/UpdatePasswordForm";
 import UserRoute from "../../../components/routes/UserRoute";
 import { isEmpty } from "../../../utils/helpers";
 import { toast } from "react-toastify";
 import Resizer from "react-image-file-resizer";
+import ProfilePictureCard from "../../../components/cards/ProfilePictureCard";
+import BalanceCard from "../../../components/cards/BalanceCard";
+import UpdatePasswordCard from "../../../components/cards/UpdatePasswordCard";
+import PersonalInformationCard from "../../../components/cards/PersonalInformationCard";
 
 const UserProfile = () => {
   const [user, setUser] = useState(null);
@@ -169,6 +170,24 @@ const UserProfile = () => {
     }
   };
 
+  const handleTransferBalance = async () => {
+    try {
+      if (user.balance === 0) {
+        toast.error("You currently have no balance");
+        return;
+      }
+      await axios.post("/api/transfer-balance");
+      setUser({ ...user, balance: 0 });
+      setInitialUser({ ...user, balance: 0 });
+      toast.success(
+        "Congratulations! All your balance has been successfully transferred to your bank account!"
+      );
+    } catch (err) {
+      console.log(err);
+      toast.error(err.response.data);
+    }
+  };
+
   return (
     !loading && (
       <UserRoute>
@@ -176,98 +195,39 @@ const UserProfile = () => {
           <div className="main-body">
             <div className="row gutters-sm">
               <div className="col-md-4 mb-3">
-                <div className="card">
-                  <div className="card-body">
-                    <div className="d-flex flex-column align-items-center text-center">
-                      <Image
-                        src={
-                          user && user.avatar
-                            ? user.avatar.Location
-                            : "/avatar.png"
-                        }
-                        alt="Avatar"
-                        preview={false}
-                      />
-                      <div>
-                        <Space className="mt-2">
-                          {user &&
-                            user.role &&
-                            user.role.map((role) => (
-                              <Badge
-                                count={role}
-                                style={{ backgroundColor: "#2dbce3" }}
-                                key={role}
-                              />
-                            ))}
-                        </Space>
-                      </div>
-                      <div className="mt-3">
-                        <h4>{initialUser && initialUser.name}</h4>
-                        <p className="text-secondary mb-1">
-                          {initialUser && initialUser.title}
-                        </p>
-                        <p className="text-muted font-size-sm">
-                          {initialUser && initialUser.address}
-                        </p>
-                        <Button
-                          className="btn bg-primary text-white me-2 pointer"
-                          size="large"
-                          disabled={removingAvatar}
-                          loading={uploading}
-                        >
-                          <label className="pointer">
-                            {uploadBtnText}
-                            <input
-                              type="file"
-                              name="image"
-                              onChange={handleImage}
-                              accept="image/*"
-                              hidden
-                            />
-                          </label>
-                        </Button>
-
-                        <Button
-                          className="btn bg-danger text-white"
-                          size="large"
-                          disabled={!(user && user.avatar) || uploading}
-                          onClick={handleRemoveImage}
-                          loading={removingAvatar}
-                        >
-                          Remove Image
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <ProfilePictureCard
+                  user={user}
+                  initialUser={initialUser}
+                  removingAvatar={removingAvatar}
+                  uploading={uploading}
+                  uploadBtnText={uploadBtnText}
+                  handleImage={handleImage}
+                  handleRemoveImage={handleRemoveImage}
+                />
+                <BalanceCard
+                  balance={user.balance}
+                  handleTransferBalance={handleTransferBalance}
+                />
               </div>
               <div className="col-md-8">
-                <div className="card mb-3">
-                  <div className="card-body">
-                    <PersonalInformationForm
-                      user={user}
-                      editing={editing}
-                      setEditing={setEditing}
-                      updating={updating}
-                      handleSubmit={handleSubmit}
-                      handleCancelEdit={handleCancelEdit}
-                      handleChange={handleChange}
-                    />
-                  </div>
-                </div>
-                <div className="card mb-3">
-                  <div className="card-body">
-                    <UpdatePasswordForm
-                      editingPassword={editingPassword}
-                      setEditingPassword={setEditingPassword}
-                      updatingPassword={updatingPassword}
-                      password={password}
-                      handleUpdatePassword={handleUpdatePassword}
-                      handleCancelEditPassword={handleCancelEditPassword}
-                      handleChangePassword={handleChangePassword}
-                    />
-                  </div>
-                </div>
+                <PersonalInformationCard
+                  user={user}
+                  editing={editing}
+                  setEditing={setEditing}
+                  updating={updating}
+                  handleSubmit={handleSubmit}
+                  handleCancelEdit={handleCancelEdit}
+                  handleChange={handleChange}
+                />
+                <UpdatePasswordCard
+                  editingPassword={editingPassword}
+                  setEditingPassword={setEditingPassword}
+                  updatingPassword={updatingPassword}
+                  password={password}
+                  handleUpdatePassword={handleUpdatePassword}
+                  handleCancelEditPassword={handleCancelEditPassword}
+                  handleChangePassword={handleChangePassword}
+                />
               </div>
             </div>
           </div>
