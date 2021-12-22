@@ -1,4 +1,3 @@
-import AWS from "aws-sdk";
 import Course from "../models/course";
 import slugify from "slugify";
 import User from "../models/user";
@@ -45,7 +44,7 @@ export const update = async (req, res, next) => {
   try {
     const { slug } = req.params;
     const course = await Course.findOne({ slug }).exec();
-    if (req.user._id != course.instructor) {
+    if (req.user._id !== course.instructor.toString()) {
       return res.status(400).send("Unauthorized");
     }
 
@@ -152,7 +151,7 @@ export const removeLesson = async (req, res, next) => {
   try {
     const { slug, lessonId } = req.params;
     const course = await Course.findOne({ slug }).exec();
-    if (req.user._id != course.instructor) {
+    if (req.user._id !== course.instructor._id.toString()) {
       return res.status(400).send("Unauthorized");
     }
 
@@ -179,9 +178,9 @@ export const removeLesson = async (req, res, next) => {
 
 export const updateLesson = async (req, res, next) => {
   try {
-    const { slug, instructorId } = req.params;
+    const { slug } = req.params;
     const course = await Course.findOne({ slug }).select("instructor").exec();
-    if (req.user._id != course.instructor._id) {
+    if (req.user._id !== course.instructor._id.toString()) {
       return res.status(400).send("Unauthorized");
     }
 
@@ -210,7 +209,7 @@ export const publishCourse = async (req, res, next) => {
     const { courseId } = req.params;
     const course = await Course.findById(courseId).select("instructor").exec();
 
-    if (req.user._id != course.instructor._id) {
+    if (req.user._id !== course.instructor._id.toString()) {
       return res.status(400).send("Unauthorized");
     }
 
@@ -233,7 +232,7 @@ export const unpublishCourse = async (req, res, next) => {
     const { courseId } = req.params;
     const course = await Course.findById(courseId).select("instructor").exec();
 
-    if (req.user._id != course.instructor._id) {
+    if (req.user._id !== course.instructor._id.toString()) {
       return res.status(400).send("Unauthorized");
     }
 
@@ -300,8 +299,11 @@ export const enrollCourse = async (req, res, next) => {
       .populate("instructor")
       .exec();
 
-    // application fee 30%
+    if (course.instructor._id.toString() === req.user._id) {
+      return res.status(400).send("You cannot enroll in your own course");
+    }
     if (course.paid) {
+      // application fee 30%
       const fee = ((course.price * 30) / 100).toFixed(2);
 
       // add fee to admin

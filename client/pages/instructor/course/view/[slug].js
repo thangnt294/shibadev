@@ -149,7 +149,9 @@ const CourseView = () => {
     try {
       const { data } = await axios.put(`/api/course/publish/${courseId}`);
       setCourse(data);
-      toast.success("Congrats! Your course is now live on the marketplace");
+      toast.success(
+        "Congratulations! Your course is now live on the marketplace"
+      );
     } catch (err) {
       console.log(err);
       toast.error(err.response.data);
