@@ -36,13 +36,20 @@ export const getCurrentInstructor = async (req, res, next) => {
 
 export const getInstructorCourses = async (req, res, next) => {
   try {
+    const { page = 0, limit = 8 } = req.query;
     const courses = await Course.find({
       instructor: req.user._id,
     })
+      .sort({ published: 1 })
       .sort({ createdAt: -1 })
-      .exec();
+      .skip(parseInt(page * limit))
+      .limit(parseInt(limit));
 
-    res.json(courses);
+    const total = await Course.countDocuments({
+      instructor: req.user._id,
+    });
+
+    res.json({ courses, total });
   } catch (err) {
     next(err);
   }
@@ -55,15 +62,6 @@ export const countStudent = async (req, res, next) => {
       enrolled_courses: courseId,
     });
     res.json(count);
-  } catch (err) {
-    next(err);
-  }
-};
-
-export const getInstructorBalance = async (req, res, next) => {
-  try {
-    const user = await User.findById(req.user._id).exec();
-    res.json(user.balance);
   } catch (err) {
     next(err);
   }

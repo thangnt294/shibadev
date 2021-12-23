@@ -252,25 +252,22 @@ export const unpublishCourse = async (req, res, next) => {
 
 export const getPublishedCourses = async (req, res, next) => {
   try {
-    const { page = 0, limit = 9, sort = 1, term = ".*" } = req.query;
-    const publishedCourses = await Course.find({
+    const { page = 0, limit = 9, sort = -1, term = ".*" } = req.query;
+    const courses = await Course.find({
       published: true,
       $or: [{ name: new RegExp(term) }, { tags: new RegExp(term) }],
     })
-      .sort({ createdAt: sort })
+      .sort({ createdAt: parseInt(sort) })
       .skip(parseInt(page * limit))
       .limit(parseInt(limit))
       .populate("instructor", "_id name");
 
-    const total = await Course.find({
+    const total = await Course.countDocuments({
       published: true,
       $or: [{ name: new RegExp(term) }, { tags: new RegExp(term) }],
-    }).countDocuments();
-
-    res.json({
-      courses: publishedCourses,
-      total,
     });
+
+    res.json({ courses, total });
   } catch (err) {
     next(err);
   }
