@@ -6,7 +6,7 @@ const initialState = {
   user: null,
   courses: null,
   page: 0,
-  limit: 9,
+  limit: 12,
   total: null,
   term: ".*",
 };

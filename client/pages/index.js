@@ -63,7 +63,7 @@ const Index = ({ initialCourses, initialTotal }) => {
         <div className="row">
           {publishedCourses.length > 0 ? (
             publishedCourses.map((course) => (
-              <div key={course._id} className="col-md-4">
+              <div key={course._id} className="col-md-3">
                 <CourseCard course={course} />
               </div>
             ))
@@ -95,7 +95,9 @@ const Index = ({ initialCourses, initialTotal }) => {
 };
 
 export async function getServerSideProps() {
-  const { data } = await axios.get(`${process.env.API}/courses?page=0&limit=9`);
+  const { data } = await axios.get(
+    `${process.env.API}/courses?page=0&limit=12`
+  );
   return {
     props: {
       initialCourses: data.courses,

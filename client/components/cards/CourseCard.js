@@ -21,7 +21,7 @@ const CourseCard = ({ course }) => {
         >
           <h2 className="font-weight-bold">{name}</h2>
           <p>by {instructor.name}</p>
-          {tags &&
+          {tags && tags.length > 0 ? (
             tags.map((tag) => (
               <Badge
                 count={tag}
@@ -29,7 +29,14 @@ const CourseCard = ({ course }) => {
                 className="pb-2 me-2"
                 key={tag}
               />
-            ))}
+            ))
+          ) : (
+            <Badge
+              count="ShibaDev"
+              style={{ backgroundColor: "#03a9f4" }}
+              className="pb-2 me-2"
+            />
+          )}
 
           <h4 className="pt-2">
             {paid
