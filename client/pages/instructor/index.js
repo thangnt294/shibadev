@@ -5,7 +5,7 @@ import { Pagination } from "antd";
 import Link from "next/link";
 import Loading from "../../components/others/Loading";
 import { SolutionOutlined } from "@ant-design/icons";
-import InstructorCourseCard from "../../components/cards/InstructorCourseCard";
+import CourseCard from "../../components/cards/CourseCard";
 
 const InstructorIndex = () => {
   const [courses, setCourses] = useState([]);
@@ -40,7 +40,7 @@ const InstructorIndex = () => {
             {courses && courses.length > 0 ? (
               courses.map((course) => (
                 <div key={course._id} className="col-md-3">
-                  <InstructorCourseCard course={course} />
+                  <CourseCard course={course} page="instructor" />
                 </div>
               ))
             ) : (
