@@ -9,6 +9,7 @@ const initialState = {
   limit: 12,
   total: null,
   term: ".*",
+  loading: false,
 };
 
 // create context
@@ -30,6 +31,10 @@ const rootReducer = (state, action) => {
         limit: action.payload.limit,
         term: action.payload.term,
       };
+    case "LOADING":
+      return { ...state, loading: true };
+    case "STOP_LOADING":
+      return { ...state, loading: false };
     default:
       return state;
   }

@@ -5,12 +5,13 @@ import CourseCard from "../components/cards/CourseCard";
 import { SearchOutlined } from "@ant-design/icons";
 import { Pagination } from "antd";
 import { toast } from "react-toastify";
+import Loading from "../components/others/Loading";
 
 const Index = ({ initialCourses, initialTotal }) => {
   const [publishedCourses, setPublishedCourses] = useState([]);
 
   const {
-    state: { courses, total, page, limit, term },
+    state: { courses, total, page, limit, term, loading },
     dispatch,
   } = useContext(Context);
 
@@ -23,6 +24,7 @@ const Index = ({ initialCourses, initialTotal }) => {
   }, [courses]);
 
   const handleSearchCourses = async (newPage) => {
+    dispatch({ type: "LOADING" });
     try {
       const { data } = await axios.get(
         `api/courses?page=${newPage - 1}&limit=${limit}&term=${term}`
@@ -37,7 +39,9 @@ const Index = ({ initialCourses, initialTotal }) => {
           term,
         },
       });
+      dispatch({ type: "STOP_LOADING" });
     } catch (err) {
+      dispatch({ type: "STOP_LOADING" });
       console.log(err);
       toast.error(err.response.data);
     }
@@ -59,26 +63,30 @@ const Index = ({ initialCourses, initialTotal }) => {
           <p className="text-white">- Kamari</p>
         </div>
       </div>
-      <div className="container-fluid">
-        <div className="row">
-          {publishedCourses.length > 0 ? (
-            publishedCourses.map((course) => (
-              <div key={course._id} className="col-md-3">
-                <CourseCard course={course} page="home" />
+      {loading ? (
+        <Loading />
+      ) : (
+        <div className="container-fluid">
+          <div className="row">
+            {publishedCourses.length > 0 ? (
+              publishedCourses.map((course) => (
+                <div key={course._id} className="col-md-3">
+                  <CourseCard course={course} page="home" />
+                </div>
+              ))
+            ) : (
+              <div className="d-flex justify-content-center p-5">
+                <div className="text-center p-5">
+                  <SearchOutlined className="text-muted display-1 p-4" />
+                  <p className="lead">
+                    Sorry, we couldn't find any results. Please try again.
+                  </p>
+                </div>
               </div>
-            ))
-          ) : (
-            <div className="d-flex justify-content-center p-5">
-              <div className="text-center p-5">
-                <SearchOutlined className="text-muted display-1 p-4" />
-                <p className="lead">
-                  Sorry, we couldn't find any results. Please try again.
-                </p>
-              </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
+      )}
       {publishedCourses.length > 0 && (
         <div className="text-center pb-4">
           <Pagination
