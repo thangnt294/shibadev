@@ -2,9 +2,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import StudentRoute from "../../../components/routes/StudentRoute";
-import { Menu } from "antd";
-import ReactPlayer from "react-player";
-import ReactMarkdown from "react-markdown";
 import { CodeOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 import { isEmpty } from "../../../utils/helpers";
@@ -105,7 +102,7 @@ const SingleCourse = () => {
             ) : (
               <div className="d-flex justify-content-center p-5">
                 <div className=" text-center p-5">
-                  <CodeOutlined className="text-primary display-1 p-5" />
+                  <img src="/waving-white.jpg" className="p-3" />
                   <h2 className="font-weight-bold">
                     Welcome! We're excited to have you here!
                   </h2>

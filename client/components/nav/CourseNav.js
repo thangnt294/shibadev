@@ -1,6 +1,10 @@
 import { createElement } from "react";
 import { Button, Menu, Avatar } from "antd";
-import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import {
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  CheckCircleFilled,
+} from "@ant-design/icons";
 
 const { Item } = Menu;
 
