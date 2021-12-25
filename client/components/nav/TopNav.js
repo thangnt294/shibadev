@@ -37,6 +37,7 @@ const TopNav = () => {
   const handleSearchCourses = async (e) => {
     try {
       const searchTerm = e.target.value;
+      dispatch({ type: "LOADING", payload: true });
       const { data } = await axios.get(
         `api/courses?page=${page}&limit=${limit}&term=${searchTerm}`
       );
@@ -50,8 +51,10 @@ const TopNav = () => {
           limit,
         },
       });
+      dispatch({ type: "LOADING", payload: false });
     } catch (err) {
       console.log(err);
+      dispatch({ type: "LOADING", payload: false });
       toast.error(err.response.data);
     }
   };

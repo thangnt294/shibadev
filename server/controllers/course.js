@@ -331,15 +331,25 @@ export const enrollCourse = async (req, res, next) => {
 
 export const getUserCourses = async (req, res, next) => {
   try {
+    const { page = 0, limit = 8 } = req.query;
     const user = await User.findById(req.user._id).exec();
 
-    const userCourses = await Course.find({
+    const courses = await Course.find({
       _id: { $in: user.enrolled_courses },
     })
+      .skip(parseInt(page * limit))
+      .limit(parseInt(limit))
       .populate("instructor", "_id name")
       .exec();
 
-    res.json(userCourses);
+    const total = await Course.countDocuments({
+      _id: { $in: user.enrolled_courses },
+    });
+
+    res.json({
+      courses,
+      total,
+    });
   } catch (err) {
     next(err);
   }

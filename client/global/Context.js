@@ -32,9 +32,7 @@ const rootReducer = (state, action) => {
         term: action.payload.term,
       };
     case "LOADING":
-      return { ...state, loading: true };
-    case "STOP_LOADING":
-      return { ...state, loading: false };
+      return { ...state, loading: action.payload };
     default:
       return state;
   }

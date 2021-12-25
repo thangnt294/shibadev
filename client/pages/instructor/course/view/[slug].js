@@ -2,20 +2,13 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import InstructorRoute from "../../../../components/routes/InstructorRoute";
 import axios from "axios";
-import { Avatar, Tooltip, Button, Modal, List, Popconfirm, Badge } from "antd";
-import {
-  EditOutlined,
-  UploadOutlined,
-  UserSwitchOutlined,
-  StopOutlined,
-  PlusCircleOutlined,
-} from "@ant-design/icons";
-import ReactMarkdown from "react-markdown";
+import { Modal } from "antd";
 import AddLessonForm from "../../../../components/forms/AddLessonForm";
 import { toast } from "react-toastify";
 import { isEmpty } from "../../../../utils/helpers";
-
-const { Item } = List;
+import InstructorCourseHeader from "../../../../components/others/InstructorCourseHeader";
+import LessonList from "../../../../components/others/LessonList";
+import ViewLessonModal from "../../../../components/modal/ViewLessonModal";
 
 const CourseView = () => {
   const [course, setCourse] = useState(null);
@@ -26,13 +19,14 @@ const CourseView = () => {
   const [values, setValues] = useState({
     title: "",
     content: "",
-    video: {},
+    video: null,
   });
   const [uploadBtnText, setUploadBtnText] = useState("Upload Video");
   const [progress, setProgress] = useState(0);
   const [savingLesson, setSavingLesson] = useState(false);
-  // student count
   const [studentCount, setStudentCount] = useState(0);
+  const [currentLesson, setCurrentLesson] = useState(null);
+  const [viewLessonVisible, setViewLessonVisible] = useState(false);
 
   const router = useRouter();
   const { slug } = router.query;
@@ -62,7 +56,7 @@ const CourseView = () => {
 
   const clearState = () => {
     setVisible(false);
-    setValues({ ...values, title: "", content: "", video: {} });
+    setValues({ ...values, title: "", content: "", video: null });
     setProgress(0);
     setSavingLesson(false);
     setUploadBtnText("Upload Video");
@@ -129,7 +123,7 @@ const CourseView = () => {
         `/api/course/video-remove/${course.instructor._id}`,
         values.video
       );
-      setValues({ ...values, video: {} });
+      setValues({ ...values, video: null });
       setUploading(false);
       setUploadBtnText("Upload Video");
       setProgress(0);
@@ -169,102 +163,34 @@ const CourseView = () => {
     }
   };
 
+  const handleRouteToEditCourse = () => {
+    router.push(`/instructor/course/edit/${slug}`);
+  };
+
+  const handleViewLesson = (lesson) => {
+    setCurrentLesson(lesson);
+    setViewLessonVisible(true);
+  };
+
+  const handleCloseViewLesson = () => {
+    setCurrentLesson(null);
+    setViewLessonVisible(false);
+  };
+
   return (
     !loading && (
       <InstructorRoute>
         <div className="container-fluid pt-3">
           {course && (
             <div className="container-fluid pt-1">
-              <div className="d-flex pt-2">
-                <Avatar
-                  size={80}
-                  src={course.image ? course.image.Location : "/course.png"}
-                />
-
-                <div className="ps-3 w-100">
-                  <div className="row">
-                    <div className="col-md-8">
-                      <h5 className="mt-2 text-primary">{course.name}</h5>
-                      <p style={{ marginTop: "-10px" }}>
-                        {course.lessons && course.lessons.length} Lessons
-                      </p>
-                      <p style={{ marginTop: "-10px", fontSize: "10px" }}>
-                        {course.tags &&
-                          course.tags.map((tag) => (
-                            <Badge
-                              count={tag}
-                              style={{ backgroundColor: "#03a9f4" }}
-                              className="pb-4 me-2"
-                              key={tag}
-                            />
-                          ))}
-                      </p>
-                    </div>
-                    <div className="col-md-4 d-flex pt-4">
-                      <Tooltip
-                        title={`${studentCount} enrolled`}
-                        className="me-4"
-                      >
-                        <UserSwitchOutlined className="h5 pointer text-info" />
-                      </Tooltip>
-
-                      <Tooltip title="Edit" className="me-4">
-                        <EditOutlined
-                          onClick={() =>
-                            router.push(`/instructor/course/edit/${slug}`)
-                          }
-                          className="h5 pointer text-primary"
-                        />
-                      </Tooltip>
-
-                      {course.lessons && course.lessons.length < 5 ? (
-                        <Tooltip title="Min 5 lessons required to publish">
-                          <StopOutlined className="h5 pointer text-warning" />
-                        </Tooltip>
-                      ) : course.published ? (
-                        <Popconfirm
-                          title="Once you unpublish your course, it will not be available for users to enroll anymore."
-                          onConfirm={() => handleUnpublish(course._id)}
-                          okText="Unpublish"
-                          cancelText="Cancel"
-                        >
-                          <Tooltip title="Unpublish">
-                            <StopOutlined className="h5 pointer text-danger" />
-                          </Tooltip>
-                        </Popconfirm>
-                      ) : (
-                        <Popconfirm
-                          title="Once you publish your course, it will be live on the marketplace for users to enroll."
-                          onConfirm={() => handlePublish(course._id)}
-                          okText="Publish"
-                          cancelText="Cancel"
-                        >
-                          <Tooltip title="Publish">
-                            <UploadOutlined className="h5 pointer text-success" />
-                          </Tooltip>
-                        </Popconfirm>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="row mt-4">
-                <div className="col">
-                  <ReactMarkdown>{course.description}</ReactMarkdown>
-                </div>
-              </div>
-              <div className="row">
-                <Button
-                  onClick={() => setVisible(true)}
-                  className="col-md-4 offset-md-3 text-center"
-                  type="primary"
-                  shape="round"
-                  icon={<PlusCircleOutlined />}
-                  size="large"
-                >
-                  Add Lesson
-                </Button>
-              </div>
+              <InstructorCourseHeader
+                course={course}
+                studentCount={studentCount}
+                handlePublish={handlePublish}
+                handleUnpublish={handleUnpublish}
+                setVisible={setVisible}
+                handleRouteToEditCourse={handleRouteToEditCourse}
+              />
 
               <Modal
                 title="Add a new lesson"
@@ -285,33 +211,21 @@ const CourseView = () => {
                   savingLesson={savingLesson}
                 />
               </Modal>
-
+              <hr />
               <div className="row pb-5 mt-4">
                 <div className="col lesson-list">
                   <h4>
                     {course && course.lessons && course.lessons.length} Lessons
                   </h4>
-                  <List
-                    itemLayout="horizontal"
-                    dataSource={course && course.lessons}
-                    renderItem={(item, index) => (
-                      <Item>
-                        <Item.Meta
-                          avatar={
-                            <Avatar style={{ backgroundColor: "#0388fc" }}>
-                              {index + 1}
-                            </Avatar>
-                          }
-                          title={item.title}
-                          description={
-                            item.content.length > 200
-                              ? item.content.substring(0, 200) + "..."
-                              : item.content
-                          }
-                        ></Item.Meta>
-                      </Item>
-                    )}
-                  ></List>
+                  <LessonList
+                    lessons={course.lessons}
+                    handleViewLesson={handleViewLesson}
+                  />
+                  <ViewLessonModal
+                    lesson={currentLesson}
+                    visible={viewLessonVisible}
+                    handleCloseModal={handleCloseViewLesson}
+                  />
                 </div>
               </div>
             </div>

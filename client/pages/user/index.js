@@ -1,36 +1,47 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import UserRoute from "../../components/routes/UserRoute";
 import axios from "axios";
-import { Avatar } from "antd";
-import Link from "next/link";
-import { PlayCircleOutlined } from "@ant-design/icons";
+import { Pagination } from "antd";
 import { toast } from "react-toastify";
 import CourseCard from "../../components/cards/CourseCard";
+import { Context } from "../../global/Context";
+import Loading from "../../components/others/Loading";
 
 const UserIndex = () => {
   const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [total, setTotal] = useState(null);
+
+  const {
+    state: { loading },
+    dispatch,
+  } = useContext(Context);
 
   useEffect(() => {
     loadCourses();
-  }, []);
+  }, [page]);
 
   const loadCourses = async () => {
     try {
-      setLoading(true);
-      const { data } = await axios.get("/api/user-courses");
-      setCourses(data);
-      setLoading(false);
+      dispatch({ type: "LOADING", payload: true });
+      const { data } = await axios.get(
+        `/api/user-courses?page=${page}&&limit=8`
+      );
+      setCourses(data.courses);
+      setTotal(data.total);
+      dispatch({ type: "LOADING", payload: false });
     } catch (err) {
       console.log(err);
-      setLoading(false);
+      dispatch({ type: "STOP_LOADING", payload: false });
       toast.error(err.response.data);
     }
   };
 
   return (
     <UserRoute>
-      {!loading && (
+      {loading ? (
+        <Loading />
+      ) : (
         <>
           <h1 className="jumbotron text-center square">User dashboard</h1>
           <div className="container-fluid">
@@ -43,6 +54,17 @@ const UserIndex = () => {
                 ))}
             </div>
           </div>
+          {courses.length > 0 && (
+            <div className="text-center pt-4 pb-4">
+              <Pagination
+                defaultCurrent={1}
+                current={page + 1}
+                pageSize={8}
+                onChange={(page) => setPage(page - 1)}
+                total={total}
+              />
+            </div>
+          )}
         </>
       )}
     </UserRoute>

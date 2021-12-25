@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import InstructorRoute from "../../components/routes/InstructorRoute";
 import { Pagination } from "antd";
@@ -6,27 +6,39 @@ import Link from "next/link";
 import Loading from "../../components/others/Loading";
 import { SolutionOutlined } from "@ant-design/icons";
 import CourseCard from "../../components/cards/CourseCard";
+import { Context } from "../../global/Context";
+import { toast } from "react-toastify";
 
 const InstructorIndex = () => {
   const [courses, setCourses] = useState([]);
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(null);
-  const [loading, setLoading] = useState(false);
+
+  const {
+    state: { loading },
+    dispatch,
+  } = useContext(Context);
 
   useEffect(() => {
     loadCourses();
   }, [page]);
 
   const loadCourses = async () => {
-    setLoading(true);
-    const { data } = await axios.get(
-      `/api/instructor-courses?page=${page}&limit=8`
-    );
-    if (data) {
-      setCourses(data.courses);
-      setTotal(data.total);
+    try {
+      dispatch({ type: "LOADING", payload: true });
+      const { data } = await axios.get(
+        `/api/instructor-courses?page=${page}&limit=8`
+      );
+      if (data) {
+        setCourses(data.courses);
+        setTotal(data.total);
+      }
+      dispatch({ type: "LOADING", payload: false });
+    } catch (err) {
+      console.log(err);
+      dispatch({ type: "LOADING", payload: false });
+      toast.error(err.response.data);
     }
-    setLoading(false);
   };
 
   return (
@@ -64,7 +76,7 @@ const InstructorIndex = () => {
           <Pagination
             defaultCurrent={1}
             current={page + 1}
-            pageSize={9}
+            pageSize={8}
             onChange={(page) => setPage(page - 1)}
             total={total}
           />

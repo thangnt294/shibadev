@@ -24,7 +24,7 @@ const Index = ({ initialCourses, initialTotal }) => {
   }, [courses]);
 
   const handleSearchCourses = async (newPage) => {
-    dispatch({ type: "LOADING" });
+    dispatch({ type: "LOADING", payload: true });
     try {
       const { data } = await axios.get(
         `api/courses?page=${newPage - 1}&limit=${limit}&term=${term}`
@@ -39,10 +39,10 @@ const Index = ({ initialCourses, initialTotal }) => {
           term,
         },
       });
-      dispatch({ type: "STOP_LOADING" });
+      dispatch({ type: "LOADING", payload: false });
     } catch (err) {
-      dispatch({ type: "STOP_LOADING" });
       console.log(err);
+      dispatch({ type: "LOADING", payload: false });
       toast.error(err.response.data);
     }
   };
