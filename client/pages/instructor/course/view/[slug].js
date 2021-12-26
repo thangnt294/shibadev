@@ -25,8 +25,6 @@ const CourseView = () => {
   const [progress, setProgress] = useState(0);
   const [savingLesson, setSavingLesson] = useState(false);
   const [studentCount, setStudentCount] = useState(0);
-  const [currentLesson, setCurrentLesson] = useState(null);
-  const [viewLessonVisible, setViewLessonVisible] = useState(false);
 
   const router = useRouter();
   const { slug } = router.query;
@@ -175,16 +173,6 @@ const CourseView = () => {
     router.push(`/instructor/course/edit/${slug}`);
   };
 
-  const handleViewLesson = (lesson) => {
-    setCurrentLesson(lesson);
-    setViewLessonVisible(true);
-  };
-
-  const handleCloseViewLesson = () => {
-    setCurrentLesson(null);
-    setViewLessonVisible(false);
-  };
-
   return (
     !loading && (
       <InstructorRoute>
@@ -226,15 +214,7 @@ const CourseView = () => {
                   <h4>
                     {course && course.lessons && course.lessons.length} Lessons
                   </h4>
-                  <LessonList
-                    lessons={course.lessons}
-                    handleViewLesson={handleViewLesson}
-                  />
-                  <ViewLessonModal
-                    lesson={currentLesson}
-                    visible={viewLessonVisible}
-                    handleCloseModal={handleCloseViewLesson}
-                  />
+                  <LessonList lessons={course.lessons} checkPreview={false} />
                 </div>
               </div>
             </div>

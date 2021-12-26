@@ -2,21 +2,16 @@ import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import SingleCourseJumbotron from "../../components/cards/SingleCourseJumbotron";
-import PreviewModal from "../../components/modal/PreviewModal";
-import SingleCourseLessons from "../../components/cards/SingleCourseLessons";
 import { Context } from "../../global/Context";
 import { toast } from "react-toastify";
 import { Modal } from "antd";
+import LessonList from "../../components/others/LessonList";
 
 const SingleCourse = ({ course }) => {
-  // state
-  const [showModal, setShowModal] = useState(false);
-  const [preview, setPreview] = useState("");
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState(false);
   const [visible, setVisible] = useState(false);
 
-  //context
   const {
     state: { user },
   } = useContext(Context);
@@ -73,8 +68,6 @@ const SingleCourse = ({ course }) => {
     <>
       <SingleCourseJumbotron
         course={course}
-        setShowModal={setShowModal}
-        setPreview={setPreview}
         user={user}
         loading={loading}
         handleEnrollment={handleEnrollment}
@@ -94,19 +87,16 @@ const SingleCourse = ({ course }) => {
         </p>
       </Modal>
 
-      <PreviewModal
-        preview={preview}
-        showModal={showModal}
-        setShowModal={setShowModal}
-      />
-
       {course.lessons && (
-        <SingleCourseLessons
-          lessons={course.lessons}
-          setPreview={setPreview}
-          showModal={showModal}
-          setShowModal={setShowModal}
-        />
+        <div className="container mt-5">
+          <div className="row">
+            <div className="col">
+              {course.lessons && <h4>{course.lessons.length} Lessons</h4>}
+              <hr />
+              <LessonList lessons={course.lessons} checkPreview={true} />
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

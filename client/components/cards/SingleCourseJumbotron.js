@@ -1,44 +1,31 @@
 import { currencyFormatter } from "../../utils/helpers";
-import { Badge, Button } from "antd";
-import ReactPlayer from "react-player";
+import { Badge, Button, Image } from "antd";
 import {
   LoadingOutlined,
   SafetyOutlined,
   ArrowRightOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
+import { truncateText } from "../../utils/helpers";
 
 const SingleCourseJumbotron = ({
   course,
-  setShowModal,
-  setPreview,
   user,
   loading,
   handleEnrollment,
   status,
 }) => {
-  const {
-    name,
-    description,
-    instructor,
-    updatedAt,
-    lessons,
-    image,
-    price,
-    paid,
-    tags,
-  } = course;
+  const { name, description, instructor, updatedAt, image, price, paid, tags } =
+    course;
   return (
     <div className="jumbotron bg-primary square">
       <div className="row">
         <div className="col-md-8">
-          <h1 className="text-light font-weight-bold">{name}</h1>
-          <p className="lead">
-            {description && description.length > 200
-              ? description.substring(0, 200) + "..."
-              : description}
-          </p>
-          {tags &&
+          <h1 className="text-light font-weight-bold">
+            {truncateText(name, 60)}
+          </h1>
+          <p className="lead">{truncateText(description, 200)}</p>
+          {tags && tags.length > 0 ? (
             tags.map((tag) => (
               <Badge
                 count={tag}
@@ -46,7 +33,14 @@ const SingleCourseJumbotron = ({
                 className="pb-4 me-2"
                 key={tag}
               />
-            ))}
+            ))
+          ) : (
+            <Badge
+              count="ShibaDev"
+              style={{ backgroundColor: "#03a9f4" }}
+              className="pb-4 me-2"
+            />
+          )}
 
           <p>Created by {instructor.name}</p>
           <p>Last updated {new Date(updatedAt).toLocaleDateString()}</p>
@@ -57,30 +51,11 @@ const SingleCourseJumbotron = ({
           </h4>
         </div>
         <div className="col-md-4">
-          {lessons[0].video && lessons[0].video.Location ? (
-            <div
-              onClick={() => {
-                setPreview(lessons[0].video.Location);
-                setShowModal(true);
-              }}
-            >
-              <ReactPlayer
-                className="react-player-div"
-                url={lessons[0].video.Location}
-                light={image ? image.Location : "/course.png"}
-                width="100%"
-                height="225px"
-              />
-            </div>
-          ) : (
-            <>
-              <img
-                src={image ? image.Location : "/course.png"}
-                alt={name}
-                className="img img-fluid"
-              />
-            </>
-          )}
+          <Image
+            src={image ? image.Location : "/course.png"}
+            alt={name}
+            className="img img-fluid"
+          />
           {loading ? (
             <div className="d-flex justify-content-center">
               <LoadingOutlined className="h1 text-danger mt-2" />
