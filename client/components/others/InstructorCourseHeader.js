@@ -15,6 +15,7 @@ const InstructorCourseHeader = ({
   handleUnpublish,
   setVisible,
   handleRouteToEditCourse,
+  handleOpenAddLessonModal,
 }) => {
   const { image, name, lessons, description, tags, published, _id } = course;
 
@@ -48,21 +49,22 @@ const InstructorCourseHeader = ({
                 />
               )}
             </p>
-            <p className="lead">{lessons.length} lessons</p>
+            <p className="lead mb-1">{lessons.length} lessons</p>
             <p className="lead">{studentCount} students enrolled</p>
             <div className="d-flex">
               <Space size={20} align="center">
                 <Button
                   type="primary"
                   disabled={published}
-                  onClick={() => setVisible(true)}
+                  onClick={handleOpenAddLessonModal}
                 >
                   <PlusCircleOutlined />
                   Add lesson
                 </Button>
 
                 <Button
-                  type="primary"
+                  // type="primary"
+                  className={!published && "bg-warning text-white"}
                   disabled={published}
                   onClick={handleRouteToEditCourse}
                 >
@@ -72,8 +74,8 @@ const InstructorCourseHeader = ({
 
                 {published ? (
                   <Popconfirm
-                    title="Once you unpublish your course, it will not be available for users to enroll anymore."
-                    onConfirm={() => handleUnpublish(_id)}
+                    title="Once you unpublish your course, it will not be available for users to enroll anymore"
+                    onConfirm={() => handleUnpublish(course._id)}
                     okText="Unpublish"
                     cancelText="Cancel"
                   >
@@ -92,8 +94,8 @@ const InstructorCourseHeader = ({
                       }
                     >
                       <Popconfirm
-                        title="Once you publish your course, it will be live on the marketplace for users to enroll."
-                        onConfirm={() => handlePublish(_id)}
+                        title="Once you publish your course, it will be live on the marketplace for users to enroll"
+                        onConfirm={() => handlePublish(course._id)}
                         okText="Publish"
                         cancelText="Cancel"
                       >

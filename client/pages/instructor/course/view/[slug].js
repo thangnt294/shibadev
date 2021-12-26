@@ -62,6 +62,11 @@ const CourseView = () => {
     setUploadBtnText("Upload Video");
   };
 
+  const handleOpenAddLessonModal = () => {
+    if (course.published) return;
+    setVisible(true);
+  };
+
   const handleAddLesson = async (e) => {
     e.preventDefault();
     if (isEmpty(values.title)) {
@@ -89,6 +94,7 @@ const CourseView = () => {
   };
 
   const handleVideo = async (e) => {
+    if (course.published) return;
     try {
       const file = e.target.files[0];
       setUploadBtnText(file.name);
@@ -117,6 +123,7 @@ const CourseView = () => {
   };
 
   const handleRemoveVideo = async () => {
+    if (course.published) return;
     try {
       setUploading(true);
       await axios.post(
@@ -164,6 +171,7 @@ const CourseView = () => {
   };
 
   const handleRouteToEditCourse = () => {
+    if (course.published) return;
     router.push(`/instructor/course/edit/${slug}`);
   };
 
@@ -190,6 +198,7 @@ const CourseView = () => {
                 handleUnpublish={handleUnpublish}
                 setVisible={setVisible}
                 handleRouteToEditCourse={handleRouteToEditCourse}
+                handleOpenAddLessonModal={handleOpenAddLessonModal}
               />
 
               <Modal
