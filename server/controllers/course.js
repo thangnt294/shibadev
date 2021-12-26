@@ -192,7 +192,7 @@ export const updateLesson = async (req, res, next) => {
       return res.status(400).send("Unauthorized");
     }
 
-    const { _id, title, content, video, free_preview } = req.body;
+    const { _id, title, content, video, preview } = req.body;
     await Course.updateOne(
       { "lessons._id": _id },
       {
@@ -200,7 +200,7 @@ export const updateLesson = async (req, res, next) => {
           "lessons.$.title": title,
           "lessons.$.content": content,
           "lessons.$.video": video,
-          "lessons.$.free_preview": free_preview,
+          "lessons.$.preview": preview,
         },
       },
       { new: true }

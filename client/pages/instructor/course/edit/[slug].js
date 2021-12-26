@@ -5,12 +5,9 @@ import CourseCreateForm from "../../../../components/forms/CourseCreateForm";
 import Resizer from "react-image-file-resizer";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
-import { List, Avatar, Modal, Popconfirm } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
-import UpdateLessonForm from "../../../../components/forms/UpdateLessonForm";
 import { isEmpty } from "../../../../utils/helpers";
-
-const { Item } = List;
+import EditLessonModal from "../../../../components/modal/EditLessonModal";
+import EditCourseLessonList from "../../../../components/others/EditCourseLessonList";
 
 const CourseEdit = () => {
   // state
@@ -23,6 +20,7 @@ const CourseEdit = () => {
     lessons: [],
     image: {},
     uploadImage: "",
+    published: false,
   });
 
   const [image, setImage] = useState(null);
@@ -35,9 +33,8 @@ const CourseEdit = () => {
 
   // state for lessons update
   const [visible, setVisible] = useState(false);
-  const [current, setCurrent] = useState([]);
+  const [lesson, setLesson] = useState(null);
   const [uploadVideoBtnText, setUploadVideoBtnText] = useState("Upload Video");
-  const [progress, setProgress] = useState(0);
   const [savingLesson, setSavingLesson] = useState(false);
 
   // router
@@ -55,7 +52,7 @@ const CourseEdit = () => {
   const loadCourse = async () => {
     const { data } = await axios.get(`/api/course/${slug}`);
     setValues(data);
-    if (data.image) {
+    if (data && data.image) {
       setPreview(data.image.Location);
     }
   };
@@ -181,62 +178,41 @@ const CourseEdit = () => {
    * Lesson update functions
    */
 
-  const handleVideo = async (e) => {
-    if (e.target.files.length === 0) return;
-    // remove previous video
-    try {
-      if (current.video && current.video.Location) {
-        await axios.post(
-          `/api/course/video-remove/${values.instructor._id}`,
-          current.video
-        );
-      }
-
-      // upload new one
-      const file = e.target.files[0];
-      setUploadVideoBtnText(file.name);
-      setUploading(true);
-
-      // send video as form data
-      const videoData = new FormData();
-      videoData.append("video", file);
-      videoData.append("courseId", values._id);
-
-      // save progress bar and send video as form data to backend
-      const { data } = await axios.post(
-        `/api/course/video-upload/${values.instructor._id}`,
-        videoData,
-        {
-          onUploadProgress: (e) =>
-            setProgress(Math.round((100 * e.loaded) / e.total)),
-        }
-      );
-      setCurrent({ ...current, video: data });
-
-      // update lesson since video changed
-      await axios.put(`/api/course/lesson/${slug}/${current._id}`, current);
-      setUploading(false);
-    } catch (err) {
-      console.log(err);
-      setUploading(false);
-      toast.error(err.response.data);
-    }
-  };
-
   const clearModalState = () => {
     setUploadVideoBtnText("Upload Video");
     setVisible(false);
-    setCurrent({});
+    setLesson(null);
     setSavingLesson(false);
+  };
+
+  const handleCloseModal = () => {
+    if (lesson.video) {
+      // TODO remove video
+    }
+    setVisible(false);
+    setLesson(null);
+  };
+
+  const handleOpenEditLessonModal = () => {
+    setVisible(true);
+    setLesson(item);
   };
 
   const handleUpdateLesson = async (e) => {
     e.preventDefault();
+    if (isEmpty(lesson.title)) {
+      toast.error("Please fill in all the required fields before saving");
+      return;
+    }
+    if (isEmpty(lesson.content) && isEmpty(lesson.video)) {
+      toast.error("Please add some content or upload a video");
+      return;
+    }
     setSavingLesson(true);
     try {
       const { data } = await axios.put(
-        `/api/course/lesson/${slug}/${current._id}`,
-        current
+        `/api/course/lesson/${slug}/${lesson._id}`,
+        lesson
       );
       clearModalState();
       toast.success("Lesson Updated");
@@ -244,8 +220,8 @@ const CourseEdit = () => {
       // update the UI
       if (data.ok) {
         let arr = values.lessons;
-        const index = arr.findIndex((el) => el._id === current._id);
-        arr[index] = current;
+        const index = arr.findIndex((el) => el._id === lesson._id);
+        arr[index] = lesson;
         setValues({ ...values, lessons: arr });
       }
     } catch (err) {
@@ -281,66 +257,26 @@ const CourseEdit = () => {
       <div className="row pb-5">
         <div className="col lesson-list">
           <h4>{values && values.lessons && values.lessons.length} Lessons</h4>
-          <List
-            onDragOver={(e) => e.preventDefault()}
-            itemLayout="horizontal"
-            dataSource={values && values.lessons}
-            renderItem={(item, index) => (
-              <Item
-                className="pointer"
-                draggable
-                onDragStart={(e) => handleDrag(e, index)}
-                onDrop={(e) => handleDrop(e, index)}
-              >
-                <Item.Meta
-                  onClick={() => {
-                    setVisible(true);
-                    setCurrent(item);
-                  }}
-                  avatar={
-                    <Avatar style={{ backgroundColor: "#0388fc" }}>
-                      {index + 1}
-                    </Avatar>
-                  }
-                  title={item.title}
-                ></Item.Meta>
-
-                <Popconfirm
-                  title="Are you sure you want to delete this lesson?"
-                  onConfirm={() => handleDeleteLesson(index)}
-                  okText="Yes"
-                  cancelText="No"
-                >
-                  <DeleteOutlined className="text-danger float-right" />
-                </Popconfirm>
-              </Item>
-            )}
-          ></List>
+          <EditCourseLessonList
+            lessons={values.lessons}
+            handleOpenEditLessonModal={handleOpenEditLessonModal}
+            handleDeleteLesson={handleDeleteLesson}
+            handleDrag={handleDrag}
+            handleDrop={handleDrop}
+          />
         </div>
       </div>
-
-      <Modal
-        title="Update lesson"
-        centered
+      <EditLessonModal
         visible={visible}
-        onCancel={() => {
-          setVisible(false);
-          setCurrent({});
-        }}
-        confirmLoading={uploading || savingLesson}
-        onOk={handleUpdateLesson}
-      >
-        <UpdateLessonForm
-          current={current}
-          setCurrent={setCurrent}
-          handleVideo={handleVideo}
-          handleUpdateLesson={handleUpdateLesson}
-          uploadVideoBtnText={uploadVideoBtnText}
-          progress={progress}
-          uploading={uploading}
-          savingLesson={savingLesson}
-        />
-      </Modal>
+        lesson={lesson}
+        setLesson={setLesson}
+        courseSlug={slug}
+        savingLesson={savingLesson}
+        courseId={values && values._id}
+        instructorId={values && values.instructor && values.instructor._id}
+        handleCloseModal={handleCloseModal}
+        handleSubmit={handleUpdateLesson}
+      />
     </InstructorRoute>
   );
 };

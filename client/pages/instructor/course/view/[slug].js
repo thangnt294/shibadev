@@ -2,27 +2,22 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import InstructorRoute from "../../../../components/routes/InstructorRoute";
 import axios from "axios";
-import { Modal } from "antd";
-import AddLessonForm from "../../../../components/forms/AddLessonForm";
 import { toast } from "react-toastify";
 import { isEmpty } from "../../../../utils/helpers";
 import InstructorCourseHeader from "../../../../components/others/InstructorCourseHeader";
 import LessonList from "../../../../components/others/LessonList";
-import ViewLessonModal from "../../../../components/modal/ViewLessonModal";
+import EditLessonModal from "../../../../components/modal/EditLessonModal";
 
 const CourseView = () => {
   const [course, setCourse] = useState(null);
   // for lessons
   const [visible, setVisible] = useState(false);
-  const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [values, setValues] = useState({
+  const [lesson, setLesson] = useState({
     title: "",
     content: "",
     video: null,
   });
-  const [uploadBtnText, setUploadBtnText] = useState("Upload Video");
-  const [progress, setProgress] = useState(0);
   const [savingLesson, setSavingLesson] = useState(false);
   const [studentCount, setStudentCount] = useState(0);
 
@@ -54,10 +49,8 @@ const CourseView = () => {
 
   const clearState = () => {
     setVisible(false);
-    setValues({ ...values, title: "", content: "", video: null });
-    setProgress(0);
+    setLesson({ ...lesson, title: "", content: "", video: null });
     setSavingLesson(false);
-    setUploadBtnText("Upload Video");
   };
 
   const handleOpenAddLessonModal = () => {
@@ -67,19 +60,19 @@ const CourseView = () => {
 
   const handleAddLesson = async (e) => {
     e.preventDefault();
-    if (isEmpty(values.title)) {
+    if (isEmpty(lesson.title)) {
       toast.error("Please fill in all the required fields before saving");
       return;
     }
-    if (isEmpty(values.content) && isEmpty(values.video)) {
+    if (isEmpty(lesson.content) && isEmpty(lesson.video)) {
       toast.error("Please add some content or upload a video");
       return;
     }
+    setSavingLesson(true);
     try {
-      setSavingLesson(true);
       const { data } = await axios.post(
         `/api/course/lesson/${slug}/${course.instructor._id}`,
-        values
+        lesson
       );
       clearState();
       setCourse(data);
@@ -91,56 +84,10 @@ const CourseView = () => {
     }
   };
 
-  const handleVideo = async (e) => {
-    if (course.published) return;
-    try {
-      const file = e.target.files[0];
-      setUploadBtnText(file.name);
-      setUploading(true);
-
-      const videoData = new FormData();
-      videoData.append("video", file);
-      // save progress bar and send video as form data to backend
-      const { data } = await axios.post(
-        `/api/course/video-upload/${course.instructor._id}`,
-        videoData,
-        {
-          onUploadProgress: (e) => {
-            setProgress(Math.round((100 * e.loaded) / e.total));
-          },
-        }
-      );
-      setValues({ ...values, video: data });
-      setUploading(false);
-      toast.success("Uploaded video successfully");
-    } catch (err) {
-      console.log(err);
-      setUploading(false);
-      toast.error(err.response.data);
-    }
-  };
-
-  const handleRemoveVideo = async () => {
-    if (course.published) return;
-    try {
-      setUploading(true);
-      await axios.post(
-        `/api/course/video-remove/${course.instructor._id}`,
-        values.video
-      );
-      setValues({ ...values, video: null });
-      setUploading(false);
-      setUploadBtnText("Upload Video");
-      setProgress(0);
-    } catch (err) {
-      console.log(err);
-      setUploading(false);
-      toast.error(err.response.data);
-    }
-  };
-
   const handleCloseModal = async () => {
-    if (!isEmpty(values.video)) await handleRemoveVideo();
+    if (!isEmpty(lesson.video)) {
+      // TODO remove video
+    }
     clearState();
   };
 
@@ -189,26 +136,19 @@ const CourseView = () => {
                 handleOpenAddLessonModal={handleOpenAddLessonModal}
               />
 
-              <Modal
-                title="Add a new lesson"
-                centered
+              <EditLessonModal
                 visible={visible}
-                onCancel={handleCloseModal}
-                confirmLoading={uploading || savingLesson}
-                onOk={handleAddLesson}
-              >
-                <AddLessonForm
-                  values={values}
-                  setValues={setValues}
-                  handleAddLesson={handleAddLesson}
-                  uploading={uploading}
-                  uploadBtnText={uploadBtnText}
-                  handleVideo={handleVideo}
-                  progress={progress}
-                  handleRemoveVideo={handleRemoveVideo}
-                  savingLesson={savingLesson}
-                />
-              </Modal>
+                lesson={lesson}
+                setLesson={setLesson}
+                courseSlug={slug}
+                savingLesson={savingLesson}
+                courseId={course && course._id}
+                instructorId={
+                  course && course.instructor && course.instructor._id
+                }
+                handleCloseModal={handleCloseModal}
+                handleSubmit={handleAddLesson}
+              />
               <hr />
               <div className="row pb-5 mt-4">
                 <div className="col lesson-list">
