@@ -48,6 +48,10 @@ export const update = async (req, res, next) => {
       return res.status(400).send("Unauthorized");
     }
 
+    if (course.published) {
+      return res.status(403).send("Cannot edit published course");
+    }
+
     const { removedImage, uploadImage } = req.body;
     const updatedCourse = req.body;
 
@@ -153,6 +157,10 @@ export const removeLesson = async (req, res, next) => {
     const course = await Course.findOne({ slug }).exec();
     if (req.user._id !== course.instructor._id.toString()) {
       return res.status(400).send("Unauthorized");
+    }
+
+    if (course.published) {
+      return res.status(403).send("Cannot edit published course");
     }
 
     // remove video if exist

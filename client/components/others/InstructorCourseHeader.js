@@ -1,4 +1,4 @@
-import { Badge, Tooltip, Popconfirm, Space, Image } from "antd";
+import { Badge, Tooltip, Popconfirm, Space, Image, Button } from "antd";
 import {
   EditOutlined,
   StopOutlined,
@@ -52,46 +52,61 @@ const InstructorCourseHeader = ({
             <p className="lead">{studentCount} students enrolled</p>
             <div className="d-flex">
               <Space size={20} align="center">
-                <Tooltip title="Add lesson">
-                  <PlusCircleOutlined
-                    className="h5 pointer text-warning"
-                    onClick={() => setVisible(true)}
-                  />
-                </Tooltip>
+                <Button
+                  type="primary"
+                  disabled={published}
+                  onClick={() => setVisible(true)}
+                >
+                  <PlusCircleOutlined />
+                  Add lesson
+                </Button>
 
-                <Tooltip title="Edit">
-                  <EditOutlined
-                    onClick={handleRouteToEditCourse}
-                    className="h5 pointer text-primary"
-                  />
-                </Tooltip>
+                <Button
+                  type="primary"
+                  disabled={published}
+                  onClick={handleRouteToEditCourse}
+                >
+                  <EditOutlined />
+                  Edit
+                </Button>
 
-                {lessons && lessons.length < 5 ? (
-                  <Tooltip title="Min 5 lessons required to publish">
-                    <StopOutlined className="h5 pointer text-warning" />
-                  </Tooltip>
-                ) : published ? (
+                {published ? (
                   <Popconfirm
                     title="Once you unpublish your course, it will not be available for users to enroll anymore."
                     onConfirm={() => handleUnpublish(_id)}
                     okText="Unpublish"
                     cancelText="Cancel"
                   >
-                    <Tooltip title="Unpublish">
-                      <StopOutlined className="h5 pointer text-danger" />
-                    </Tooltip>
+                    <Button className="bg-danger text-white">
+                      <StopOutlined onClick={handleUnpublish} />
+                      Unpublish
+                    </Button>
                   </Popconfirm>
                 ) : (
-                  <Popconfirm
-                    title="Once you publish your course, it will be live on the marketplace for users to enroll."
-                    onConfirm={() => handlePublish(_id)}
-                    okText="Publish"
-                    cancelText="Cancel"
-                  >
-                    <Tooltip title="Publish">
-                      <UploadOutlined className="h5 pointer text-success" />
+                  <>
+                    <Tooltip
+                      title={
+                        lessons && lessons.length < 5
+                          ? "Min 5 lessons required to publish"
+                          : ""
+                      }
+                    >
+                      <Popconfirm
+                        title="Once you publish your course, it will be live on the marketplace for users to enroll."
+                        onConfirm={() => handlePublish(_id)}
+                        okText="Publish"
+                        cancelText="Cancel"
+                      >
+                        <Button
+                          className="bg-success text-white"
+                          disabled={lessons && lessons.length < 5}
+                        >
+                          <UploadOutlined onClick={handlePublish} />
+                          Publish
+                        </Button>
+                      </Popconfirm>
                     </Tooltip>
-                  </Popconfirm>
+                  </>
                 )}
               </Space>
             </div>

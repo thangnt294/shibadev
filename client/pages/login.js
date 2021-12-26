@@ -36,6 +36,10 @@ const Login = () => {
         type: "LOGIN",
         payload: data,
       });
+      dispatch({
+        type: "LOADING",
+        payload: false,
+      });
       // save in local storage
       window.localStorage.setItem("user", JSON.stringify(data));
       // redirect
