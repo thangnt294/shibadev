@@ -194,7 +194,8 @@ const CourseView = () => {
                 centered
                 visible={visible}
                 onCancel={handleCloseModal}
-                footer={null}
+                confirmLoading={uploading || savingLesson}
+                onOk={handleAddLesson}
               >
                 <AddLessonForm
                   values={values}

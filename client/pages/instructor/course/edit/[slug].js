@@ -327,7 +327,8 @@ const CourseEdit = () => {
           setVisible(false);
           setCurrent({});
         }}
-        footer={null}
+        confirmLoading={uploading || savingLesson}
+        onOk={handleUpdateLesson}
       >
         <UpdateLessonForm
           current={current}

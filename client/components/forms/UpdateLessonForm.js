@@ -30,6 +30,7 @@ const UpdateLessonForm = ({
         >
           <Input
             type="text"
+            placeholder="Title *"
             className="form-control square"
             onChange={(e) => setCurrent({ ...current, title: e.target.value })}
             value={current.title}
@@ -40,6 +41,7 @@ const UpdateLessonForm = ({
 
         <Input.TextArea
           className="form-control mt-3"
+          placeholder="Content"
           cols="7"
           rows="7"
           onChange={(e) => setCurrent({ ...current, content: e.target.value })}
@@ -78,20 +80,9 @@ const UpdateLessonForm = ({
             disabled={uploading}
             checked={current.preview}
             name="free_preview"
-            onChange={(v) => setCurrent({ ...current, free_preview: v })}
+            onChange={(v) => setCurrent({ ...current, preview: v })}
           />
         </div>
-
-        <Button
-          onClick={handleUpdateLesson}
-          className="col mt-3"
-          size="large"
-          type="primary"
-          loading={uploading || savingLesson}
-          shape="round"
-        >
-          Save
-        </Button>
       </Form>
     </div>
   );

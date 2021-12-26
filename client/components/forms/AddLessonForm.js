@@ -65,24 +65,7 @@ const AddLessonForm = ({
           )}
         </div>
 
-        {progress > 0 && (
-          <Progress
-            className="d-flex justify-content-center pt-2"
-            percent={progress}
-            steps={10}
-          />
-        )}
-
-        <Button
-          onClick={handleAddLesson}
-          className="col mt-3"
-          size="large"
-          type="primary"
-          loading={uploading || savingLesson}
-          shape="round"
-        >
-          Save
-        </Button>
+        {progress > 0 && <Progress className="pt-2" percent={progress} />}
       </Form>
     </div>
   );
