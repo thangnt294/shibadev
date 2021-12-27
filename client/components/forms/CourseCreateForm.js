@@ -115,7 +115,7 @@ const CourseCreateForm = ({
 
           <div className="form-row pb-3 pt-3 d-flex">
             <div className="form-group">
-              <label className="btn btn-outline-secondary text-left">
+              <label className="p-2 btn btn-outline-secondary text-left">
                 {uploadBtnText}
                 <input
                   type="file"

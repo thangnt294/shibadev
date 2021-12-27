@@ -17,6 +17,7 @@ const CourseView = () => {
     title: "",
     content: "",
     video: null,
+    preview: false,
   });
   const [savingLesson, setSavingLesson] = useState(false);
   const [studentCount, setStudentCount] = useState(0);
@@ -126,7 +127,6 @@ const CourseView = () => {
         }
       );
       setLesson({ ...lesson, video: data });
-
       setUploading(false);
     } catch (err) {
       console.log(err);

@@ -2,6 +2,7 @@ import { Card, Badge } from "antd";
 import Link from "next/link";
 import { currencyFormatter } from "../../utils/helpers";
 import { MinusCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
+import { truncateText } from "../../utils/helpers";
 
 const CourseCard = ({ course, page }) => {
   const {
@@ -39,7 +40,7 @@ const CourseCard = ({ course, page }) => {
           }
           size="small"
         >
-          <h2 className="font-weight-bold">{name}</h2>
+          <h3 className="font-weight-bold">{truncateText(name, 200)}</h3>
           {page === "home" ? (
             <p>by {instructor.name}</p>
           ) : (

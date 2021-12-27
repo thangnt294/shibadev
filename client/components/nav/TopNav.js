@@ -5,6 +5,7 @@ import {
   UserAddOutlined,
   TeamOutlined,
   SearchOutlined,
+  CrownOutlined,
 } from "@ant-design/icons";
 import { Context } from "../../global/Context";
 import axios from "axios";
@@ -122,6 +123,18 @@ const TopNav = () => {
             </Link>
           </Item>
         </>
+      )}
+
+      {user && user.role && user.role.includes("Admin") && (
+        <Item
+          key="/admin"
+          onClick={(e) => setCurrent(e.key)}
+          icon={<CrownOutlined />}
+        >
+          <Link href="/admin">
+            <a>Admin</a>
+          </Link>
+        </Item>
       )}
 
       {user && user.role && user.role.includes("Instructor") && (

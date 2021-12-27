@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Input, Progress, Switch, Form, Tooltip } from "antd";
 import ReactPlayer from "react-player";
 import { CloseCircleFilled } from "@ant-design/icons";
+import { truncateText } from "../../utils/helpers";
 
 const EditLessonForm = ({
   lesson,
@@ -41,7 +42,7 @@ const EditLessonForm = ({
         </Form.Item>
 
         <Input.TextArea
-          className="form-control mt-3"
+          className="form-control mt-3 mb-3"
           placeholder="Content"
           cols="7"
           rows="7"
@@ -50,58 +51,41 @@ const EditLessonForm = ({
           disabled={uploading || savingLesson}
         />
 
-        {page === "edit course" ? (
-          <div className="text-center">
-            {!uploading && lesson.video && lesson.video.Location && (
-              <div className="pt-2 d-flex justify-content-center">
-                <ReactPlayer
-                  url={lesson.video.Location}
-                  width="410px"
-                  height="240px"
-                  controls
-                />
-              </div>
-            )}
-            <div className="d-flex justify-content-center">
-              <label className="btn btn-dark btn-block text-center mt-3">
-                {uploadBtnText}
-                <input
-                  onChange={handleVideo}
-                  type="file"
-                  accept="video/*"
-                  hidden
-                />
-              </label>
-              {!uploading && lesson && lesson.video && lesson.video.Location && (
-                <Tooltip title="Remove">
-                  <span onClick={handleRemoveVideo} className="pt-1 ps-3">
-                    <CloseCircleFilled className="text-danger d-flex justify-content-center pt-4 pointer" />
-                  </span>
-                </Tooltip>
-              )}
+        <div className="text-center">
+          {!uploading && lesson.video && lesson.video.Location && (
+            <div className="pt-2 d-flex justify-content-center">
+              <ReactPlayer
+                url={lesson.video.Location}
+                width="410px"
+                height="240px"
+                controls
+              />
             </div>
-          </div>
-        ) : (
+          )}
           <div className="d-flex justify-content-center">
-            <label className="btn btn-dark btn-block text-left mt-3">
-              {uploadBtnText}
+            <label className="btn btn-dark btn-block text-center mt-3">
+              {truncateText(uploadBtnText, 20)}
               <input
                 onChange={handleVideo}
                 type="file"
                 accept="video/*"
                 hidden
+                disabled={uploading || savingLesson}
               />
             </label>
-
             {!uploading && lesson && lesson.video && lesson.video.Location && (
               <Tooltip title="Remove">
-                <span onClick={handleRemoveVideo} className="pt-1 ps-3">
+                <span
+                  onClick={handleRemoveVideo}
+                  className="pt-1 ps-3"
+                  disabled={uploading || savingLesson}
+                >
                   <CloseCircleFilled className="text-danger d-flex justify-content-center pt-4 pointer" />
                 </span>
               </Tooltip>
             )}
           </div>
-        )}
+        </div>
 
         {progress > 0 && <Progress className="pt-2" percent={progress} />}
 
