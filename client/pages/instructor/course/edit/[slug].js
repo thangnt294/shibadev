@@ -11,7 +11,7 @@ import EditCourseLessonList from "../../../../components/others/EditCourseLesson
 
 const CourseEdit = () => {
   // state
-  const [values, setValues] = useState({
+  const [course, setCourse] = useState({
     name: "",
     description: "",
     price: 0,
@@ -36,6 +36,8 @@ const CourseEdit = () => {
   const [lesson, setLesson] = useState(null);
   const [uploadVideoBtnText, setUploadVideoBtnText] = useState("Upload Video");
   const [savingLesson, setSavingLesson] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   // router
   const router = useRouter();
@@ -51,7 +53,7 @@ const CourseEdit = () => {
 
   const loadCourse = async () => {
     const { data } = await axios.get(`/api/course/${slug}`);
-    setValues(data);
+    setCourse(data);
     if (data && data.image) {
       setPreview(data.image.Location);
     }
@@ -63,11 +65,11 @@ const CourseEdit = () => {
   };
 
   const handleChange = (e) => {
-    setValues({ ...values, [e.target.name]: e.target.value });
+    setCourse({ ...course, [e.target.name]: e.target.value });
   };
 
   const handleSelectTag = (value) => {
-    setValues({ ...values, tags: value.slice(0, 5) });
+    setCourse({ ...course, tags: value.slice(0, 5) });
   };
 
   const handleImage = (e) => {
@@ -100,8 +102,8 @@ const CourseEdit = () => {
           0,
           async (uri) => {
             const { data } = await axios.put(`/api/course/${slug}`, {
-              ...values,
-              price: values.paid ? values.price : 0,
+              ...course,
+              price: course.paid ? course.price : 0,
               removedImage,
               uploadImage: uri,
             });
@@ -110,8 +112,8 @@ const CourseEdit = () => {
         );
       } else {
         const { data } = await axios.put(`/api/course/${slug}`, {
-          ...values,
-          price: values.paid ? values.price : 0,
+          ...course,
+          price: course.paid ? course.price : 0,
           removedImage,
         });
 
@@ -128,7 +130,7 @@ const CourseEdit = () => {
   const updatedCourse = (data) => {
     setLoading(false);
     setRemovedImage(false);
-    setValues({ ...data, uploadImage: "" });
+    setCourse({ ...data, uploadImage: "" });
     setImage(null);
     toast.success("Course updated!");
   };
@@ -141,18 +143,18 @@ const CourseEdit = () => {
     try {
       const movingItemIndex = e.dataTransfer.getData("itemIndex");
       const targetItemIndex = index;
-      let allLessons = values.lessons;
+      let allLessons = course.lessons;
 
       let movingItem = allLessons[movingItemIndex]; //dragged lesosn
       allLessons.splice(movingItemIndex, 1); // remove the dragged lesson from the array
       allLessons.splice(targetItemIndex, 0, movingItem); // push the dragged lesson to the position of the target item
 
-      setValues({ ...values, lessons: [...allLessons] });
+      setCourse({ ...course, lessons: [...allLessons] });
 
       // save the new lessons order in database
       await axios.put(`/api/course/${slug}`, {
-        ...values,
-        price: values.paid ? values.price : 0,
+        ...course,
+        price: course.paid ? course.price : 0,
       });
       toast.success("Lessons rearranged successfully!");
     } catch (err) {
@@ -163,9 +165,9 @@ const CourseEdit = () => {
 
   const handleDeleteLesson = async (index) => {
     try {
-      let allLessons = values.lessons;
+      let allLessons = course.lessons;
       const removed = allLessons.splice(index, 1);
-      setValues({ ...values, lessons: allLessons });
+      setCourse({ ...course, lessons: allLessons });
       await axios.put(`/api/course/${slug}/remove-lesson/${removed[0]._id}`);
       toast.success("Deleted the lesson successfully");
     } catch (err) {
@@ -178,22 +180,22 @@ const CourseEdit = () => {
    * Lesson update functions
    */
 
+  const updateLessonUI = (lesson) => {
+    let arr = course.lessons;
+    const index = arr.findIndex((el) => el._id === lesson._id);
+    arr[index] = lesson;
+    setCourse({ ...course, lessons: arr });
+  };
+
   const clearModalState = () => {
     setUploadVideoBtnText("Upload Video");
     setVisible(false);
     setLesson(null);
+    setProgress(0);
     setSavingLesson(false);
   };
 
-  const handleCloseModal = () => {
-    if (lesson.video) {
-      // TODO remove video
-    }
-    setVisible(false);
-    setLesson(null);
-  };
-
-  const handleOpenEditLessonModal = () => {
+  const handleOpenEditLessonModal = (item) => {
     setVisible(true);
     setLesson(item);
   };
@@ -219,15 +221,81 @@ const CourseEdit = () => {
 
       // update the UI
       if (data.ok) {
-        let arr = values.lessons;
-        const index = arr.findIndex((el) => el._id === lesson._id);
-        arr[index] = lesson;
-        setValues({ ...values, lessons: arr });
+        updateLessonUI(lesson);
       }
     } catch (err) {
       console.log(err);
       setSavingLesson(false);
       toast.error(err.response.data);
+    }
+  };
+
+  const handleVideo = async (e) => {
+    if (e.target.files.length === 0) return;
+    try {
+      // remove previous video
+      if (lesson.video && lesson.video.Location) {
+        await axios.post(
+          `/api/course/video-remove/${course.instructor._id}`,
+          lesson.video
+        );
+      }
+
+      // upload new one
+      const file = e.target.files[0];
+      setUploadVideoBtnText(file.name);
+      setUploading(true);
+
+      // send video as form data
+      const videoData = new FormData();
+      videoData.append("video", file);
+      videoData.append("courseId", course._id);
+
+      // save progress bar and send video as form data to backend
+      const { data } = await axios.post(
+        `/api/course/video-upload/${course.instructor._id}`,
+        videoData,
+        {
+          onUploadProgress: (e) =>
+            setProgress(Math.round((100 * e.loaded) / e.total)),
+        }
+      );
+      setLesson({ ...lesson, video: data });
+
+      // update lesson since video changed
+      await axios.put(`/api/course/lesson/${slug}/${lesson._id}`, {
+        ...lesson,
+        video: data,
+      });
+      updateLessonUI({ ...lesson, video: data });
+      setUploading(false);
+    } catch (err) {
+      console.log(err);
+      setUploading(false);
+      if (err.response) toast.error(err.response.data);
+    }
+  };
+
+  const handleRemoveVideo = async () => {
+    try {
+      setUploading(true);
+      await axios.post(
+        `/api/course/video-remove/${course.instructor._id}`,
+        lesson.video
+      );
+      await axios.put(`/api/course/lesson/${slug}/${lesson._id}`, {
+        ...lesson,
+        video: null,
+      });
+      updateLessonUI({ ...lesson, video: null });
+      setLesson({ ...lesson, video: null });
+      setUploading(false);
+      setUploadVideoBtnText("Upload Video");
+      setProgress(0);
+    } catch (err) {
+      console.log(err);
+      setUploading(false);
+      if (err.response) toast.error(err.response.data);
     }
   };
 
@@ -240,8 +308,8 @@ const CourseEdit = () => {
           handleImage={handleImage}
           handleRemoveImage={handleRemoveImage}
           handleChange={handleChange}
-          values={values}
-          setValues={setValues}
+          values={course}
+          setValues={setCourse}
           preview={preview}
           uploadBtnText={uploadBtnText}
           loading={loading}
@@ -256,9 +324,9 @@ const CourseEdit = () => {
 
       <div className="row pb-5">
         <div className="col lesson-list">
-          <h4>{values && values.lessons && values.lessons.length} Lessons</h4>
+          <h4>{course && course.lessons && course.lessons.length} Lessons</h4>
           <EditCourseLessonList
-            lessons={values.lessons}
+            lessons={course.lessons}
             handleOpenEditLessonModal={handleOpenEditLessonModal}
             handleDeleteLesson={handleDeleteLesson}
             handleDrag={handleDrag}
@@ -270,12 +338,15 @@ const CourseEdit = () => {
         visible={visible}
         lesson={lesson}
         setLesson={setLesson}
-        courseSlug={slug}
         savingLesson={savingLesson}
-        courseId={values && values._id}
-        instructorId={values && values.instructor && values.instructor._id}
-        handleCloseModal={handleCloseModal}
+        handleCloseModal={clearModalState}
         handleSubmit={handleUpdateLesson}
+        uploadBtnText={uploadVideoBtnText}
+        handleVideo={handleVideo}
+        handleRemoveVideo={handleRemoveVideo}
+        uploading={uploading}
+        progress={progress}
+        page="edit course"
       />
     </InstructorRoute>
   );

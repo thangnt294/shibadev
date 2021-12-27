@@ -23,7 +23,7 @@ const EditCourseLessonList = ({
           onDrop={(e) => handleDrop(e, index)}
         >
           <Item.Meta
-            onClick={handleOpenEditLessonModal}
+            onClick={() => handleOpenEditLessonModal(item)}
             avatar={
               <Avatar style={{ backgroundColor: "#0388fc" }}>
                 {index + 1}

@@ -30,7 +30,7 @@ const InstructorCourseHeader = ({
 
         <div className="ps-4">
           <div className="row">
-            <h1 className="text-primary">{truncateText(name, 60)}</h1>
+            <h1 className="text-primary mb-2">{truncateText(name, 60)}</h1>
             <p>
               {tags && tags.length > 0 ? (
                 tags.map((tag) => (

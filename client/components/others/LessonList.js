@@ -35,13 +35,13 @@ const LessonList = ({ lessons, checkPreview }) => {
               <div className="d-flex">
                 <Avatar
                   shape="square"
-                  size={70}
+                  size={80}
                   style={{ backgroundColor: "#ff9900" }}
                 >
                   {index + 1}
                 </Avatar>
                 <div className="ms-3">
-                  <h6 className="lead">
+                  <h6 className="lead mt-2">
                     <b>{truncateText(item.title, 60)}</b>
                   </h6>
                   <p>{truncateText(item.content, 200)}</p>

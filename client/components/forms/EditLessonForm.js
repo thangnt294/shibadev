@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Input, Progress, Switch, Form, Tooltip } from "antd";
 import ReactPlayer from "react-player";
-import { toast } from "react-toastify";
-import axios from "axios";
 import { CloseCircleFilled } from "@ant-design/icons";
 
 const EditLessonForm = ({
@@ -15,6 +13,7 @@ const EditLessonForm = ({
   handleVideo,
   handleRemoveVideo,
   uploadBtnText,
+  page,
 }) => {
   const [form] = Form.useForm();
 
@@ -51,37 +50,58 @@ const EditLessonForm = ({
           disabled={uploading || savingLesson}
         />
 
-        <div className="d-flex justify-content-center">
-          <label className="btn btn-dark btn-block text-left mt-3">
-            {uploadBtnText}
-            <input onChange={handleVideo} type="file" accept="video/*" hidden />
-          </label>
-
-          {!uploading && lesson && lesson.video && lesson.video.Location && (
-            <Tooltip title="Remove">
-              <span onClick={handleRemoveVideo} className="pt-1 ps-3">
-                <CloseCircleFilled className="text-danger d-flex justify-content-center pt-4 pointer" />
-              </span>
-            </Tooltip>
-          )}
-        </div>
-
-        {/* <div className="text-center">
-          {!uploading && lesson.video && lesson.video.Location && (
-            <div className="pt-2 d-flex justify-content-center">
-              <ReactPlayer
-                url={lesson.video.Location}
-                width="410px"
-                height="240px"
-                controls
-              />
+        {page === "edit course" ? (
+          <div className="text-center">
+            {!uploading && lesson.video && lesson.video.Location && (
+              <div className="pt-2 d-flex justify-content-center">
+                <ReactPlayer
+                  url={lesson.video.Location}
+                  width="410px"
+                  height="240px"
+                  controls
+                />
+              </div>
+            )}
+            <div className="d-flex justify-content-center">
+              <label className="btn btn-dark btn-block text-center mt-3">
+                {uploadBtnText}
+                <input
+                  onChange={handleVideo}
+                  type="file"
+                  accept="video/*"
+                  hidden
+                />
+              </label>
+              {!uploading && lesson && lesson.video && lesson.video.Location && (
+                <Tooltip title="Remove">
+                  <span onClick={handleRemoveVideo} className="pt-1 ps-3">
+                    <CloseCircleFilled className="text-danger d-flex justify-content-center pt-4 pointer" />
+                  </span>
+                </Tooltip>
+              )}
             </div>
-          )}
-          <label className="btn btn-dark btn-block text-center mt-3">
-            {uploadVideoBtnText}
-            <input onChange={handleVideo} type="file" accept="video/*" hidden />
-          </label>
-        </div> */}
+          </div>
+        ) : (
+          <div className="d-flex justify-content-center">
+            <label className="btn btn-dark btn-block text-left mt-3">
+              {uploadBtnText}
+              <input
+                onChange={handleVideo}
+                type="file"
+                accept="video/*"
+                hidden
+              />
+            </label>
+
+            {!uploading && lesson && lesson.video && lesson.video.Location && (
+              <Tooltip title="Remove">
+                <span onClick={handleRemoveVideo} className="pt-1 ps-3">
+                  <CloseCircleFilled className="text-danger d-flex justify-content-center pt-4 pointer" />
+                </span>
+              </Tooltip>
+            )}
+          </div>
+        )}
 
         {progress > 0 && <Progress className="pt-2" percent={progress} />}
 

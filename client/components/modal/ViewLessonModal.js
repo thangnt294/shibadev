@@ -1,6 +1,7 @@
 import { Modal } from "antd";
 import { truncateText } from "../../utils/helpers";
 import ReactMarkdown from "react-markdown";
+import ReactPlayer from "react-player";
 
 const ViewLessonModal = ({ lesson, visible, handleCloseModal }) => {
   return (

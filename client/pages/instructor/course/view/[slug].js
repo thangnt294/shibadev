@@ -20,6 +20,9 @@ const CourseView = () => {
   });
   const [savingLesson, setSavingLesson] = useState(false);
   const [studentCount, setStudentCount] = useState(0);
+  const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [uploadBtnText, setUploadBtnText] = useState("Upload Video");
 
   const router = useRouter();
   const { slug } = router.query;
@@ -50,6 +53,8 @@ const CourseView = () => {
   const clearState = () => {
     setVisible(false);
     setLesson({ ...lesson, title: "", content: "", video: null });
+    setUploadBtnText("Upload Video");
+    setProgress(0);
     setSavingLesson(false);
   };
 
@@ -84,9 +89,67 @@ const CourseView = () => {
     }
   };
 
+  const handleVideo = async (e) => {
+    if (e.target.files.length === 0) return;
+    try {
+      // remove previous video
+      if (lesson.video && lesson.video.Location) {
+        await axios.post(
+          `/api/course/video-remove/${course.instructor._id}`,
+          lesson.video
+        );
+      }
+
+      // upload new one
+      const file = e.target.files[0];
+      setUploadBtnText(file.name);
+      setUploading(true);
+
+      // send video as form data
+      const videoData = new FormData();
+      videoData.append("video", file);
+      videoData.append("courseId", course._id);
+
+      // save progress bar and send video as form data to backend
+      const { data } = await axios.post(
+        `/api/course/video-upload/${course.instructor._id}`,
+        videoData,
+        {
+          onUploadProgress: (e) =>
+            setProgress(Math.round((100 * e.loaded) / e.total)),
+        }
+      );
+      setLesson({ ...lesson, video: data });
+
+      setUploading(false);
+    } catch (err) {
+      console.log(err);
+      setUploading(false);
+      if (err.response) toast.error(err.response.data);
+    }
+  };
+
+  const handleRemoveVideo = async () => {
+    try {
+      setUploading(true);
+      await axios.post(
+        `/api/course/video-remove/${course.instructor._id}`,
+        lesson.video
+      );
+      setLesson({ ...lesson, video: null });
+      setUploading(false);
+      setUploadBtnText("Upload Video");
+      setProgress(0);
+    } catch (err) {
+      console.log(err);
+      setUploading(false);
+      if (err.response) toast.error(err.response.data);
+    }
+  };
+
   const handleCloseModal = async () => {
     if (!isEmpty(lesson.video)) {
-      // TODO remove video
+      await handleRemoveVideo();
     }
     clearState();
   };
@@ -140,14 +203,14 @@ const CourseView = () => {
                 visible={visible}
                 lesson={lesson}
                 setLesson={setLesson}
-                courseSlug={slug}
                 savingLesson={savingLesson}
-                courseId={course && course._id}
-                instructorId={
-                  course && course.instructor && course.instructor._id
-                }
                 handleCloseModal={handleCloseModal}
                 handleSubmit={handleAddLesson}
+                handleVideo={handleVideo}
+                handleRemoveVideo={handleRemoveVideo}
+                uploading={uploading}
+                progress={progress}
+                uploadBtnText={uploadBtnText}
               />
               <hr />
               <div className="row pb-5 mt-4">
