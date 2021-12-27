@@ -11,39 +11,32 @@ import {
 
 const data = [
   {
-    name: "Page A",
-    uv: 4000,
-    pv: 2400,
+    name: "20/12",
+    number_of_user: 2400,
   },
   {
-    name: "Page B",
-    uv: 3000,
-    pv: 1398,
+    name: "21/12",
+    number_of_user: 1398,
   },
   {
-    name: "Page C",
-    uv: 2000,
-    pv: 9800,
+    name: "22/12",
+    number_of_user: 800,
   },
   {
-    name: "Page D",
-    uv: 2780,
-    pv: 3908,
+    name: "23/12",
+    number_of_user: 3908,
   },
   {
-    name: "Page E",
-    uv: 1890,
-    pv: 4800,
+    name: "24/12",
+    number_of_user: 4800,
   },
   {
-    name: "Page F",
-    uv: 2390,
-    pv: 3800,
+    name: "25/12",
+    number_of_user: 3800,
   },
   {
-    name: "Page G",
-    uv: 3490,
-    pv: 4300,
+    name: "26/12",
+    number_of_user: 4300,
   },
 ];
 
@@ -51,13 +44,19 @@ const AdminIndex = () => {
   return (
     <AdminRoute>
       <h1 className="jumbotron text-center square">Admin Dashboard</h1>
-      <BarChart width={730} height={250} data={data}>
+      <BarChart width={730} height={300} data={data}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Bar dataKey="pv" fill="#8884d8" />
+        <YAxis dataKey="number_of_user" />
+        <Tooltip formatter={(value, name, props) => [value, "New users"]} />
+        <Legend
+          formatter={(value, name, props) => "Number of new users daily"}
+        />
+        <Bar
+          dataKey="number_of_user"
+          fill="#8884d8"
+          label={{ position: "top" }}
+        />
       </BarChart>
     </AdminRoute>
   );
