@@ -52,7 +52,13 @@ const CourseView = () => {
 
   const clearState = () => {
     setVisible(false);
-    setLesson({ ...lesson, title: "", content: "", video: null });
+    setLesson({
+      ...lesson,
+      title: "",
+      content: "",
+      video: null,
+      preview: false,
+    });
     setUploadBtnText("Upload Video");
     setProgress(0);
     setSavingLesson(false);
