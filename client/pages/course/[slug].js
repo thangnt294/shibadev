@@ -54,7 +54,7 @@ const SingleCourse = ({ course }) => {
       setLoading(false);
       setVisible(false);
       toast.success(
-        "Congratulations! you have successfully enrolled into this course."
+        "Congratulations! you have successfully enrolled into this course"
       );
       router.push(`/user/course/${data.slug}`);
     } catch (err) {

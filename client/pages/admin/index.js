@@ -8,6 +8,9 @@ import {
   Legend,
   Bar,
 } from "recharts";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import moment from "moment";
 
 const data = [
   {
@@ -41,23 +44,71 @@ const data = [
 ];
 
 const AdminIndex = () => {
+  const [dailyUsers, setDailyUsers] = useState([]);
+  const [dailyCourses, setDailyCourses] = useState([]);
+  const [dailyProfit, setDailyProfit] = useState([]);
+  const [dailyEnrollments, setDailyEnrollments] = useState([]);
+
+  useEffect(() => {
+    fetchReport();
+  }, []);
+
+  const fetchReport = async () => {
+    const { data } = await axios.get(
+      "/api/daily-report?fromDate=2021-12-27&toDate=2021-12-27"
+    );
+    setDailyUsers(data);
+    setDailyCourses(data);
+    setDailyProfit(data);
+    setDailyEnrollments(data);
+  };
   return (
     <AdminRoute>
       <h1 className="jumbotron text-center square">Admin Dashboard</h1>
-      <BarChart width={730} height={300} data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis dataKey="number_of_user" />
-        <Tooltip formatter={(value, name, props) => [value, "New users"]} />
-        <Legend
-          formatter={(value, name, props) => "Number of new users daily"}
-        />
-        <Bar
-          dataKey="number_of_user"
-          fill="#8884d8"
-          label={{ position: "top" }}
-        />
-      </BarChart>
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-md-6">
+            <div className="card">
+              <h5 className="card-title text-center mb-4">Daily new users</h5>
+              <BarChart width={730} height={300} data={dailyUsers}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis dataKey="users" />
+                <Tooltip
+                  formatter={(value, name, props) => [value, "New users"]}
+                />
+                <Legend formatter={(value, name, props) => "Daily new users"} />
+                <Bar
+                  dataKey="users"
+                  fill="#8884d8"
+                  label={{ position: "top" }}
+                />
+              </BarChart>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="card">
+              <h5 className="card-title text-center mb-4">Daily new courses</h5>
+              <BarChart width={730} height={300} data={data}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis dataKey="number_of_user" />
+                <Tooltip
+                  formatter={(value, name, props) => [value, "New users"]}
+                />
+                <Legend
+                  formatter={(value, name, props) => "Daily new courses"}
+                />
+                <Bar
+                  dataKey="number_of_user"
+                  fill="#8884d8"
+                  label={{ position: "top" }}
+                />
+              </BarChart>
+            </div>
+          </div>
+        </div>
+      </div>
     </AdminRoute>
   );
 };
