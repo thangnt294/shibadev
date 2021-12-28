@@ -52,7 +52,7 @@ const SingleCourse = () => {
       toast.success("Mark as completed successfully");
     } catch (err) {
       console.log(err);
-      toast.error(err.response.data);
+      if (err.response) toast.error(err.response.data);
     }
   };
 
@@ -72,7 +72,7 @@ const SingleCourse = () => {
       toast.success("Mark as incomplete successfully");
     } catch (err) {
       console.log(err);
-      toast.error(err.response.data);
+      if (err.response) toast.error(err.response.data);
     }
   };
 

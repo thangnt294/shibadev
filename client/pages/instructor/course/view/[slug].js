@@ -92,7 +92,7 @@ const CourseView = () => {
     } catch (err) {
       clearState();
       console.log(err);
-      toast.error(err.response.data);
+      if (err.response) toast.error(err.response.data);
     }
   };
 
@@ -169,7 +169,7 @@ const CourseView = () => {
       );
     } catch (err) {
       console.log(err);
-      toast.error(err.response.data);
+      if (err.response) toast.error(err.response.data);
     }
   };
 
@@ -180,7 +180,7 @@ const CourseView = () => {
       toast.success("Your course is unpublished");
     } catch (err) {
       console.log(err);
-      toast.error(err.response.data);
+      if (err.response) toast.error(err.response.data);
     }
   };
 

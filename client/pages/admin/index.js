@@ -1,48 +1,9 @@
-import AdminRoute from "../../components/routes/AdminRoute";
-import {
-  BarChart,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  Bar,
-} from "recharts";
 import { useEffect, useState } from "react";
+import AdminRoute from "../../components/routes/AdminRoute";
 import axios from "axios";
 import moment from "moment";
 import ChartCard from "../../components/cards/ChartCard";
-
-const data = [
-  {
-    name: "20/12",
-    number_of_user: 2400,
-  },
-  {
-    name: "21/12",
-    number_of_user: 1398,
-  },
-  {
-    name: "22/12",
-    number_of_user: 800,
-  },
-  {
-    name: "23/12",
-    number_of_user: 3908,
-  },
-  {
-    name: "24/12",
-    number_of_user: 4800,
-  },
-  {
-    name: "25/12",
-    number_of_user: 3800,
-  },
-  {
-    name: "26/12",
-    number_of_user: 4300,
-  },
-];
+import { toast } from "react-toastify";
 
 const AdminIndex = () => {
   const [dailyUsers, setDailyUsers] = useState([]);
@@ -65,8 +26,29 @@ const AdminIndex = () => {
     setDailyEnrollments(formattedData);
   };
 
-  const dataFormatter = (data) =>
-    data.map((e) => ({ ...e, date: moment(e.date).format("DD/MM") }));
+  const dataFormatter = (data) => {
+    return data.map((e) => ({ ...e, date: moment(e.date).format("DD/MM") }));
+  };
+
+  const handleRefreshData = async (dates, setData, setLoading) => {
+    try {
+      setLoading(true);
+      const formattedDates = dates.map((date) =>
+        moment.utc(date).startOf("day").format("YYYY-MM-DD")
+      );
+
+      const { data } = await axios.get(
+        `/api/daily-report?fromDate=${formattedDates[0]}&toDate=${formattedDates[1]}`
+      );
+      const formattedData = dataFormatter(data);
+      setData(formattedData);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      if (err.response) toast.error(err.response.data);
+    }
+  };
 
   return (
     <AdminRoute>
@@ -83,6 +65,8 @@ const AdminIndex = () => {
               toolTipFormat="New users"
               legendFormat="Daily new users"
               chart="bar"
+              setData={setDailyUsers}
+              handleRefreshData={handleRefreshData}
             />
           </div>
           <div className="col-md-6">
@@ -95,6 +79,8 @@ const AdminIndex = () => {
               toolTipFormat="New courses"
               legendFormat="Daily new courses"
               chart="bar"
+              setData={setDailyCourses}
+              handleRefreshData={handleRefreshData}
             />
           </div>
         </div>
@@ -109,6 +95,8 @@ const AdminIndex = () => {
               toolTipFormat="New enrollment"
               legendFormat="Daily new enrollment"
               chart="bar"
+              setData={setDailyEnrollments}
+              handleRefreshData={handleRefreshData}
             />
           </div>
           <div className="col-md-6">
@@ -121,6 +109,8 @@ const AdminIndex = () => {
               toolTipFormat="Profit"
               legendFormat="Daily profit"
               chart="line"
+              setData={setDailyProfit}
+              handleRefreshData={handleRefreshData}
             />
           </div>
         </div>

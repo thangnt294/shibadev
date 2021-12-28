@@ -33,7 +33,7 @@ const UserIndex = () => {
     } catch (err) {
       console.log(err);
       dispatch({ type: "STOP_LOADING", payload: false });
-      toast.error(err.response.data);
+      if (err.response) toast.error(err.response.data);
     }
   };
 

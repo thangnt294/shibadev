@@ -37,7 +37,7 @@ const InstructorIndex = () => {
     } catch (err) {
       console.log(err);
       dispatch({ type: "LOADING", payload: false });
-      toast.error(err.response.data);
+      if (err.response) toast.error(err.response.data);
     }
   };
 

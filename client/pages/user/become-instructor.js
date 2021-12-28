@@ -31,7 +31,7 @@ const BecomeInstructor = () => {
     } catch (err) {
       console.log(err);
       setLoading(false);
-      toast.error(err.response.data);
+      if (err.response) toast.error(err.response.data);
     }
   };
 

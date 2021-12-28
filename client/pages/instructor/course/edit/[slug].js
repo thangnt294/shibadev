@@ -123,7 +123,7 @@ const CourseEdit = () => {
     } catch (err) {
       console.log(err);
       setLoading(false);
-      toast.error(err.response.data);
+      if (err.response) toast.error(err.response.data);
     }
   };
 
@@ -159,7 +159,7 @@ const CourseEdit = () => {
       toast.success("Lessons rearranged successfully!");
     } catch (err) {
       console.log(err);
-      toast.error(err.response.data);
+      if (err.response) toast.error(err.response.data);
     }
   };
 
@@ -172,7 +172,7 @@ const CourseEdit = () => {
       toast.success("Deleted the lesson successfully");
     } catch (err) {
       console.log(err);
-      toast.error(err.response.data);
+      if (err.response) toast.error(err.response.data);
     }
   };
 
@@ -226,7 +226,7 @@ const CourseEdit = () => {
     } catch (err) {
       console.log(err);
       setSavingLesson(false);
-      toast.error(err.response.data);
+      if (err.response) toast.error(err.response.data);
     }
   };
 

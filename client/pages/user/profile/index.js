@@ -75,7 +75,7 @@ const UserProfile = () => {
     } catch (err) {
       console.log(err);
       setUploading(false);
-      toast.error(err.response.data);
+      if (err.response) toast.error(err.response.data);
     }
   };
 
@@ -94,7 +94,7 @@ const UserProfile = () => {
     } catch (err) {
       console.log(err);
       setRemovingAvatar(false);
-      toast.error(err.response.data);
+      if (err.response) toast.error(err.response.data);
     }
   };
 
@@ -114,7 +114,7 @@ const UserProfile = () => {
     } catch (err) {
       console.log(err);
       setUpdating(false);
-      toast.error(err.response.data);
+      if (err.response) toast.error(err.response.data);
     }
   };
 
@@ -166,7 +166,7 @@ const UserProfile = () => {
     } catch (err) {
       console.log(err);
       setUpdatingPassword(false);
-      toast.error(err.response.data);
+      if (err.response) toast.error(err.response.data);
     }
   };
 
@@ -184,7 +184,7 @@ const UserProfile = () => {
       );
     } catch (err) {
       console.log(err);
-      toast.error(err.response.data);
+      if (err.response) toast.error(err.response.data);
     }
   };
 

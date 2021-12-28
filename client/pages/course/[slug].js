@@ -43,7 +43,7 @@ const SingleCourse = ({ course }) => {
     } catch (err) {
       console.log(err);
       setVisible(true);
-      toast.error(err.response.data);
+      if (err.response) toast.error(err.response.data);
     }
   };
 
@@ -60,7 +60,7 @@ const SingleCourse = ({ course }) => {
     } catch (err) {
       console.log(err);
       setLoading(false);
-      toast.error(err.response.data);
+      if (err.response) toast.error(err.response.data);
     }
   };
 
