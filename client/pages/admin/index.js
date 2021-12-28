@@ -11,6 +11,7 @@ import {
 import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
+import ChartCard from "../../components/cards/ChartCard";
 
 const data = [
   {
@@ -55,57 +56,72 @@ const AdminIndex = () => {
 
   const fetchReport = async () => {
     const { data } = await axios.get(
-      "/api/daily-report?fromDate=2021-12-27&toDate=2021-12-27"
+      "/api/daily-report?fromDate=2021-12-21&toDate=2021-12-28"
     );
-    setDailyUsers(data);
-    setDailyCourses(data);
-    setDailyProfit(data);
-    setDailyEnrollments(data);
+    const formattedData = dataFormatter(data);
+    setDailyUsers(formattedData);
+    setDailyCourses(formattedData);
+    setDailyProfit(formattedData);
+    setDailyEnrollments(formattedData);
   };
+
+  const dataFormatter = (data) =>
+    data.map((e) => ({ ...e, date: moment(e.date).format("DD/MM") }));
+
   return (
     <AdminRoute>
       <h1 className="jumbotron text-center square">Admin Dashboard</h1>
       <div className="container-fluid">
         <div className="row">
           <div className="col-md-6">
-            <div className="card">
-              <h5 className="card-title text-center mb-4">Daily new users</h5>
-              <BarChart width={730} height={300} data={dailyUsers}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis dataKey="users" />
-                <Tooltip
-                  formatter={(value, name, props) => [value, "New users"]}
-                />
-                <Legend formatter={(value, name, props) => "Daily new users"} />
-                <Bar
-                  dataKey="users"
-                  fill="#8884d8"
-                  label={{ position: "top" }}
-                />
-              </BarChart>
-            </div>
+            <ChartCard
+              title="Daily new users"
+              data={dailyUsers}
+              xDataKey="date"
+              yDataKey="users"
+              color="#8884d8"
+              toolTipFormat="New users"
+              legendFormat="Daily new users"
+              chart="bar"
+            />
           </div>
           <div className="col-md-6">
-            <div className="card">
-              <h5 className="card-title text-center mb-4">Daily new courses</h5>
-              <BarChart width={730} height={300} data={data}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis dataKey="number_of_user" />
-                <Tooltip
-                  formatter={(value, name, props) => [value, "New users"]}
-                />
-                <Legend
-                  formatter={(value, name, props) => "Daily new courses"}
-                />
-                <Bar
-                  dataKey="number_of_user"
-                  fill="#8884d8"
-                  label={{ position: "top" }}
-                />
-              </BarChart>
-            </div>
+            <ChartCard
+              title="Daily new courses"
+              data={dailyCourses}
+              xDataKey="date"
+              yDataKey="courses"
+              color="#fcba03"
+              toolTipFormat="New courses"
+              legendFormat="Daily new courses"
+              chart="bar"
+            />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-6">
+            <ChartCard
+              title="Daily new enrollment"
+              data={dailyEnrollments}
+              xDataKey="date"
+              yDataKey="enrollments"
+              color="#03fcf4"
+              toolTipFormat="New enrollment"
+              legendFormat="Daily new enrollment"
+              chart="bar"
+            />
+          </div>
+          <div className="col-md-6">
+            <ChartCard
+              title="Daily profit"
+              data={dailyProfit}
+              xDataKey="date"
+              yDataKey="profit"
+              color="#0e9c4e"
+              toolTipFormat="Profit"
+              legendFormat="Daily profit"
+              chart="line"
+            />
           </div>
         </div>
       </div>
