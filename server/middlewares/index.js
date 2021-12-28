@@ -20,6 +20,18 @@ export const isInstructor = async (req, res, next) => {
   }
 };
 
+export const isAdmin = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id).exec();
+    if (!user.role.includes("Admin")) {
+      return res.sendStatus(403);
+    }
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const isEnrolled = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id).exec();

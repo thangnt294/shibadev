@@ -1,4 +1,6 @@
 import User from "../models/user";
+import DailyReport from "../models/dailyReport";
+import moment from "moment";
 
 export const getCurrentAdmin = async (req, res, next) => {
   try {
@@ -9,6 +11,21 @@ export const getCurrentAdmin = async (req, res, next) => {
     } else {
       res.json({ ok: true });
     }
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getDailyReport = async (req, res, next) => {
+  try {
+    const { fromDate, toDate } = req.query;
+    const reports = await DailyReport.find({
+      date: {
+        $gte: moment.utc(fromDate),
+        $lt: moment.utc(toDate).add(1, "s"),
+      },
+    });
+    res.json(reports);
   } catch (err) {
     next(err);
   }

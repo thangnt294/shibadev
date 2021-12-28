@@ -33,8 +33,8 @@ const courseSchema = new mongoose.Schema(
     name: {
       type: String,
       trim: true,
-      minlength: 3,
-      maxlength: 320,
+      minlength: 6,
+      maxlength: 100,
       required: true,
     },
     slug: {
@@ -42,8 +42,9 @@ const courseSchema = new mongoose.Schema(
       lowercase: true,
     },
     description: {
-      type: {},
-      minlength: 200,
+      type: String,
+      minlength: 20,
+      maxlength: 1000,
       required: true,
     },
     price: {

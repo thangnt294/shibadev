@@ -2,6 +2,7 @@ import Course from "../models/course";
 import slugify from "slugify";
 import User from "../models/user";
 import CompletedLesson from "../models/completedLesson";
+import DailyReport from "../models/dailyReport";
 import { tags } from "../constants";
 import {
   isEmpty,
@@ -10,9 +11,21 @@ import {
   uploadVideoToS3,
   removeVideoFromS3,
 } from "../utils/helpers";
+import moment from "moment";
 
 export const create = async (req, res, next) => {
   try {
+    const { name, description } = req.body;
+    if (name.length < 6 || name.length > 100) {
+      return res.status(400).send("Name must be between 6 and 100 characters");
+    }
+
+    if (description.length < 20 || description.length > 1000) {
+      return res
+        .status(400)
+        .send("Description msut be between 20 and 1000 characters");
+    }
+
     const courseExist = await Course.findOne({
       slug: slugify(req.body.name.toLowerCase()),
     });
@@ -34,6 +47,12 @@ export const create = async (req, res, next) => {
     }
     delete newCourse.uploadImage;
     const course = await new Course(newCourse).save();
+
+    await DailyReport.updateOne(
+      { date: moment().utc().startOf("day") },
+      { $inc: { courses: 1 } },
+      { upsert: true, setDefaultOnInsert: true }
+    );
     res.json(course);
   } catch (err) {
     next(err);
@@ -42,7 +61,20 @@ export const create = async (req, res, next) => {
 
 export const update = async (req, res, next) => {
   try {
+    const { name, description } = req.body;
+
+    if (name.length < 6 || name.length > 100) {
+      return res.status(400).send("Name must be between 6 and 100 characters");
+    }
+
+    if (description.length < 20 || description.length > 1000) {
+      return res
+        .status(400)
+        .send("Description msut be between 20 and 1000 characters");
+    }
+
     const { slug } = req.params;
+
     const course = await Course.findOne({ slug }).exec();
     if (req.user._id !== course.instructor.toString()) {
       return res.status(400).send("Unauthorized");
@@ -319,8 +351,14 @@ export const enrollCourse = async (req, res, next) => {
 
       // add profit to instructor
       await User.findByIdAndUpdate(course.instructor._id, {
-        $inc: { balance: course.price - fee },
+        $inc: { balance: (course.price - fee).toFixed(2) },
       });
+
+      await DailyReport.updateOne(
+        { date: moment().utc().startOf("day") },
+        { $inc: { profit: fee, enrollments: 1 } },
+        { upsert: true, setDefaultOnInsert: true }
+      );
     }
 
     // enroll user

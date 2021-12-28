@@ -1,4 +1,5 @@
 import User from "../models/user";
+import DailyReport from "../models/dailyReport";
 import { hashPassword, comparePassword } from "../utils/auth";
 import {
   checkEmailVerifiedSES,
@@ -8,6 +9,7 @@ import {
 } from "../utils/helpers";
 import jwt from "jsonwebtoken";
 import { nanoid } from "nanoid";
+import moment from "moment";
 
 export const register = async (req, res, next) => {
   try {
@@ -42,6 +44,12 @@ export const register = async (req, res, next) => {
     });
 
     await user.save();
+
+    await DailyReport.updateOne(
+      { date: moment().utc().startOf("day") },
+      { $inc: { users: 1 } },
+      { upsert: true, setDefaultOnInsert: true }
+    );
 
     return res.json({ ok: true });
   } catch (err) {
