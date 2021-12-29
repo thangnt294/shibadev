@@ -6,6 +6,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Provider } from "../global/Context";
 import Head from "next/head";
+import Footer from "../components/others/Footer";
 
 const MyApp = ({ Component, pageProps }) => {
   return (
@@ -17,6 +18,7 @@ const MyApp = ({ Component, pageProps }) => {
       <ToastContainer />
       <TopNav />
       <Component {...pageProps} />
+      <Footer className="footer" />
     </Provider>
   );
 };

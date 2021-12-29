@@ -3,7 +3,7 @@
 }
 
 .jumbotron {
-  background-image: linear-gradient(to right, #ff0000, #ff9900);
+  background-image: linear-gradient(to right, #ff5f6d, #ffc371);
   color: #fff;
   padding: 5rem;
 }
@@ -59,4 +59,17 @@ svg {
   position: relative;
   bottom: 20%;
   left: 2.5%;
+}
+
+.footer {
+  padding: 3rem 0 2rem 5rem;
+  background-color: #001529;
+  color: white;
+  margin-bottom: 0;
+}
+
+.vertical-center {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }
