@@ -7,6 +7,7 @@ import { isEmpty } from "../../../../utils/helpers";
 import InstructorCourseHeader from "../../../../components/others/InstructorCourseHeader";
 import LessonList from "../../../../components/others/LessonList";
 import EditLessonModal from "../../../../components/modal/EditLessonModal";
+import Loading from "../../../../components/others/Loading";
 
 const CourseView = () => {
   const [course, setCourse] = useState(null);
@@ -189,49 +190,49 @@ const CourseView = () => {
     router.push(`/instructor/course/edit/${slug}`);
   };
 
-  return (
-    !loading && (
-      <InstructorRoute>
-        <div className="container-fluid pt-3">
-          {course && (
-            <div className="container-fluid pt-1">
-              <InstructorCourseHeader
-                course={course}
-                studentCount={studentCount}
-                handlePublish={handlePublish}
-                handleUnpublish={handleUnpublish}
-                setVisible={setVisible}
-                handleRouteToEditCourse={handleRouteToEditCourse}
-                handleOpenAddLessonModal={handleOpenAddLessonModal}
-              />
+  return loading ? (
+    <Loading />
+  ) : (
+    <InstructorRoute>
+      <div className="container-fluid pt-3">
+        {course && (
+          <div className="container-fluid pt-1">
+            <InstructorCourseHeader
+              course={course}
+              studentCount={studentCount}
+              handlePublish={handlePublish}
+              handleUnpublish={handleUnpublish}
+              setVisible={setVisible}
+              handleRouteToEditCourse={handleRouteToEditCourse}
+              handleOpenAddLessonModal={handleOpenAddLessonModal}
+            />
 
-              <EditLessonModal
-                visible={visible}
-                lesson={lesson}
-                setLesson={setLesson}
-                savingLesson={savingLesson}
-                handleCloseModal={handleCloseModal}
-                handleSubmit={handleAddLesson}
-                handleVideo={handleVideo}
-                handleRemoveVideo={handleRemoveVideo}
-                uploading={uploading}
-                progress={progress}
-                uploadBtnText={uploadBtnText}
-              />
-              <hr />
-              <div className="row pb-5 mt-4">
-                <div className="col lesson-list">
-                  <h4>
-                    {course && course.lessons && course.lessons.length} Lessons
-                  </h4>
-                  <LessonList lessons={course.lessons} checkPreview={false} />
-                </div>
+            <EditLessonModal
+              visible={visible}
+              lesson={lesson}
+              setLesson={setLesson}
+              savingLesson={savingLesson}
+              handleCloseModal={handleCloseModal}
+              handleSubmit={handleAddLesson}
+              handleVideo={handleVideo}
+              handleRemoveVideo={handleRemoveVideo}
+              uploading={uploading}
+              progress={progress}
+              uploadBtnText={uploadBtnText}
+            />
+            <hr />
+            <div className="row pb-5 mt-4">
+              <div className="col lesson-list">
+                <h4>
+                  {course && course.lessons && course.lessons.length} Lessons
+                </h4>
+                <LessonList lessons={course.lessons} checkPreview={false} />
               </div>
             </div>
-          )}
-        </div>
-      </InstructorRoute>
-    )
+          </div>
+        )}
+      </div>
+    </InstructorRoute>
   );
 };
 

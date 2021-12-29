@@ -79,7 +79,10 @@ const SingleCourseJumbotron = ({
               }
               size="large"
               disabled={
-                loading || user._id.toString() === instructor._id.toString()
+                loading ||
+                (user &&
+                  user._id &&
+                  user._id.toString() === instructor._id.toString())
               }
               onClick={(e) => handleEnrollment(e, paid)}
             >

@@ -17,8 +17,10 @@ const MyApp = ({ Component, pageProps }) => {
       </Head>
       <ToastContainer />
       <TopNav />
-      <Component {...pageProps} />
-      <Footer className="footer" />
+      <div className="body-container">
+        <Component {...pageProps} />
+        <Footer className="footer" />
+      </div>
     </Provider>
   );
 };

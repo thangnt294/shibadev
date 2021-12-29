@@ -41,7 +41,7 @@ const CourseCreateForm = ({
             </Form.Item>
           </div>
 
-          <div className="form-group pb-3">
+          <div className="form-group">
             <Form.Item
               name="description"
               rules={[
@@ -113,7 +113,7 @@ const CourseCreateForm = ({
 
           <Image width={200} src={preview} placeholder fallback="/course.png" />
 
-          <div className="form-row pb-3 pt-3 d-flex">
+          <div className="form-row pb-4 pt-3 d-flex">
             <div className="form-group">
               <label className="p-2 btn btn-outline-secondary text-left">
                 {uploadBtnText}
