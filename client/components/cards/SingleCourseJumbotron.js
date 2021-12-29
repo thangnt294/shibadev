@@ -18,7 +18,7 @@ const SingleCourseJumbotron = ({
   const { name, description, instructor, updatedAt, image, price, paid, tags } =
     course;
   return (
-    <div className="jumbotron bg-primary square">
+    <div className="jumbotron square">
       <div className="row">
         <div className="col-md-8">
           <h1 className="text-light font-weight-bold">

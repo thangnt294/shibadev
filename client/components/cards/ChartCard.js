@@ -8,6 +8,7 @@ import {
   Tooltip,
   Legend,
   Bar,
+  ResponsiveContainer,
 } from "recharts";
 import { DatePicker, Button, Space } from "antd";
 import { useState } from "react";
@@ -72,23 +73,35 @@ const ChartCard = ({
           <SmallLoading />
         </div>
       ) : chart === "bar" ? (
-        <BarChart width={730} height={300} data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey={xDataKey} />
-          <YAxis dataKey={yDataKey} allowDecimals={yDataKey === "profit"} />
-          <Tooltip formatter={(value, name, props) => [value, toolTipFormat]} />
-          <Legend formatter={(value, name, props) => legendFormat} />
-          <Bar dataKey={yDataKey} fill={color} label={{ position: "top" }} />
-        </BarChart>
+        <ResponsiveContainer width="90%" height={300}>
+          <BarChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey={xDataKey} />
+            <YAxis dataKey={yDataKey} allowDecimals={yDataKey === "profit"} />
+            <Tooltip
+              formatter={(value, name, props) => [value, toolTipFormat]}
+            />
+            <Legend formatter={(value, name, props) => legendFormat} />
+            <Bar dataKey={yDataKey} fill={color} label={{ position: "top" }} />
+          </BarChart>
+        </ResponsiveContainer>
       ) : (
-        <LineChart width={730} height={300} data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey={xDataKey} />
-          <YAxis dataKey={yDataKey} allowDecimals={yDataKey === "profit"} />
-          <Tooltip formatter={(value, name, props) => [value, toolTipFormat]} />
-          <Legend formatter={(value, name, props) => legendFormat} />
-          <Line dataKey={yDataKey} stroke={color} label={{ position: "top" }} />
-        </LineChart>
+        <ResponsiveContainer width="90%" height={300}>
+          <LineChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey={xDataKey} />
+            <YAxis dataKey={yDataKey} allowDecimals={yDataKey === "profit"} />
+            <Tooltip
+              formatter={(value, name, props) => [value, toolTipFormat]}
+            />
+            <Legend formatter={(value, name, props) => legendFormat} />
+            <Line
+              dataKey={yDataKey}
+              stroke={color}
+              label={{ position: "top" }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
       )}
     </div>
   );

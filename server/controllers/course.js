@@ -23,7 +23,7 @@ export const create = async (req, res, next) => {
     if (description.length < 20 || description.length > 1000) {
       return res
         .status(400)
-        .send("Description msut be between 20 and 1000 characters");
+        .send("Description must be between 20 and 1000 characters");
     }
 
     const courseExist = await Course.findOne({
@@ -70,7 +70,7 @@ export const update = async (req, res, next) => {
     if (description.length < 20 || description.length > 1000) {
       return res
         .status(400)
-        .send("Description msut be between 20 and 1000 characters");
+        .send("Description must be between 20 and 1000 characters");
     }
 
     const { slug } = req.params;

@@ -308,8 +308,8 @@ const CourseEdit = () => {
           handleImage={handleImage}
           handleRemoveImage={handleRemoveImage}
           handleChange={handleChange}
-          values={course}
-          setValues={setCourse}
+          course={course}
+          setCourse={setCourse}
           preview={preview}
           uploadBtnText={uploadBtnText}
           loading={loading}

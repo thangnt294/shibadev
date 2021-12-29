@@ -7,8 +7,8 @@ const CourseCreateForm = ({
   handleSubmit,
   handleImage,
   handleChange,
-  values,
-  setValues,
+  course,
+  setCourse,
   preview,
   uploadBtnText,
   loading,
@@ -19,13 +19,13 @@ const CourseCreateForm = ({
   const [form] = Form.useForm();
 
   useEffect(() => {
-    form.setFieldsValue({ name: values.name, description: values.description });
-  }, [values]);
+    form.setFieldsValue({ name: course.name, description: course.description });
+  }, [course]);
 
   return (
     <>
-      {values && (
-        <Form onSubmit={handleSubmit} form={form} initialValues={{ ...values }}>
+      {course && (
+        <Form onSubmit={handleSubmit} form={form} initialValues={{ ...course }}>
           <div className="form-group">
             <Form.Item
               name="name"
@@ -35,7 +35,7 @@ const CourseCreateForm = ({
                 name="name"
                 className="form-control"
                 placeholder="Name *"
-                value={values.name}
+                value={course.name}
                 onChange={handleChange}
               />
             </Form.Item>
@@ -52,7 +52,7 @@ const CourseCreateForm = ({
                 name="description"
                 cols="7"
                 rows="7"
-                value={values.description}
+                value={course.description}
                 className="form-control"
                 onChange={handleChange}
                 placeholder="Description *"
@@ -68,7 +68,7 @@ const CourseCreateForm = ({
               placeholder="Tags"
               size="large"
               onChange={handleSelectTag}
-              value={values.tags}
+              value={course.tags}
             >
               {tags && tags.map((tag) => <Option key={tag}>{tag}</Option>)}
             </Select>
@@ -80,24 +80,23 @@ const CourseCreateForm = ({
                 <Select
                   style={{ width: "100%" }}
                   size="large"
-                  value={values.paid}
-                  onChange={(v) => setValues({ ...values, paid: v })}
+                  value={course.paid}
+                  onChange={(v) => setCourse({ ...course, paid: v })}
                 >
                   <Option value={true}>Paid</Option>
                   <Option value={false}>Free</Option>
                 </Select>
               </div>
             </div>
-
-            {values.paid && (
+            {course.paid && (
               <div className="col ms-3">
                 <div className="form-group">
                   <InputNumber
-                    value={values.price}
+                    value={course.price >= 9.99 ? course.price : 9.99}
                     name="price"
                     placeholder="Price"
                     defaultValue="9.99"
-                    onChange={(v) => setValues({ ...values, price: v })}
+                    onChange={(v) => setCourse({ ...course, price: v })}
                     min={9.99}
                     max={500}
                     size="large"
