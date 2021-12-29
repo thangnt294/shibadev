@@ -1,7 +1,6 @@
 import { currencyFormatter } from "../../utils/helpers";
 import { Badge, Button, Image } from "antd";
 import {
-  LoadingOutlined,
   SafetyOutlined,
   ArrowRightOutlined,
   UserAddOutlined,
@@ -11,7 +10,7 @@ import { truncateText } from "../../utils/helpers";
 const SingleCourseJumbotron = ({
   course,
   user,
-  loading,
+  loadingEnrollment,
   handleEnrollment,
   status,
 }) => {
@@ -56,39 +55,34 @@ const SingleCourseJumbotron = ({
             alt={name}
             className="img img-fluid"
           />
-          {loading ? (
-            <div className="d-flex justify-content-center">
-              <LoadingOutlined className="h1 text-danger mt-2" />
-            </div>
-          ) : (
-            <Button
-              className="mb-3 mt-3"
-              type="primary"
-              block
-              shape="round"
-              icon={
-                user ? (
-                  status ? (
-                    <ArrowRightOutlined />
-                  ) : (
-                    <SafetyOutlined />
-                  )
+
+          <Button
+            className="mb-3 mt-3"
+            type="primary"
+            block
+            shape="round"
+            icon={
+              user ? (
+                status ? (
+                  <ArrowRightOutlined />
                 ) : (
-                  <UserAddOutlined />
+                  <SafetyOutlined />
                 )
-              }
-              size="large"
-              disabled={
-                loading ||
-                (user &&
-                  user._id &&
-                  user._id.toString() === instructor._id.toString())
-              }
-              onClick={(e) => handleEnrollment(e, paid)}
-            >
-              {user ? (status ? "Go to course" : "Enroll") : "Log in to enroll"}
-            </Button>
-          )}
+              ) : (
+                <UserAddOutlined />
+              )
+            }
+            size="large"
+            disabled={
+              loadingEnrollment ||
+              (user &&
+                user._id &&
+                user._id.toString() === instructor._id.toString())
+            }
+            onClick={(e) => handleEnrollment(e, paid)}
+          >
+            {user ? (status ? "Go to course" : "Enroll") : "Log in to enroll"}
+          </Button>
         </div>
       </div>
     </div>

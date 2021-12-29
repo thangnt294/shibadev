@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import InstructorRoute from "../../../../components/routes/InstructorRoute";
 import CourseCreateForm from "../../../../components/forms/CourseCreateForm";
@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { isEmpty } from "../../../../utils/helpers";
 import EditLessonModal from "../../../../components/modal/EditLessonModal";
 import EditCourseLessonList from "../../../../components/others/EditCourseLessonList";
+import { Context } from "../../../../global/Context";
 
 const CourseEdit = () => {
   // state
@@ -39,6 +40,8 @@ const CourseEdit = () => {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
 
+  const { dispatch } = useContext(Context);
+
   // router
   const router = useRouter();
   const { slug } = router.query;
@@ -52,11 +55,13 @@ const CourseEdit = () => {
   }, []);
 
   const loadCourse = async () => {
+    dispatch({ type: "LOADING", payload: true });
     const { data } = await axios.get(`/api/course/${slug}`);
     setCourse(data);
     if (data && data.image) {
       setPreview(data.image.Location);
     }
+    dispatch({ type: "LOADING", payload: false });
   };
 
   const getTags = async () => {

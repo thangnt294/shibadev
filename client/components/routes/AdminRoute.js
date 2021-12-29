@@ -1,12 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useContext } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
-import Loading from "../others/Loading";
 import SideNav from "../nav/SideNav";
+import { Context } from "../../global/Context";
+import Loading from "../../components/others/Loading";
 
 const AdminRoute = ({ children }) => {
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
+
+  const {
+    state: { pageLoading },
+  } = useContext(Context);
 
   useEffect(() => {
     fetchAdmin();
@@ -14,30 +18,22 @@ const AdminRoute = ({ children }) => {
 
   const fetchAdmin = async () => {
     try {
-      const { data } = await axios.get("/api/current-admin");
-      if (data && data.ok) setLoading(false);
+      await axios.get("/api/current-admin");
     } catch (err) {
       console.log(err);
-      setLoading(true);
       router.push("/");
     }
   };
 
   return (
-    <>
-      {loading ? (
-        <Loading />
-      ) : (
-        <div className="container-fluid">
-          <div className="row">
-            <div className="col-md-2">
-              <SideNav type="admin" />
-            </div>
-            <div className="col-md-10">{children}</div>
-          </div>
+    <div className="container-fluid">
+      <div className="row">
+        <div className="col-md-2">
+          <SideNav type="admin" />
         </div>
-      )}
-    </>
+        <div className="col-md-10">{pageLoading ? <Loading /> : children}</div>
+      </div>
+    </div>
   );
 };
 

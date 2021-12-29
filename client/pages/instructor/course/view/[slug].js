@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import InstructorRoute from "../../../../components/routes/InstructorRoute";
 import axios from "axios";
@@ -7,14 +7,13 @@ import { isEmpty } from "../../../../utils/helpers";
 import InstructorCourseHeader from "../../../../components/others/InstructorCourseHeader";
 import LessonList from "../../../../components/others/LessonList";
 import EditLessonModal from "../../../../components/modal/EditLessonModal";
-import Loading from "../../../../components/others/Loading";
 import ReactMarkdown from "react-markdown";
+import { Context } from "../../../../global/Context";
 
 const CourseView = () => {
   const [course, setCourse] = useState(null);
   // for lessons
   const [visible, setVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [lesson, setLesson] = useState({
     title: "",
     content: "",
@@ -26,6 +25,8 @@ const CourseView = () => {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [uploadBtnText, setUploadBtnText] = useState("Upload Video");
+
+  const { dispatch } = useContext(Context);
 
   const router = useRouter();
   const { slug } = router.query;
@@ -47,10 +48,10 @@ const CourseView = () => {
   };
 
   const loadCourse = async () => {
-    setLoading(true);
+    dispatch({ type: "LOADING", payload: true });
     const { data } = await axios.get(`/api/course/${slug}`);
     setCourse(data);
-    setLoading(false);
+    dispatch({ type: "LOADING", payload: false });
   };
 
   const clearState = () => {
@@ -191,9 +192,7 @@ const CourseView = () => {
     router.push(`/instructor/course/edit/${slug}`);
   };
 
-  return loading ? (
-    <Loading />
-  ) : (
+  return (
     <InstructorRoute>
       {course && (
         <div className="container-fluid pt-1">

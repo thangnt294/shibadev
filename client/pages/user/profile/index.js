@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import UserRoute from "../../../components/routes/UserRoute";
 import { isEmpty } from "../../../utils/helpers";
@@ -8,14 +8,13 @@ import ProfilePictureCard from "../../../components/cards/ProfilePictureCard";
 import BalanceCard from "../../../components/cards/BalanceCard";
 import UpdatePasswordCard from "../../../components/cards/UpdatePasswordCard";
 import PersonalInformationCard from "../../../components/cards/PersonalInformationCard";
-import Loading from "../../../components/others/Loading";
+import { Context } from "../../../global/Context";
 
 const UserProfile = () => {
   const [user, setUser] = useState(null);
   const [initialUser, setInitialUser] = useState(null);
   const [uploadBtnText, setUploadBtnText] = useState("Upload Image");
   const [editing, setEditing] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [removingAvatar, setRemovingAvatar] = useState(false);
   const [updating, setUpdating] = useState(false);
@@ -27,20 +26,22 @@ const UserProfile = () => {
     confirmPassword: "",
   });
 
+  const { dispatch } = useContext(Context);
+
   useEffect(() => {
     fetchUser();
   }, []);
 
   const fetchUser = async () => {
     try {
-      setLoading(true);
+      dispatch({ type: "LOADING", payload: true });
       const { data } = await axios.get("/api/current-user");
       setUser(data);
       setInitialUser(data);
-      setLoading(false);
+      dispatch({ type: "LOADING", payload: false });
     } catch (err) {
       console.log(err);
-      setLoading(false);
+      dispatch({ type: "LOADING", payload: false });
       toast.error("Something went wrong. Please refresh the page");
     }
   };
@@ -189,51 +190,51 @@ const UserProfile = () => {
     }
   };
 
-  return loading ? (
-    <Loading />
-  ) : (
+  return (
     <UserRoute>
-      <div className="container mt-5">
-        <div className="main-body">
-          <div className="row gutters-sm">
-            <div className="col-md-4 mb-3">
-              <ProfilePictureCard
-                user={user}
-                initialUser={initialUser}
-                removingAvatar={removingAvatar}
-                uploading={uploading}
-                uploadBtnText={uploadBtnText}
-                handleImage={handleImage}
-                handleRemoveImage={handleRemoveImage}
-              />
-              <BalanceCard
-                balance={user.balance}
-                handleTransferBalance={handleTransferBalance}
-              />
-            </div>
-            <div className="col-md-8">
-              <PersonalInformationCard
-                user={user}
-                editing={editing}
-                setEditing={setEditing}
-                updating={updating}
-                handleSubmit={handleSubmit}
-                handleCancelEdit={handleCancelEdit}
-                handleChange={handleChange}
-              />
-              <UpdatePasswordCard
-                editingPassword={editingPassword}
-                setEditingPassword={setEditingPassword}
-                updatingPassword={updatingPassword}
-                password={password}
-                handleUpdatePassword={handleUpdatePassword}
-                handleCancelEditPassword={handleCancelEditPassword}
-                handleChangePassword={handleChangePassword}
-              />
+      {user && (
+        <div className="container mt-5">
+          <div className="main-body">
+            <div className="row gutters-sm">
+              <div className="col-md-4 mb-3">
+                <ProfilePictureCard
+                  user={user}
+                  initialUser={initialUser}
+                  removingAvatar={removingAvatar}
+                  uploading={uploading}
+                  uploadBtnText={uploadBtnText}
+                  handleImage={handleImage}
+                  handleRemoveImage={handleRemoveImage}
+                />
+                <BalanceCard
+                  balance={user && user.balance}
+                  handleTransferBalance={handleTransferBalance}
+                />
+              </div>
+              <div className="col-md-8">
+                <PersonalInformationCard
+                  user={user}
+                  editing={editing}
+                  setEditing={setEditing}
+                  updating={updating}
+                  handleSubmit={handleSubmit}
+                  handleCancelEdit={handleCancelEdit}
+                  handleChange={handleChange}
+                />
+                <UpdatePasswordCard
+                  editingPassword={editingPassword}
+                  setEditingPassword={setEditingPassword}
+                  updatingPassword={updatingPassword}
+                  password={password}
+                  handleUpdatePassword={handleUpdatePassword}
+                  handleCancelEditPassword={handleCancelEditPassword}
+                  handleChangePassword={handleChangePassword}
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </UserRoute>
   );
 };

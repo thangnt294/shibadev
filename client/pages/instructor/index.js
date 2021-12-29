@@ -14,10 +14,7 @@ const InstructorIndex = () => {
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(null);
 
-  const {
-    state: { loading },
-    dispatch,
-  } = useContext(Context);
+  const { dispatch } = useContext(Context);
 
   useEffect(() => {
     loadCourses();
@@ -41,9 +38,7 @@ const InstructorIndex = () => {
     }
   };
 
-  return loading ? (
-    <Loading />
-  ) : (
+  return (
     <InstructorRoute>
       <h1 className="jumbotron text-center square">Instructor Dashboard</h1>
       <div className="container-fluid">

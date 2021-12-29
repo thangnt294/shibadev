@@ -6,14 +6,16 @@ import { Context } from "../../global/Context";
 import { toast } from "react-toastify";
 import { Modal } from "antd";
 import LessonList from "../../components/others/LessonList";
+import Loading from "../../components/others/Loading";
 
 const SingleCourse = ({ course }) => {
-  const [loading, setLoading] = useState(false);
+  const [loadingEnrollment, setLoadingEnrollment] = useState(false);
   const [status, setStatus] = useState(false);
   const [visible, setVisible] = useState(false);
 
   const {
-    state: { user },
+    state: { user, pageLoading },
+    dispatch,
   } = useContext(Context);
 
   useEffect(() => {
@@ -21,7 +23,9 @@ const SingleCourse = ({ course }) => {
   }, [user, course]);
 
   const checkEnrollment = async () => {
+    dispatch({ type: "LOADING", payload: true });
     const { data } = await axios.get(`/api/check-enrollment/${course._id}`);
+    dispatch({ type: "LOADING", payload: false });
     setStatus(data.status);
   };
 
@@ -49,9 +53,9 @@ const SingleCourse = ({ course }) => {
 
   const enroll = async () => {
     try {
-      setLoading(true);
+      setLoadingEnrollment(true);
       const { data } = await axios.post(`/api/enroll/${course._id}`);
-      setLoading(false);
+      setLoadingEnrollment(false);
       setVisible(false);
       toast.success(
         "Congratulations! you have successfully enrolled into this course"
@@ -59,17 +63,19 @@ const SingleCourse = ({ course }) => {
       router.push(`/user/course/${data.slug}`);
     } catch (err) {
       console.log(err);
-      setLoading(false);
+      setLoadingEnrollment(false);
       if (err.response) toast.error(err.response.data);
     }
   };
 
-  return (
+  return pageLoading ? (
+    <Loading />
+  ) : (
     <>
       <SingleCourseJumbotron
         course={course}
         user={user}
-        loading={loading}
+        loadingEnrollment={loadingEnrollment}
         handleEnrollment={handleEnrollment}
         status={status}
       />
@@ -78,7 +84,7 @@ const SingleCourse = ({ course }) => {
         title="Publish Course"
         visible={visible}
         onOk={enroll}
-        confirmLoading={loading}
+        confirmLoading={loadingEnrollment}
         onCancel={() => setVisible(false)}
       >
         <p>
@@ -88,7 +94,7 @@ const SingleCourse = ({ course }) => {
       </Modal>
 
       {course.lessons && (
-        <div className="container mt-5">
+        <div className="container mt-5 mb-5">
           <div className="row">
             <div className="col">
               {course.lessons && <h4>{course.lessons.length} Lessons</h4>}

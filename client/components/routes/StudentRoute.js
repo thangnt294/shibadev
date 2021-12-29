@@ -1,11 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useContext } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
-import Loading from "../others/Loading";
+import { Context } from "../../global/Context";
+import Loading from "../../components/others/Loading";
 
 const StudentRoute = ({ children }) => {
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
+
+  const {
+    state: { pageLoading },
+  } = useContext(Context);
 
   useEffect(() => {
     fetchUser();
@@ -13,23 +17,17 @@ const StudentRoute = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const { data } = await axios.get("/api/current-user");
-      if (data) setLoading(false);
+      await axios.get("/api/current-user");
     } catch (err) {
       console.log(err);
-      setLoading(true);
       router.push("/login");
     }
   };
 
   return (
-    <>
-      {loading ? (
-        <Loading />
-      ) : (
-        <div className="container-fluid">{children}</div>
-      )}
-    </>
+    <div className="container-fluid">
+      {pageLoading ? <Loading /> : children}
+    </div>
   );
 };
 

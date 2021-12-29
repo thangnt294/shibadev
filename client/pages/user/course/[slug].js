@@ -1,22 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import StudentRoute from "../../../components/routes/StudentRoute";
 import { toast } from "react-toastify";
 import { isEmpty } from "../../../utils/helpers";
 import CourseNav from "../../../components/nav/CourseNav";
-import Loading from "../../../components/others/Loading";
 import CourseContent from "../../../components/others/CourseContent";
-import { Button, Menu, Avatar, Layout } from "antd";
+import { Context } from "../../../global/Context";
+import { Layout } from "antd";
 
 const SingleCourse = () => {
   const [clicked, setClicked] = useState(-1);
   const [collapsed, setCollapsed] = useState(false);
   const [course, setCourse] = useState({ lessons: [] });
   const [completedLessons, setCompletedLessons] = useState([]);
-  const [loading, setLoading] = useState(false);
   // force state update
   const [updateState, setUpdateState] = useState(false);
+
+  const { dispatch } = useContext(Context);
 
   // router
   const router = useRouter();
@@ -31,7 +32,7 @@ const SingleCourse = () => {
   }, [course]);
 
   const loadCourse = async () => {
-    setLoading(true);
+    dispatch({ type: "LOADING", payload: true });
     const { data } = await axios.get(`/api/user/course/${slug}`);
     setCourse(data);
   };
@@ -39,7 +40,7 @@ const SingleCourse = () => {
   const loadCompletedLessons = async () => {
     const { data } = await axios.get(`/api/list-completed/${course._id}`);
     setCompletedLessons(data);
-    setLoading(false);
+    dispatch({ type: "LOADING", payload: false });
   };
 
   const markCompleted = async () => {
@@ -76,9 +77,7 @@ const SingleCourse = () => {
     }
   };
 
-  return loading ? (
-    <Loading />
-  ) : (
+  return (
     <StudentRoute>
       <Layout style={{ minHeight: "100vh" }}>
         <CourseNav

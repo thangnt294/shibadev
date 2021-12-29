@@ -9,7 +9,7 @@ const initialState = {
   limit: 12,
   total: null,
   term: ".*",
-  loading: false,
+  pageLoading: false,
 };
 
 // create context
@@ -32,7 +32,7 @@ const rootReducer = (state, action) => {
         term: action.payload.term,
       };
     case "LOADING":
-      return { ...state, loading: action.payload };
+      return { ...state, pageLoading: action.payload };
     default:
       return state;
   }

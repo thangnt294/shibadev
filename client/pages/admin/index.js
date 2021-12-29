@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import AdminRoute from "../../components/routes/AdminRoute";
 import axios from "axios";
 import moment from "moment";
 import ChartCard from "../../components/cards/ChartCard";
 import { toast } from "react-toastify";
+import { Context } from "../../global/Context";
 
 const AdminIndex = () => {
   const [dailyUsers, setDailyUsers] = useState([]);
@@ -11,11 +12,14 @@ const AdminIndex = () => {
   const [dailyProfit, setDailyProfit] = useState([]);
   const [dailyEnrollments, setDailyEnrollments] = useState([]);
 
+  const { dispatch } = useContext(Context);
+
   useEffect(() => {
     fetchReport();
   }, []);
 
   const fetchReport = async () => {
+    dispatch({ type: "LOADING", payload: true });
     const { data } = await axios.get(
       "/api/daily-report?fromDate=2021-12-21&toDate=2021-12-28"
     );
@@ -24,6 +28,7 @@ const AdminIndex = () => {
     setDailyCourses(formattedData);
     setDailyProfit(formattedData);
     setDailyEnrollments(formattedData);
+    dispatch({ type: "LOADING", payload: false });
   };
 
   const dataFormatter = (data) => {

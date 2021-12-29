@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import InstructorRoute from "../../../components/routes/InstructorRoute";
 import CourseCreateForm from "../../../components/forms/CourseCreateForm";
@@ -6,6 +6,7 @@ import Resizer from "react-image-file-resizer";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { isEmpty } from "../../../utils/helpers";
+import { Context } from "../../../global/Context";
 
 const CourseCreate = () => {
   // state
@@ -25,8 +26,12 @@ const CourseCreate = () => {
   const [uploadBtnText, setUploadBtnText] = useState("Upload Image");
   const [tags, setTags] = useState([]);
 
+  const { dispatch } = useContext(Context);
+
   useEffect(() => {
+    dispatch({ type: "LOADING", payload: true });
     getTags();
+    dispatch({ type: "LOADING", payload: false });
   }, []);
 
   const getTags = async () => {
