@@ -4,13 +4,16 @@ import {
   LinkedinFilled,
 } from "@ant-design/icons";
 import Link from "next/link";
-import { Space } from "antd";
+import { Space, Image } from "antd";
 
 const Footer = () => (
-  <div className="footer">
-    <div className="container">
+  <div className="footer pb-1">
+    <div className="container-fluid ms-0 me-0">
       <div className="row">
-        <div className="col-md-8">
+        <div className="col-md-3 bg-primary text-center pt-0">
+          <Image src="/logo.png" preview={false} className="mt-0" />
+        </div>
+        <div className="col-md-6 pt-4">
           <h2 className="text-white">
             <b>About us</b>
           </h2>
@@ -22,7 +25,7 @@ const Footer = () => (
             platform.
           </p>
         </div>
-        <div className="col-md-4 text-center">
+        <div className="col-md-3 text-center pt-4">
           <div className="vertical-center">
             <Space size="large">
               <Link href="https://github.com/thangnt294">
@@ -41,7 +44,7 @@ const Footer = () => (
                 </a>
               </Link>
             </Space>
-            <p class="copyright mt-2">ShibaDev © 2022</p>
+            <p className="copyright mt-2">ShibaDev © 2022</p>
           </div>
         </div>
       </div>

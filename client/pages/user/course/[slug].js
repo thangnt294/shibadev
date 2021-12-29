@@ -76,49 +76,47 @@ const SingleCourse = () => {
     }
   };
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <StudentRoute>
-      {loading ? (
-        <Loading />
-      ) : (
-        <div className="row">
-          <CourseNav
-            collapsed={collapsed}
-            setCollapsed={setCollapsed}
-            course={course}
-            clicked={clicked}
-            setClicked={setClicked}
-            completedLessons={completedLessons}
-          />
-          <div className="col">
-            {clicked !== -1 ? (
-              <CourseContent
-                course={course}
-                clicked={clicked}
-                markCompleted={markCompleted}
-                markIncomplete={markIncomplete}
-                completedLessons={completedLessons}
-              />
-            ) : (
-              <div className="d-flex justify-content-center p-5">
-                <div className=" text-center p-5">
-                  <img src="/waving-white.jpg" className="p-3" />
-                  <h2 className="font-weight-bold">
-                    Welcome! We're excited to have you here!
-                  </h2>
-                  <p className="lead">
-                    Thank you for enrolling into this course. We hope that you
-                    will have a great time studying.
-                  </p>
-                  <p className="lead">
-                    Click on the lessons to start learning right away!
-                  </p>
-                </div>
+      <div className="row">
+        <CourseNav
+          collapsed={collapsed}
+          setCollapsed={setCollapsed}
+          course={course}
+          clicked={clicked}
+          setClicked={setClicked}
+          completedLessons={completedLessons}
+        />
+        <div className="col">
+          {clicked !== -1 ? (
+            <CourseContent
+              course={course}
+              clicked={clicked}
+              markCompleted={markCompleted}
+              markIncomplete={markIncomplete}
+              completedLessons={completedLessons}
+            />
+          ) : (
+            <div className="d-flex justify-content-center p-5">
+              <div className=" text-center p-5">
+                <img src="/waving-white.jpg" className="p-3" />
+                <h2 className="font-weight-bold">
+                  Welcome! We're excited to have you here!
+                </h2>
+                <p className="lead">
+                  Thank you for enrolling into this course. We hope that you
+                  will have a great time studying.
+                </p>
+                <p className="lead">
+                  Click on the lessons to start learning right away!
+                </p>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </StudentRoute>
   );
 };
