@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import Loading from "../others/Loading";
-import AdminNav from "../nav/AdminNav";
+import SideNav from "../nav/SideNav";
 
 const AdminRoute = ({ children }) => {
   const [loading, setLoading] = useState(true);
@@ -31,7 +31,7 @@ const AdminRoute = ({ children }) => {
         <div className="container-fluid">
           <div className="row">
             <div className="col-md-2">
-              <AdminNav />
+              <SideNav type="admin" />
             </div>
             <div className="col-md-10">{children}</div>
           </div>

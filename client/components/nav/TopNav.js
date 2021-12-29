@@ -6,6 +6,9 @@ import {
   TeamOutlined,
   SearchOutlined,
   CrownOutlined,
+  DesktopOutlined,
+  UserOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
 import { Context } from "../../global/Context";
 import axios from "axios";
@@ -65,7 +68,7 @@ const TopNav = () => {
       theme="dark"
       mode="horizontal"
       selectedKeys={[current]}
-      className={`sticky-top ${current !== "/" && "mb-2"}`}
+      className="sticky-top"
     >
       <Item
         key="/"
@@ -158,17 +161,17 @@ const TopNav = () => {
           key="sub-menu"
         >
           <ItemGroup>
-            <Item key="/user">
+            <Item key="/user" icon={<DesktopOutlined />}>
               <Link href="/user">
                 <a>Dashboard</a>
               </Link>
             </Item>
-            <Item key="/user/profile">
+            <Item key="/user/profile" icon={<UserOutlined />}>
               <Link href="/user/profile">
                 <a>Profile</a>
               </Link>
             </Item>
-            <Item key="/logout" onClick={logout}>
+            <Item key="/logout" icon={<LogoutOutlined />} onClick={logout}>
               Logout
             </Item>
           </ItemGroup>

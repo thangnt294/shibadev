@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import Loading from "../others/Loading";
-import InstructorNav from "../nav/InstructorNav";
+import SideNav from "../nav/SideNav";
 
 const InstructorRoute = ({ children }) => {
   const [loading, setLoading] = useState(true);
@@ -31,7 +31,7 @@ const InstructorRoute = ({ children }) => {
         <div className="container-fluid">
           <div className="row">
             <div className="col-md-2">
-              <InstructorNav />
+              <SideNav type="instructor" />
             </div>
             <div className="col-md-10">{children}</div>
           </div>

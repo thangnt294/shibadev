@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import StudentRoute from "../../../components/routes/StudentRoute";
-import { CodeOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 import { isEmpty } from "../../../utils/helpers";
 import CourseNav from "../../../components/nav/CourseNav";
 import Loading from "../../../components/others/Loading";
 import CourseContent from "../../../components/others/CourseContent";
+import { Button, Menu, Avatar, Layout } from "antd";
 
 const SingleCourse = () => {
   const [clicked, setClicked] = useState(-1);
@@ -80,7 +80,7 @@ const SingleCourse = () => {
     <Loading />
   ) : (
     <StudentRoute>
-      <div className="row">
+      <Layout style={{ minHeight: "100vh" }}>
         <CourseNav
           collapsed={collapsed}
           setCollapsed={setCollapsed}
@@ -89,7 +89,7 @@ const SingleCourse = () => {
           setClicked={setClicked}
           completedLessons={completedLessons}
         />
-        <div className="col">
+        <Layout className="site-layout">
           {clicked !== -1 ? (
             <CourseContent
               course={course}
@@ -115,8 +115,8 @@ const SingleCourse = () => {
               </div>
             </div>
           )}
-        </div>
-      </div>
+        </Layout>
+      </Layout>
     </StudentRoute>
   );
 };

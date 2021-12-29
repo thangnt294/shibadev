@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
-import UserNav from "../nav/UserNav";
+import SideNav from "../nav/SideNav";
 import Loading from "../others/Loading";
 
 const UserRoute = ({ children, showNav = true }) => {
@@ -30,7 +30,7 @@ const UserRoute = ({ children, showNav = true }) => {
       ) : (
         <div className="container-fluid">
           <div className="row">
-            <div className="col-md-2">{showNav && <UserNav />}</div>
+            <div className="col-md-2">{showNav && <SideNav type="user" />}</div>
             <div className="col-md-10">{children}</div>
           </div>
         </div>

@@ -9,7 +9,7 @@ import { isEmpty } from "../../../utils/helpers";
 
 const CourseCreate = () => {
   // state
-  const [values, setValues] = useState({
+  const [course, setCourse] = useState({
     name: "",
     description: "",
     price: 0,
@@ -38,11 +38,11 @@ const CourseCreate = () => {
   const router = useRouter();
 
   const handleChange = (e) => {
-    setValues({ ...values, [e.target.name]: e.target.value });
+    setCourse({ ...course, [e.target.name]: e.target.value });
   };
 
   const handleSelectTag = (value) => {
-    setValues({ ...values, tags: value.slice(0, 5) });
+    setCourse({ ...course, tags: value.slice(0, 5) });
   };
 
   const handleImage = (e) => {
@@ -65,7 +65,7 @@ const CourseCreate = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isEmpty(values.name) || isEmpty(values.description)) {
+    if (isEmpty(course.name) || isEmpty(course.description)) {
       toast.error("Please fill in all the required fields before saving");
       return;
     }
@@ -81,8 +81,8 @@ const CourseCreate = () => {
           0,
           async (uri) => {
             await axios.post("/api/course", {
-              ...values,
-              price: values.paid ? values.price : 0,
+              ...course,
+              price: course.paid ? course.price : 0,
               uploadImage: uri,
             });
             pushToInstructor();
@@ -90,8 +90,8 @@ const CourseCreate = () => {
         );
       } else {
         await axios.post("/api/course", {
-          ...values,
-          price: values.paid ? values.price : 0,
+          ...course,
+          price: course.paid ? course.price : 0,
         });
         pushToInstructor();
       }
@@ -116,8 +116,8 @@ const CourseCreate = () => {
           handleSubmit={handleSubmit}
           handleImage={handleImage}
           handleChange={handleChange}
-          values={values}
-          setValues={setValues}
+          course={course}
+          setCourse={setCourse}
           preview={preview}
           uploadBtnText={uploadBtnText}
           loading={loading}

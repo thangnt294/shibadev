@@ -1,5 +1,6 @@
 import ReactPlayer from "react-player";
 import ReactMarkdown from "react-markdown";
+import { truncateText } from "../../utils/helpers";
 
 const CourseContent = ({
   course,
@@ -9,9 +10,9 @@ const CourseContent = ({
   completedLessons,
 }) => {
   return (
-    <>
-      <div className="col alert alert-primary square">
-        <b>{course.lessons[clicked].title.substring(0, 30)}</b>
+    <div className="p-3">
+      <div className="alert alert-primary square">
+        <b>{truncateText(course.lessons[clicked].title, 100)}</b>
 
         {completedLessons.includes(course.lessons[clicked]._id) ? (
           <span className="float-end pointer" onClick={markIncomplete}>
@@ -36,10 +37,10 @@ const CourseContent = ({
           />
         </div>
       )}
-      <ReactMarkdown className="single-post mt-3">
+      <ReactMarkdown className="single-post mt-3 ms-3">
         {course.lessons[clicked].content}
       </ReactMarkdown>
-    </>
+    </div>
   );
 };
 

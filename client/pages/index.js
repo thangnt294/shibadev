@@ -70,7 +70,7 @@ const Index = ({ initialCourses, initialTotal }) => {
           <div className="row">
             {publishedCourses.length > 0 ? (
               publishedCourses.map((course) => (
-                <div key={course._id} className="col-md-3">
+                <div key={course._id} className="col-md-3 ms-3">
                   <CourseCard course={course} page="home" />
                 </div>
               ))
