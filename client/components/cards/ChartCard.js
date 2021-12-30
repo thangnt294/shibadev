@@ -78,10 +78,8 @@ const ChartCard = ({
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey={xDataKey} />
             <YAxis dataKey={yDataKey} allowDecimals={yDataKey === "profit"} />
-            <Tooltip
-              formatter={(value, name, props) => [value, toolTipFormat]}
-            />
-            <Legend formatter={(value, name, props) => legendFormat} />
+            <Tooltip formatter={(value) => [value, toolTipFormat]} />
+            <Legend formatter={() => legendFormat} />
             <Bar dataKey={yDataKey} fill={color} label={{ position: "top" }} />
           </BarChart>
         </ResponsiveContainer>
@@ -91,10 +89,8 @@ const ChartCard = ({
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey={xDataKey} />
             <YAxis dataKey={yDataKey} allowDecimals={yDataKey === "profit"} />
-            <Tooltip
-              formatter={(value, name, props) => [value, toolTipFormat]}
-            />
-            <Legend formatter={(value, name, props) => legendFormat} />
+            <Tooltip formatter={(value) => [value, toolTipFormat]} />
+            <Legend formatter={() => legendFormat} />
             <Line
               dataKey={yDataKey}
               stroke={color}

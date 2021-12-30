@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Menu } from "antd";
-import { DesktopOutlined, PlusOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  DesktopOutlined,
+  PlusOutlined,
+  UserOutlined,
+  ExceptionOutlined,
+} from "@ant-design/icons";
 
 const { Item } = Menu;
 
@@ -36,6 +41,11 @@ const SideNav = ({ type }) => {
       {type === "admin"
         ? generateItem([
             { title: "Dashboard", key: "/admin", icon: <DesktopOutlined /> },
+            {
+              title: "Manage Courses",
+              key: "/admin/manage-courses",
+              icon: <ExceptionOutlined />,
+            },
           ])
         : type === "instructor"
         ? generateItem([

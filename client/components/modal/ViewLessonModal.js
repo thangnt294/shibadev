@@ -13,7 +13,7 @@ const ViewLessonModal = ({ lesson, visible, handleCloseModal }) => {
       footer={null}
     >
       {lesson && lesson.video && lesson.video.Location && (
-        <div className="pt-2 d-flex justify-content-center">
+        <div className="pt-2 d-flex justify-content-center mb-4">
           <ReactPlayer
             url={lesson.video.Location}
             width="410px"
