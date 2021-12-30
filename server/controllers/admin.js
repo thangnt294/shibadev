@@ -2,6 +2,7 @@ import User from "../models/user";
 import Course from "../models/course";
 import DailyReport from "../models/dailyReport";
 import moment from "moment";
+import { removeVideoFromS3 } from "../utils/helpers";
 
 export const getCurrentAdmin = async (req, res, next) => {
   try {
@@ -48,6 +49,40 @@ export const getAllCourses = async (req, res, next) => {
     });
 
     res.json({ courses, total });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const deleteCourse = async (req, res, next) => {
+  try {
+    const { courseId } = req.params;
+    const course = await Course.findById(courseId);
+
+    // remove all videos belonging to the course
+    const removeVideos = [];
+
+    course.lessons.forEach((lesson) => {
+      if (!isEmpty(lesson.video)) {
+        removeVideos.push(removeVideoFromS3(lesson.video));
+      }
+    });
+
+    await Promise.all(removeVideos);
+
+    // remove all courses from enroll_courses of user
+    await User.updateMany(
+      {
+        enroll_courses: courseId,
+      },
+      {
+        $pull: {
+          enroll_courses: courseId,
+        },
+      }
+    );
+    // delete the course
+    await Course.findByIdAndDelete(courseId);
   } catch (err) {
     next(err);
   }

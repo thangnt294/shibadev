@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import AdminRoute from "../../components/routes/AdminRoute";
 import { Table, Tag, Badge, Popconfirm } from "antd";
 import ViewLessonModal from "../../components/modal/ViewLessonModal";
 import { currencyFormatter } from "../../utils/helpers";
+import { Context } from "../../global/Context";
 
 const ManageCourses = () => {
   const [courses, setCourses] = useState([]);
@@ -14,17 +15,21 @@ const ManageCourses = () => {
   const [currentLesson, setCurrentLesson] = useState(null);
   const [pageSize, setPageSize] = useState(10);
 
+  const { dispatch } = useContext(Context);
+
   useEffect(() => {
     fetchCourses();
   }, [page, term]);
 
   const fetchCourses = async () => {
+    dispatch({ type: "LOADING", payload: true });
     const { data } = await axios.get(
       `/api/admin/all-courses?page=${page}&limit=${pageSize}&term=${term}`
     );
 
     setCourses(data.courses);
     setTotal(data.total);
+    dispatch({ type: "LOADING", payload: false });
   };
 
   const columns = [
@@ -124,8 +129,12 @@ const ManageCourses = () => {
     setPageSize(pageSize);
   };
 
-  const handleDeleteCourse = (courseId) => {
-    console.log("DELETE", courseId);
+  const handleDeleteCourse = async (courseId) => {
+    await axios.delete(`/api/delete-course/${courseId}`);
+    const updatedCourses = courses.filter(
+      (course) => course._id.toString() !== courseId
+    );
+    setCourses(updatedCourses);
   };
 
   return (
