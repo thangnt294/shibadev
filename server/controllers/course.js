@@ -297,7 +297,7 @@ export const getPublishedCourses = async (req, res, next) => {
       published: true,
       $or: [{ name: new RegExp(term) }, { tags: new RegExp(term) }],
     })
-      .sort({ createdAt: -1 })
+      .sort({ updatedAt: -1 })
       .skip(parseInt(page * limit))
       .limit(parseInt(limit))
       .populate("instructor", "_id name");

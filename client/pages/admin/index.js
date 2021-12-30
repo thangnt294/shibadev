@@ -20,8 +20,14 @@ const AdminIndex = () => {
 
   const fetchReport = async () => {
     dispatch({ type: "LOADING", payload: true });
+    const today = moment().startOf("day").format("YYYY-MM-DD");
+    const aWeekAgo = moment()
+      .startOf("day")
+      .subtract(7, "days")
+      .format("YYYY-MM-DD");
+
     const { data } = await axios.get(
-      "/api/daily-report?fromDate=2021-12-21&toDate=2021-12-28"
+      `/api/admin/daily-report?fromDate=${aWeekAgo}&toDate=${today}`
     );
     const formattedData = dataFormatter(data);
     setDailyUsers(formattedData);
@@ -43,7 +49,7 @@ const AdminIndex = () => {
       );
 
       const { data } = await axios.get(
-        `/api/daily-report?fromDate=${formattedDates[0]}&toDate=${formattedDates[1]}`
+        `/api/admin/daily-report?fromDate=${formattedDates[0]}&toDate=${formattedDates[1]}`
       );
       const formattedData = dataFormatter(data);
       setData(formattedData);

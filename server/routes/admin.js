@@ -6,9 +6,14 @@ const router = express.Router();
 import { requireSignin, isAdmin } from "../middlewares";
 
 // controllers
-import { getCurrentAdmin, getDailyReport } from "../controllers/admin";
+import {
+  getCurrentAdmin,
+  getDailyReport,
+  getAllCourses,
+} from "../controllers/admin";
 
 router.get("/current-admin", requireSignin, isAdmin, getCurrentAdmin);
-router.get("/daily-report", requireSignin, isAdmin, getDailyReport);
+router.get("/admin/daily-report", requireSignin, isAdmin, getDailyReport);
+router.get("/admin/all-courses", requireSignin, isAdmin, getAllCourses);
 
 module.exports = router;
