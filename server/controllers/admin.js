@@ -38,13 +38,12 @@ export const getAllCourses = async (req, res, next) => {
     const courses = await Course.find({
       $or: [{ name: new RegExp(term) }, { tags: new RegExp(term) }],
     })
-      .sort({ published: -1, updatedAt: -1 })
+      .sort({ published: -1, name: 1, updatedAt: -1 })
       .skip(parseInt(page * limit))
       .limit(parseInt(limit))
       .populate("instructor", "_id name");
 
     const total = await Course.countDocuments({
-      published: true,
       $or: [{ name: new RegExp(term) }, { tags: new RegExp(term) }],
     });
 
