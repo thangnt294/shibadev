@@ -73,7 +73,7 @@ svg {
 
 .footer {
   padding: 1rem 0 2rem 1rem;
-  background-color: #1d242b;
+  background-color: #001529;
   color: white;
   margin-top: auto;
 }
@@ -96,5 +96,5 @@ svg {
 }
 
 .container-fluid {
-  padding-left: 0 !important;
+  /* padding-left: 0 !important; */
 }

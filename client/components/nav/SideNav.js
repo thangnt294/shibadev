@@ -28,10 +28,10 @@ const SideNav = ({ type }) => {
 
   return (
     <Menu
-      theme="dark"
+      // theme="dark"
       onClick={handleClick}
       selectedKeys={[current]}
-      style={{ minHeight: "100vh" }}
+      style={{ height: "100%" }}
     >
       {type === "admin"
         ? generateItem([
