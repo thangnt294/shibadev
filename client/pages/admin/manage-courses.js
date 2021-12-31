@@ -3,7 +3,7 @@ import axios from "axios";
 import AdminRoute from "../../components/routes/AdminRoute";
 import { Table, Tag, Badge, Popconfirm } from "antd";
 import ViewLessonModal from "../../components/modal/ViewLessonModal";
-import { currencyFormatter } from "../../utils/helpers";
+import { currencyFormatter, truncateText } from "../../utils/helpers";
 import { Context } from "../../global/Context";
 import { toast } from "react-toastify";
 
@@ -152,11 +152,21 @@ const ManageCourses = () => {
         expandable={{
           expandedRowRender: (record) =>
             expandedRowRender(
-              record.lessons.map((lesson, index) => ({ ...lesson, key: index }))
+              record.lessons.map((lesson, index) => ({
+                ...lesson,
+                key: index,
+                title: truncateText(lesson.title, 30),
+                content: truncateText(lesson.content, 50),
+              }))
             ),
           rowExpandable: (record) => record.lessons.length > 0,
         }}
-        dataSource={courses.map((course, index) => ({ ...course, key: index }))}
+        dataSource={courses.map((course, index) => ({
+          ...course,
+          key: index,
+          name: truncateText(course.name, 30),
+          description: truncateText(course.description, 50),
+        }))}
         pagination={{
           total: total,
           current: page + 1,

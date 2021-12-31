@@ -73,7 +73,7 @@ const ChartCard = ({
           <SmallLoading />
         </div>
       ) : chart === "bar" ? (
-        <ResponsiveContainer width="90%" height={300}>
+        <ResponsiveContainer width="90%" height={300} debounce={1}>
           <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey={xDataKey} />
@@ -84,7 +84,7 @@ const ChartCard = ({
           </BarChart>
         </ResponsiveContainer>
       ) : (
-        <ResponsiveContainer width="90%" height={300}>
+        <ResponsiveContainer width="90%" height={300} debounce={1}>
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey={xDataKey} />

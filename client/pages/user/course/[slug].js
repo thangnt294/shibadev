@@ -7,7 +7,7 @@ import { isEmpty } from "../../../utils/helpers";
 import CourseNav from "../../../components/nav/CourseNav";
 import CourseContent from "../../../components/others/CourseContent";
 import { Context } from "../../../global/Context";
-import { Layout } from "antd";
+import { Image } from "antd";
 
 const SingleCourse = () => {
   const [clicked, setClicked] = useState(-1);
@@ -103,7 +103,11 @@ const SingleCourse = () => {
             ) : (
               <div className="d-flex justify-content-center p-5">
                 <div className=" text-center p-5">
-                  <img src="/waving-white.jpg" className="p-3" />
+                  <Image
+                    src="/waving-white.jpg"
+                    className="p-3"
+                    preview={false}
+                  />
                   <h2 className="font-weight-bold">
                     Welcome! We're excited to have you here!
                   </h2>
