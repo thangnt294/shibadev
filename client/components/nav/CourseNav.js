@@ -1,8 +1,11 @@
-import { Menu, Avatar, Layout } from "antd";
-import { CheckCircleFilled } from "@ant-design/icons";
+import { Menu, Avatar, Button } from "antd";
+import {
+  CheckCircleFilled,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+} from "@ant-design/icons";
 import { truncateText } from "../../utils/helpers";
 
-const { Sider } = Layout;
 const { Item } = Menu;
 
 const CourseNav = ({
@@ -15,31 +18,31 @@ const CourseNav = ({
 }) => {
   return (
     <div>
-      <Sider
-        collapsible
-        collapsed={collapsed}
-        onCollapse={(collapsed) => setCollapsed(collapsed)}
-        style={{ minHeight: "100vh" }}
+      <Button
+        type="primary"
+        onClick={() => setCollapsed(!collapsed)}
+        className="mb-2 mt-2"
       >
-        <Menu defaultSelectedKeys={[clicked]} theme="dark" mode="inline">
-          {course.lessons.map((lesson, index) => (
-            <Item
-              key={lesson._id}
-              onClick={() => setClicked(index)}
-              icon={
-                <Avatar style={{ backgroundColor: "#fcba03" }}>
-                  {index + 1}
-                </Avatar>
-              }
-            >
-              {truncateText(lesson.title, 30)}{" "}
-              {completedLessons.includes(lesson._id) && (
-                <CheckCircleFilled className="float-right text-success ms-2" />
-              )}
-            </Item>
-          ))}
-        </Menu>
-      </Sider>
+        {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+      </Button>
+      <Menu defaultSelectedKeys={[clicked]} inlineCollapsed={collapsed}>
+        {course.lessons.map((lesson, index) => (
+          <Item
+            key={lesson._id}
+            onClick={() => setClicked(index)}
+            icon={
+              <Avatar style={{ backgroundColor: "#fcba03" }}>
+                {index + 1}
+              </Avatar>
+            }
+          >
+            {truncateText(lesson.title, 30)}{" "}
+            {completedLessons.includes(lesson._id) && (
+              <CheckCircleFilled className="float-right text-success ms-2" />
+            )}
+          </Item>
+        ))}
+      </Menu>
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { Table, Tag, Badge, Popconfirm } from "antd";
 import ViewLessonModal from "../../components/modal/ViewLessonModal";
 import { currencyFormatter } from "../../utils/helpers";
 import { Context } from "../../global/Context";
+import { toast } from "react-toastify";
 
 const ManageCourses = () => {
   const [courses, setCourses] = useState([]);
@@ -130,11 +131,17 @@ const ManageCourses = () => {
   };
 
   const handleDeleteCourse = async (courseId) => {
-    await axios.delete(`/api/delete-course/${courseId}`);
-    const updatedCourses = courses.filter(
-      (course) => course._id.toString() !== courseId
-    );
-    setCourses(updatedCourses);
+    try {
+      await axios.delete(`/api/delete-course/${courseId}`);
+      const updatedCourses = courses.filter(
+        (course) => course._id.toString() !== courseId
+      );
+      setCourses(updatedCourses);
+      toast.success("Course has been deleted");
+    } catch (err) {
+      console.log(err);
+      if (err.response) toast.error(err.response.data);
+    }
   };
 
   return (

@@ -79,43 +79,47 @@ const SingleCourse = () => {
 
   return (
     <StudentRoute>
-      <Layout style={{ minHeight: "100vh" }}>
-        <CourseNav
-          collapsed={collapsed}
-          setCollapsed={setCollapsed}
-          course={course}
-          clicked={clicked}
-          setClicked={setClicked}
-          completedLessons={completedLessons}
-        />
-        <Layout className="site-layout">
-          {clicked !== -1 ? (
-            <CourseContent
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-md-2">
+            <CourseNav
+              collapsed={collapsed}
+              setCollapsed={setCollapsed}
               course={course}
               clicked={clicked}
-              markCompleted={markCompleted}
-              markIncomplete={markIncomplete}
+              setClicked={setClicked}
               completedLessons={completedLessons}
             />
-          ) : (
-            <div className="d-flex justify-content-center p-5">
-              <div className=" text-center p-5">
-                <img src="/waving-white.jpg" className="p-3" />
-                <h2 className="font-weight-bold">
-                  Welcome! We're excited to have you here!
-                </h2>
-                <p className="lead">
-                  Thank you for enrolling into this course. We hope that you
-                  will have a great time studying.
-                </p>
-                <p className="lead">
-                  Click on the lessons to start learning right away!
-                </p>
+          </div>
+          <div className="col-md-10">
+            {clicked !== -1 ? (
+              <CourseContent
+                course={course}
+                clicked={clicked}
+                markCompleted={markCompleted}
+                markIncomplete={markIncomplete}
+                completedLessons={completedLessons}
+              />
+            ) : (
+              <div className="d-flex justify-content-center p-5">
+                <div className=" text-center p-5">
+                  <img src="/waving-white.jpg" className="p-3" />
+                  <h2 className="font-weight-bold">
+                    Welcome! We're excited to have you here!
+                  </h2>
+                  <p className="lead">
+                    Thank you for enrolling into this course. We hope that you
+                    will have a great time studying.
+                  </p>
+                  <p className="lead">
+                    Click on the lessons to start learning right away!
+                  </p>
+                </div>
               </div>
-            </div>
-          )}
-        </Layout>
-      </Layout>
+            )}
+          </div>
+        </div>
+      </div>
     </StudentRoute>
   );
 };
