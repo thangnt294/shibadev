@@ -39,7 +39,7 @@ const ManageCourses = () => {
       title: "Instructor",
       dataIndex: ["instructor", "name"],
     },
-    { title: "Lessons", dataIndex: ["lessons", "length"] },
+    { title: "Lessons", dataIndex: ["lessons", "length"], responsive: ["md"] },
     {
       title: "Tags",
       dataIndex: "tags",
@@ -52,6 +52,7 @@ const ManageCourses = () => {
           ))}
         </span>
       ),
+      responsive: ["md"],
     },
     {
       title: "Price",
@@ -69,6 +70,7 @@ const ManageCourses = () => {
           {published ? "Yes" : "No"}
         </span>
       ),
+      responsive: ["md"],
     },
     {
       title: "Action",
@@ -97,6 +99,7 @@ const ManageCourses = () => {
             {video ? "Yes" : "No"}
           </span>
         ),
+        responsive: ["md"],
       },
       {
         title: "Action",
