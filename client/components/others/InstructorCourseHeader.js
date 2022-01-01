@@ -24,7 +24,6 @@ const InstructorCourseHeader = ({
           <h1 className="text-light font-weight-bold">
             {truncateText(name, 60)}
           </h1>
-          {/* <p className="lead">{truncateText(description, 200)}</p> */}
           {tags && tags.length > 0 ? (
             tags.map((tag) => (
               <Badge
@@ -43,65 +42,62 @@ const InstructorCourseHeader = ({
           )}
           <p className="lead mb-1">{lessons.length} lessons</p>
           <p className="lead">{studentCount} students enrolled</p>
-          <div className="d-flex">
-            <Space size={20} align="center">
-              <Button
-                type="primary"
-                disabled={published}
-                onClick={handleOpenAddLessonModal}
-              >
-                <PlusCircleOutlined />
-                Add lesson
-              </Button>
+          <Button
+            type="primary"
+            disabled={published}
+            onClick={handleOpenAddLessonModal}
+            className="me-3 mb-2"
+          >
+            <PlusCircleOutlined />
+            Add lesson
+          </Button>
 
-              <Button
-                className={!published && "bg-warning text-white"}
-                disabled={published}
-                onClick={handleRouteToEditCourse}
-              >
-                <EditOutlined />
-                Edit
-              </Button>
+          <Button
+            disabled={published}
+            onClick={handleRouteToEditCourse}
+            className={`me-3 mb-2 ${!published && "bg-warning text-white"}`}
+          >
+            <EditOutlined />
+            Edit
+          </Button>
 
-              {published ? (
-                <Popconfirm
-                  title="Once you unpublish your course, it will not be available for users to enroll anymore"
-                  onConfirm={() => handleUnpublish(_id)}
-                  okText="Unpublish"
-                  cancelText="Cancel"
+          {published ? (
+            <Popconfirm
+              title="Once you unpublish your course, it will not be available for users to enroll anymore"
+              onConfirm={() => handleUnpublish(_id)}
+              okText="Unpublish"
+              cancelText="Cancel"
+            >
+              <Button className="bg-danger text-white mb-2">
+                <StopOutlined onClick={handleUnpublish} />
+                Unpublish
+              </Button>
+            </Popconfirm>
+          ) : (
+            <Tooltip
+              title={
+                lessons && lessons.length < 5
+                  ? "Min 5 lessons required to publish"
+                  : ""
+              }
+            >
+              <Popconfirm
+                title="Once you publish your course, it will be live on the marketplace for users to enroll"
+                onConfirm={() => handlePublish(_id)}
+                okText="Publish"
+                cancelText="Cancel"
+                disabled={lessons && lessons.length < 5}
+              >
+                <Button
+                  className="bg-success text-white mb-2"
+                  disabled={lessons && lessons.length < 5}
                 >
-                  <Button className="bg-danger text-white">
-                    <StopOutlined onClick={handleUnpublish} />
-                    Unpublish
-                  </Button>
-                </Popconfirm>
-              ) : (
-                <Tooltip
-                  title={
-                    lessons && lessons.length < 5
-                      ? "Min 5 lessons required to publish"
-                      : ""
-                  }
-                >
-                  <Popconfirm
-                    title="Once you publish your course, it will be live on the marketplace for users to enroll"
-                    onConfirm={() => handlePublish(_id)}
-                    okText="Publish"
-                    cancelText="Cancel"
-                    disabled={lessons && lessons.length < 5}
-                  >
-                    <Button
-                      className="bg-success text-white"
-                      disabled={lessons && lessons.length < 5}
-                    >
-                      <UploadOutlined onClick={handlePublish} />
-                      Publish
-                    </Button>
-                  </Popconfirm>
-                </Tooltip>
-              )}
-            </Space>
-          </div>
+                  <UploadOutlined onClick={handlePublish} />
+                  Publish
+                </Button>
+              </Popconfirm>
+            </Tooltip>
+          )}
         </div>
         <div className="col-md-4">
           <Image

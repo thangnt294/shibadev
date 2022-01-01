@@ -81,7 +81,7 @@ const SingleCourse = ({ course }) => {
       />
 
       <Modal
-        title="Publish Course"
+        title="Enroll Course"
         visible={visible}
         onOk={enroll}
         confirmLoading={loadingEnrollment}

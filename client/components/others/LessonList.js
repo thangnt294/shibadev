@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { List, Avatar } from "antd";
+import { List, Avatar, Divider } from "antd";
 import { truncateText } from "../../utils/helpers";
 import { PlayCircleOutlined } from "@ant-design/icons";
 import ViewLessonModal from "../modal/ViewLessonModal";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const { Item } = List;
 
@@ -22,44 +23,48 @@ const LessonList = ({ lessons, checkPreview }) => {
   };
 
   return (
-    <>
-      <List
-        grid={{ gutter: 16, column: 4 }}
-        dataSource={lessons}
-        renderItem={(item, index) => (
-          <Item
-            className="border pointer"
-            onClick={() => handleViewLesson(item)}
-          >
-            <div className="d-flex justify-content-between">
-              <div className="d-flex">
-                <Avatar
-                  shape="square"
-                  size={80}
-                  style={{ backgroundColor: "#ff9900" }}
-                >
-                  {index + 1}
-                </Avatar>
-                <div className="ms-3">
-                  <h6 className="lead mt-2">
-                    <b>{truncateText(item.title, 60)}</b>
-                  </h6>
-                  <p>{truncateText(item.content, 200)}</p>
-                </div>
+    <div
+      id="scrollableDiv"
+      style={{
+        height: 400,
+        overflow: "auto",
+        padding: "0 16px",
+        border: "1px solid rgba(140, 140, 140, 0.35)",
+      }}
+    >
+      <InfiniteScroll
+        dataLength={lessons.length}
+        endMessage={<Divider plain>That's all, nothing more 🤐</Divider>}
+        scrollableTarget="scrollableDiv"
+      >
+        <List
+          dataSource={lessons}
+          renderItem={(item, index) => (
+            <Item className="pointer" onClick={() => handleViewLesson(item)}>
+              <Item.Meta
+                avatar={
+                  <Avatar shape="square" style={{ backgroundColor: "#ff5f6d" }}>
+                    {index + 1}
+                  </Avatar>
+                }
+                title={<b>{truncateText(item.title, 60)}</b>}
+                description={<p>{truncateText(item.content, 200)}</p>}
+              />
+              <div className="d-flex justify-content-between">
+                {item.preview && (
+                  <PlayCircleOutlined className="text-warning h3 align-self-center me-3" />
+                )}
               </div>
-              {item.preview && (
-                <PlayCircleOutlined className="text-warning h3 align-self-center me-3" />
-              )}
-            </div>
-          </Item>
-        )}
-      />
-      <ViewLessonModal
-        lesson={currentLesson}
-        visible={viewLessonVisible}
-        handleCloseModal={handleCloseViewLesson}
-      />
-    </>
+            </Item>
+          )}
+        />
+        <ViewLessonModal
+          lesson={currentLesson}
+          visible={viewLessonVisible}
+          handleCloseModal={handleCloseViewLesson}
+        />
+      </InfiniteScroll>
+    </div>
   );
 };
 
