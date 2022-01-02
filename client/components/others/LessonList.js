@@ -29,7 +29,6 @@ const LessonList = ({ lessons, checkPreview }) => {
         height: 400,
         overflow: "auto",
         padding: "0 16px",
-        border: "1px solid rgba(140, 140, 140, 0.35)",
       }}
     >
       <InfiniteScroll
@@ -50,11 +49,9 @@ const LessonList = ({ lessons, checkPreview }) => {
                 title={<b>{truncateText(item.title, 60)}</b>}
                 description={<p>{truncateText(item.content, 200)}</p>}
               />
-              <div className="d-flex justify-content-between">
-                {item.preview && (
-                  <PlayCircleOutlined className="text-warning h3 align-self-center me-3" />
-                )}
-              </div>
+              {item.preview && (
+                <PlayCircleOutlined className="text-warning h3 me-2" />
+              )}
             </Item>
           )}
         />
