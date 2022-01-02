@@ -11,7 +11,6 @@ import { Image } from "antd";
 
 const SingleCourse = () => {
   const [clicked, setClicked] = useState(-1);
-  // const [collapsed, setCollapsed] = useState(false);
   const [course, setCourse] = useState({ lessons: [] });
   const [completedLessons, setCompletedLessons] = useState([]);
   // force state update
@@ -83,8 +82,6 @@ const SingleCourse = () => {
         <div className="row">
           <div className="col-md-2">
             <CourseNav
-              // collapsed={collapsed}
-              // setCollapsed={setCollapsed}
               course={course}
               clicked={clicked}
               setClicked={setClicked}

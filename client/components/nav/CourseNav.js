@@ -1,21 +1,10 @@
-import { Menu, Avatar, Button } from "antd";
-import {
-  CheckCircleFilled,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-} from "@ant-design/icons";
+import { Menu, Avatar } from "antd";
+import { CheckCircleFilled } from "@ant-design/icons";
 import { truncateText } from "../../utils/helpers";
 
 const { Item } = Menu;
 
-const CourseNav = ({
-  collapsed,
-  setCollapsed,
-  course,
-  clicked,
-  setClicked,
-  completedLessons,
-}) => {
+const CourseNav = ({ course, clicked, setClicked, completedLessons }) => {
   return (
     <Menu defaultSelectedKeys={[clicked]} className="mt-3">
       {course.lessons.map((lesson, index) => (
