@@ -3,7 +3,7 @@ import express from "express";
 const router = express.Router();
 
 // middleware
-import { requireSignin } from "../middlewares";
+import { isAuthenticated } from "../middlewares";
 
 // controllers
 import {
@@ -13,10 +13,14 @@ import {
   countStudent,
 } from "../controllers/instructor";
 
-router.post("/become-instructor", requireSignin, becomeInstructor);
-router.get("/current-instructor", requireSignin, getCurrentInstructor);
-router.get("/instructor-courses", requireSignin, getInstructorCourses);
+router.post("/become-instructor", isAuthenticated, becomeInstructor);
+router.get("/current-instructor", isAuthenticated, getCurrentInstructor);
+router.get("/instructor-courses", isAuthenticated, getInstructorCourses);
 
-router.get("/instructor/student-count/:courseId", requireSignin, countStudent);
+router.get(
+  "/instructor/student-count/:courseId",
+  isAuthenticated,
+  countStudent
+);
 
 module.exports = router;

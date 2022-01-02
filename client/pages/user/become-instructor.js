@@ -48,7 +48,7 @@ const BecomeInstructor = () => {
             </h2>
             <p className="lead text-warning">
               ShibaDev is the most suitable platform for you to share your
-              knowledge across the world. At Elearn, you can easily create and
+              knowledge across the world. At ShibaDev, you can easily create and
               publish your courses, and start earning profits as more students
               enroll. Knowledge is most useful when shared to others!
             </p>

@@ -34,14 +34,19 @@ const Login = () => {
       });
       dispatch({
         type: "LOGIN",
-        payload: data,
+        payload: data.user,
+      });
+      dispatch({
+        type: "SET_AUTH_HEADER",
+        payload: "Bearer " + data.token,
       });
       dispatch({
         type: "LOADING",
         payload: false,
       });
-      // save in local storage
-      window.localStorage.setItem("user", JSON.stringify(data));
+      // save info in local storage
+      window.localStorage.setItem("user", JSON.stringify(data.user));
+      window.localStorage.setItem("token", "Bearer " + data.token);
       // redirect
       router.push("/");
     } catch (err) {

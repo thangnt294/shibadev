@@ -3,13 +3,12 @@ import express from "express";
 const router = express.Router();
 
 // middlewares
-import { requireSignin } from "../middlewares";
+import { isAuthenticated } from "../middlewares";
 
 // controllers
 import {
   register,
   login,
-  logout,
   getCurrentUser,
   forgotPassword,
   resetPassword,
@@ -18,10 +17,9 @@ import {
 
 router.post("/register", register);
 router.post("/login", login);
-router.post("/logout", logout);
-router.get("/current-user", requireSignin, getCurrentUser);
+router.get("/current-user", isAuthenticated, getCurrentUser);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
-router.post("/change-password", requireSignin, changePassword);
+router.post("/change-password", isAuthenticated, changePassword);
 
 module.exports = router;

@@ -91,21 +91,7 @@ export const login = async (req, res, next) => {
 
     // return user and token to client, exclude hashed password
     user.password = undefined;
-    // send token in cookie
-    res.cookie("token", token, {
-      httpOnly: true,
-      // secure: true,
-    });
-    res.json(user);
-  } catch (err) {
-    next(err);
-  }
-};
-
-export const logout = async (req, res, next) => {
-  try {
-    res.clearCookie("token");
-    return res.json({ ok: true });
+    res.json({ user, token });
   } catch (err) {
     next(err);
   }

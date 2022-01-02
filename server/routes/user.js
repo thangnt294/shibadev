@@ -3,7 +3,7 @@ import express from "express";
 const router = express.Router();
 
 // middlewares
-import { requireSignin } from "../middlewares";
+import { isAuthenticated } from "../middlewares";
 
 // controllers
 import {
@@ -13,9 +13,9 @@ import {
   transferBalance,
 } from "../controllers/user";
 
-router.post("/user/upload-avatar", requireSignin, uploadAvatar);
-router.post("/user/remove-avatar", requireSignin, removeAvatar);
-router.put("/user", requireSignin, updateUser);
-router.post("/transfer-balance", requireSignin, transferBalance);
+router.post("/user/upload-avatar", isAuthenticated, uploadAvatar);
+router.post("/user/remove-avatar", isAuthenticated, removeAvatar);
+router.put("/user", isAuthenticated, updateUser);
+router.post("/transfer-balance", isAuthenticated, transferBalance);
 
 module.exports = router;

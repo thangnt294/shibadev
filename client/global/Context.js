@@ -33,6 +33,9 @@ const rootReducer = (state, action) => {
       };
     case "LOADING":
       return { ...state, pageLoading: action.payload };
+    case "SET_AUTH_HEADER":
+      axios.defaults.headers.common["Authorization"] = action.payload;
+      return { ...state };
     default:
       return state;
   }
@@ -50,6 +53,10 @@ const Provider = ({ children }) => {
       type: "LOGIN",
       payload: JSON.parse(window.localStorage.getItem("user")),
     });
+    dispatch({
+      type: "SET_AUTH_HEADER",
+      payload: window.localStorage.getItem("token"),
+    });
   }, []);
 
   axios.interceptors.response.use(
@@ -66,9 +73,10 @@ const Provider = ({ children }) => {
           axios
             .post("/api/logout")
             .then((data) => {
-              console.log("/401 ERROR -> LOGOUT");
+              console.log("401 ERROR -> LOGOUT");
               dispatch({ type: "LOGOUT" });
               window.localStorage.removeItem("user");
+              window.localStorage.removeItem("token");
               router.push("/login");
             })
             .catch((err) => {

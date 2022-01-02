@@ -3,7 +3,7 @@ import express from "express";
 const router = express.Router();
 
 // middlewares
-import { requireSignin, isAdmin } from "../middlewares";
+import { isAuthenticated, isAdmin } from "../middlewares";
 
 // controllers
 import {
@@ -13,9 +13,14 @@ import {
   deleteCourse,
 } from "../controllers/admin";
 
-router.get("/current-admin", requireSignin, isAdmin, getCurrentAdmin);
-router.get("/admin/daily-report", requireSignin, isAdmin, getDailyReport);
-router.get("/admin/all-courses", requireSignin, isAdmin, getAllCourses);
-router.delete("/delete-course/:courseId", requireSignin, isAdmin, deleteCourse);
+router.get("/current-admin", isAuthenticated, isAdmin, getCurrentAdmin);
+router.get("/admin/daily-report", isAuthenticated, isAdmin, getDailyReport);
+router.get("/admin/all-courses", isAuthenticated, isAdmin, getAllCourses);
+router.delete(
+  "/delete-course/:courseId",
+  isAuthenticated,
+  isAdmin,
+  deleteCourse
+);
 
 module.exports = router;
