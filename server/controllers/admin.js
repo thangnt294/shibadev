@@ -30,7 +30,7 @@ export const getDailyReport = async (req, res, next) => {
         $gte: moment.utc(fromDate),
         $lt: moment.utc(toDate).add(1, "s"),
       },
-    });
+    }).sort({ date: 1 });
     res.json(reports);
   } catch (err) {
     next(err);

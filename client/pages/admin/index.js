@@ -23,7 +23,7 @@ const AdminIndex = () => {
     const today = moment().startOf("day").format("YYYY-MM-DD");
     const aWeekAgo = moment()
       .startOf("day")
-      .subtract(7, "days")
+      .subtract(6, "days")
       .format("YYYY-MM-DD");
 
     const { data } = await axios.get(
