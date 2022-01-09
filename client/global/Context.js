@@ -70,19 +70,11 @@ const Provider = ({ children }) => {
       if (res.status === 401 && res.config && !res.config_isRetryRequest) {
         // axios documentation
         return new Promise((resolve, reject) => {
-          axios
-            .post("/api/logout")
-            .then((data) => {
-              console.log("401 ERROR -> LOGOUT");
-              dispatch({ type: "LOGOUT" });
-              window.localStorage.removeItem("user");
-              window.localStorage.removeItem("token");
-              router.push("/login");
-            })
-            .catch((err) => {
-              console.log("AXIOS INTERCEPTORS ERROR", err);
-              reject(err);
-            });
+          console.log("401 ERROR -> LOGOUT");
+          dispatch({ type: "LOGOUT" });
+          window.localStorage.removeItem("user");
+          window.localStorage.removeItem("token");
+          router.push("/login");
         });
       }
       return Promise.reject(err);
