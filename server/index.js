@@ -6,6 +6,7 @@ import csrf from "csurf";
 import cookieParser from "cookie-parser";
 const morgan = require("morgan");
 require("dotenv").config({ path: `.env.local` });
+require("./cron/cron");
 
 const csrfProtection = csrf({ cookie: true });
 

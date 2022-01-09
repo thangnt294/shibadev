@@ -1,6 +1,6 @@
 import cron from "node-cron";
 import DailyReport from "../models/dailyReport";
-import { randomNumber } from "./helpers";
+import { randomNumber } from "../utils/helpers";
 
 cron.schedule("0 0 * * *", async () => {
   await DailyReport.create({
