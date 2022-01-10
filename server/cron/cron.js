@@ -10,9 +10,5 @@ cron.schedule("0 0 * * *", async () => {
     users: randomNumber(1, 10),
     enrollments: randomNumber(1, 30),
     profit: randomNumber(10, 50),
-  });
-});
-
-cron.schedule("* * * * *", async () => {
-  console.log("TEST CRON OK");
+  }).exec();
 });
