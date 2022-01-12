@@ -1,6 +1,11 @@
+import { useState } from "react";
 import ReactPlayer from "react-player";
 import ReactMarkdown from "react-markdown";
 import { truncateText } from "../../utils/helpers";
+import InfiniteScroll from "react-infinite-scroll-component";
+import TopCourseNav from "../nav/TopCourseNav";
+import CourseAbout from "./CourseAbout";
+import CourseComments from "./CourseComments";
 
 const CourseContent = ({
   course,
@@ -9,6 +14,23 @@ const CourseContent = ({
   markIncomplete,
   completedLessons,
 }) => {
+  const [current, setCurrent] = useState("about");
+
+  const handleChangeTab = (e) => {
+    setCurrent(e.key);
+  };
+
+  const renderSwitch = () => {
+    switch (current) {
+      case "about":
+        return <CourseAbout />;
+      case "comments":
+        return <CourseComments />;
+      default:
+        return <CourseAbout />;
+    }
+  };
+
   return (
     <div className="p-3">
       <div className="alert alert-primary square">
@@ -24,22 +46,33 @@ const CourseContent = ({
           </span>
         )}
       </div>
-
-      {course.lessons[clicked].video && course.lessons[clicked].video.Location && (
-        <div className="wrapper">
-          <ReactPlayer
-            className="player"
-            url={course.lessons[clicked].video.Location}
-            width="80vw"
-            height="80vh"
-            controls
-            onEnded={markCompleted}
-          />
-        </div>
-      )}
-      <ReactMarkdown className="single-post mt-3 ms-3">
-        {course.lessons[clicked].content}
-      </ReactMarkdown>
+      <div id="scrollableDiv" style={{ height: "60vh", overflow: "auto" }}>
+        <InfiniteScroll
+          dataLength={1}
+          hasMore={false}
+          scrollableTarget="scrollableDiv"
+        >
+          {course.lessons[clicked].video &&
+            course.lessons[clicked].video.Location && (
+              <div className="wrapper">
+                <ReactPlayer
+                  className="player"
+                  url={course.lessons[clicked].video.Location}
+                  width="100%"
+                  height="60vh"
+                  controls
+                  onEnded={markCompleted}
+                />
+              </div>
+            )}
+          <ReactMarkdown className="single-post mt-3 ms-3">
+            {course.lessons[clicked].content}
+          </ReactMarkdown>
+        </InfiniteScroll>
+      </div>
+      <hr />
+      <TopCourseNav handleChangeTab={handleChangeTab} current={current} />
+      {renderSwitch()}
     </div>
   );
 };

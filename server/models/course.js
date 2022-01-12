@@ -28,6 +28,30 @@ const lessonSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+const commentSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      trim: true,
+      minlength: 1,
+      maxlength: 100,
+      required: true,
+    },
+    content: {
+      type: String,
+      minlength: 20,
+      amxLength: 200,
+      required: true,
+    },
+    commenter: {
+      type: ObjectId,
+      ref: "User",
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
+
 const courseSchema = new mongoose.Schema(
   {
     name: {
@@ -67,6 +91,7 @@ const courseSchema = new mongoose.Schema(
       required: true,
     },
     lessons: [lessonSchema],
+    comments: [commentSchema],
   },
   { timestamps: true }
 );
