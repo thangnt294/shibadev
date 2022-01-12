@@ -8,7 +8,7 @@ const CourseComments = ({ comments, handleAddComment }) => {
   const [comment, setComment] = useState(null);
   const [visible, setVisible] = useState(false);
   const [savingComment, setSavingComment] = useState(false);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [currentComments, setCurrentComments] = useState([]);
 
   useEffect(() => {

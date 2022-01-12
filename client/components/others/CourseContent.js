@@ -24,7 +24,7 @@ const CourseContent = ({
   const renderSwitch = () => {
     switch (current) {
       case "about":
-        return <CourseAbout />;
+        return <CourseAbout course={course} />;
       case "comments":
         return (
           <CourseComments

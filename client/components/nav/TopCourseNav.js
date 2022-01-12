@@ -1,4 +1,4 @@
-import { MailOutlined, AppstoreOutlined } from "@ant-design/icons";
+import { InfoCircleOutlined, CommentOutlined } from "@ant-design/icons";
 import { Menu } from "antd";
 
 const TopCourseNav = ({ current, handleChangeTab }) => {
@@ -9,10 +9,10 @@ const TopCourseNav = ({ current, handleChangeTab }) => {
       mode="horizontal"
       className="mb-3"
     >
-      <Menu.Item key="about" icon={<MailOutlined />}>
+      <Menu.Item key="about" icon={<InfoCircleOutlined />}>
         About
       </Menu.Item>
-      <Menu.Item key="comments" icon={<AppstoreOutlined />}>
+      <Menu.Item key="comments" icon={<CommentOutlined />}>
         Comments
       </Menu.Item>
     </Menu>
