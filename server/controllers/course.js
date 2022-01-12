@@ -467,3 +467,31 @@ export const listCompleted = async (req, res, next) => {
 export const getTags = (req, res, next) => {
   res.json(tags);
 };
+
+export const comment = (req, res, next) => {
+  try {
+    const { courseId } = req.params;
+    const { title, content } = req.body;
+    if (title.length < 1 || title.length > 100) {
+      return res.status(400).send("Title must be less than 100 characters");
+    }
+    if (content.length < 20 || content.length > 200) {
+      return res
+        .status(400)
+        .send("Content must be between 20 and 500 characters");
+    }
+    const course = Course.findByIdAndUpdate(courseId, {
+      $push: {
+        comments: {
+          title,
+          content,
+          commenter: req.user._id,
+        },
+      },
+    });
+
+    res.json(course);
+  } catch (err) {
+    next(err);
+  }
+};

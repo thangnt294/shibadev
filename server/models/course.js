@@ -40,7 +40,7 @@ const commentSchema = new mongoose.Schema(
     content: {
       type: String,
       minlength: 20,
-      amxLength: 200,
+      amxLength: 500,
       required: true,
     },
     commenter: {
