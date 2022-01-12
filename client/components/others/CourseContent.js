@@ -13,6 +13,7 @@ const CourseContent = ({
   markCompleted,
   markIncomplete,
   completedLessons,
+  handleAddComment,
 }) => {
   const [current, setCurrent] = useState("about");
 
@@ -25,7 +26,12 @@ const CourseContent = ({
       case "about":
         return <CourseAbout />;
       case "comments":
-        return <CourseComments />;
+        return (
+          <CourseComments
+            handleAddComment={handleAddComment}
+            comments={course.comments}
+          />
+        );
       default:
         return <CourseAbout />;
     }

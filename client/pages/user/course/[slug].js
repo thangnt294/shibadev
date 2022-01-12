@@ -76,6 +76,14 @@ const SingleCourse = () => {
     }
   };
 
+  const handleAddComment = async (comment) => {
+    const { data } = await axios.post(`/api/course/${course._id}/comment`, {
+      ...comment,
+    });
+    setCourse(data);
+    toast.success("You added a new comment");
+  };
+
   return (
     <StudentRoute>
       <div className="container-fluid">
@@ -96,6 +104,7 @@ const SingleCourse = () => {
                 markCompleted={markCompleted}
                 markIncomplete={markIncomplete}
                 completedLessons={completedLessons}
+                handleAddComment={handleAddComment}
               />
             ) : (
               <div className="d-flex justify-content-center p-5">

@@ -10,7 +10,7 @@ const AddCommentForm = ({
 
   return (
     <div className="container pt-3">
-      <Form onSubmit={handleSubmit} form={form}>
+      <Form onSubmit={handleSubmit} form={form} initialValues={{ ...comment }}>
         <Form.Item
           name="title"
           rules={[{ required: true, message: "Please input comment title" }]}
@@ -36,7 +36,9 @@ const AddCommentForm = ({
             placeholder="Content *"
             cols="7"
             rows="7"
-            onChange={(e) => setComment({ ...comment, title: e.target.value })}
+            onChange={(e) =>
+              setComment({ ...comment, content: e.target.value })
+            }
             value={comment?.content}
             disabled={savingComment}
           />

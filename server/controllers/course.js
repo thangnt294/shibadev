@@ -468,7 +468,7 @@ export const getTags = (req, res, next) => {
   res.json(tags);
 };
 
-export const comment = (req, res, next) => {
+export const comment = async (req, res, next) => {
   try {
     const { courseId } = req.params;
     const { title, content } = req.body;
@@ -480,15 +480,22 @@ export const comment = (req, res, next) => {
         .status(400)
         .send("Content must be between 20 and 500 characters");
     }
-    const course = Course.findByIdAndUpdate(courseId, {
-      $push: {
-        comments: {
-          title,
-          content,
-          commenter: req.user._id,
+    console.log(`ADDING "${title}" and "${content}" to "${courseId}"`);
+    const course = await Course.findByIdAndUpdate(
+      courseId,
+      {
+        $push: {
+          comments: {
+            title,
+            content,
+            commenter: req.user._id,
+          },
         },
       },
-    });
+      { new: true }
+    )
+      .populate("instructor", "_id name")
+      .populate("comments.commenter", "_id name avatar");
 
     res.json(course);
   } catch (err) {
