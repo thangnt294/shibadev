@@ -1,6 +1,8 @@
 import { useReducer, createContext, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
+import React from "react";
+React.useLayoutEffect = React.useEffect;
 
 const initialState = {
   user: null,
@@ -33,9 +35,6 @@ const rootReducer = (state, action) => {
       };
     case "LOADING":
       return { ...state, pageLoading: action.payload };
-    case "SET_AUTH_HEADER":
-      axios.defaults.headers.common["Authorization"] = action.payload;
-      return { ...state };
     default:
       return state;
   }
@@ -53,21 +52,45 @@ const Provider = ({ children }) => {
       type: "LOGIN",
       payload: JSON.parse(window.localStorage.getItem("user")),
     });
-    dispatch({
-      type: "SET_AUTH_HEADER",
-      payload: window.localStorage.getItem("token"),
-    });
   }, []);
 
+  useEffect(() => {
+    const getCsrfToken = async () => {
+      const { data } = await axios.get("/api/csrf-token");
+      axios.defaults.headers["X-CSRF-Token"] = data.csrfToken;
+    };
+    getCsrfToken();
+  }, []);
+
+  axios.interceptors.request.use(
+    (config) => {
+      if (typeof window !== "undefined") {
+        const token = localStorage.getItem("token");
+        if (token) {
+          config.headers["Authorization"] = token;
+        }
+      }
+
+      return config;
+    },
+    (error) => {
+      Promise.reject(error);
+    }
+  );
+
+  // Add a response interceptor
   axios.interceptors.response.use(
-    (response) => {
-      // any status code of 2XX trigger this function
+    function (response) {
       return response;
     },
-    (err) => {
-      // any status code that is not 2XX trigger this function
+    function (err) {
       const res = err.response;
-      if (res.status === 401 && res.config && !res.config_isRetryRequest) {
+      if (
+        res &&
+        res.status === 401 &&
+        res.config &&
+        !res.config_isRetryRequest
+      ) {
         // axios documentation
         return new Promise((resolve, reject) => {
           console.log("401 ERROR -> LOGOUT");
@@ -80,14 +103,6 @@ const Provider = ({ children }) => {
       return Promise.reject(err);
     }
   );
-
-  useEffect(() => {
-    const getCsrfToken = async () => {
-      const { data } = await axios.get("/api/csrf-token");
-      axios.defaults.headers["X-CSRF-Token"] = data.csrfToken;
-    };
-    getCsrfToken();
-  }, []);
 
   return (
     <Context.Provider value={{ state, dispatch }}>{children}</Context.Provider>
