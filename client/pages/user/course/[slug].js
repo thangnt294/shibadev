@@ -81,7 +81,13 @@ const SingleCourse = () => {
       ...comment,
     });
     setCourse(data);
-    toast.success("You added a new comment");
+  };
+
+  const handleRateCourse = async (rating) => {
+    const { data } = await axios.post(`/api/course/${course._id}/rate`, {
+      rating,
+    });
+    setCourse(data);
   };
 
   return (
@@ -105,6 +111,7 @@ const SingleCourse = () => {
                 markIncomplete={markIncomplete}
                 completedLessons={completedLessons}
                 handleAddComment={handleAddComment}
+                handleRateCourse={handleRateCourse}
               />
             ) : (
               <div className="d-flex justify-content-center p-5">

@@ -26,6 +26,7 @@ const CourseComments = ({ comments, handleAddComment }) => {
     try {
       await handleAddComment(comment);
       handleCloseModal();
+      toast.success("You added a new comment");
     } catch (err) {
       console.log(err);
       handleCloseModal();

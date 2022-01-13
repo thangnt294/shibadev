@@ -1,4 +1,4 @@
-import { Card, Badge } from "antd";
+import { Card, Badge, Rate } from "antd";
 import Link from "next/link";
 import { currencyFormatter } from "../../utils/helpers";
 import { MinusCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
@@ -15,6 +15,7 @@ const CourseCard = ({ course, page }) => {
     tags,
     lessons,
     published,
+    avgRating,
   } = course;
   return (
     <Link
@@ -64,11 +65,14 @@ const CourseCard = ({ course, page }) => {
           )}
 
           {page === "home" ? (
-            <h4 className="pt-2">
-              {paid
-                ? currencyFormatter({ amount: price, currency: "usd" })
-                : "Free"}
-            </h4>
+            <div>
+              <Rate allowHalf disabled value={avgRating} />
+              <h4 className="pt-2">
+                {paid
+                  ? currencyFormatter({ amount: price, currency: "usd" })
+                  : "Free"}
+              </h4>
+            </div>
           ) : page === "instructor" ? (
             <div className="d-flex">
               {published ? (

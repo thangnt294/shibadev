@@ -1,5 +1,5 @@
 import { currencyFormatter } from "../../utils/helpers";
-import { Badge, Button, Image } from "antd";
+import { Badge, Button, Image, Rate } from "antd";
 import {
   SafetyOutlined,
   ArrowRightOutlined,
@@ -14,8 +14,17 @@ const SingleCourseJumbotron = ({
   handleEnrollment,
   status,
 }) => {
-  const { name, description, instructor, updatedAt, image, price, paid, tags } =
-    course;
+  const {
+    name,
+    description,
+    instructor,
+    updatedAt,
+    image,
+    price,
+    paid,
+    tags,
+    avgRating,
+  } = course;
   return (
     <div className="jumbotron square">
       <div className="row">
@@ -43,6 +52,7 @@ const SingleCourseJumbotron = ({
 
           <p>Created by {instructor.name}</p>
           <p>Last updated {new Date(updatedAt).toLocaleDateString()}</p>
+          <Rate allowHalf disabled value={avgRating} className="mb-3" />
           <h4 className="text-light">
             {paid
               ? currencyFormatter({ amount: price, currency: "usd" })

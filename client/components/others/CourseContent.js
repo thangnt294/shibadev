@@ -14,6 +14,7 @@ const CourseContent = ({
   markIncomplete,
   completedLessons,
   handleAddComment,
+  handleRateCourse,
 }) => {
   const [current, setCurrent] = useState("about");
 
@@ -24,7 +25,9 @@ const CourseContent = ({
   const renderSwitch = () => {
     switch (current) {
       case "about":
-        return <CourseAbout course={course} />;
+        return (
+          <CourseAbout course={course} handleRateCourse={handleRateCourse} />
+        );
       case "comments":
         return (
           <CourseComments
@@ -33,7 +36,9 @@ const CourseContent = ({
           />
         );
       default:
-        return <CourseAbout />;
+        return (
+          <CourseAbout course={course} handleRateCourse={handleRateCourse} />
+        );
     }
   };
 

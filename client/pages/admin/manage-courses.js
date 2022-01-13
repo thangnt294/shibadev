@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import AdminRoute from "../../components/routes/AdminRoute";
-import { Table, Tag, Badge, Popconfirm } from "antd";
+import { Table, Tag, Badge, Popconfirm, Rate } from "antd";
 import ViewLessonModal from "../../components/modal/ViewLessonModal";
 import { currencyFormatter, truncateText } from "../../utils/helpers";
 import { Context } from "../../global/Context";
@@ -60,6 +60,12 @@ const ManageCourses = () => {
       render: (price) => (
         <span>{currencyFormatter({ amount: price, currency: "usd" })}</span>
       ),
+    },
+    {
+      title: "Rating",
+      dataIndex: "avgRating",
+      render: (avgRating) => <Rate allowHalf disabled value={avgRating} />,
+      responsive: ["md"],
     },
     {
       title: "Published",

@@ -3,6 +3,7 @@ import slugify from "slugify";
 import User from "../models/user";
 import CompletedLesson from "../models/completedLesson";
 import DailyReport from "../models/dailyReport";
+import Rating from "../models/rating";
 import { tags } from "../constants";
 import {
   isEmpty,
@@ -480,7 +481,6 @@ export const comment = async (req, res, next) => {
         .status(400)
         .send("Content must be between 20 and 500 characters");
     }
-    console.log(`ADDING "${title}" and "${content}" to "${courseId}"`);
     const course = await Course.findByIdAndUpdate(
       courseId,
       {
@@ -498,6 +498,53 @@ export const comment = async (req, res, next) => {
       .populate("comments.commenter", "_id name avatar");
 
     res.json(course);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const rateCourse = async (req, res, next) => {
+  try {
+    const { courseId } = req.params;
+
+    // update rating of user
+    await Rating.updateOne(
+      { user: req.user._id, course: courseId },
+      { rating: req.body.rating },
+      { upsert: true, setDefaultOnInsert: true }
+    );
+
+    // calculate average rating
+    const ratings = await Rating.find({
+      course: courseId,
+    }).lean();
+
+    const avgRating =
+      ratings.reduce((prev, curr) => prev + curr.rating, 0) / ratings.length;
+
+    // update course average rating
+    const course = await Course.findByIdAndUpdate(
+      courseId,
+      { avgRating },
+      { new: true }
+    );
+
+    res.json(course);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getUserRating = async (req, res, next) => {
+  try {
+    const { courseId } = req.params;
+
+    const rating = await Rating.find({
+      user: req.user._id,
+      course: courseId,
+    });
+
+    res.json(rating);
   } catch (err) {
     next(err);
   }

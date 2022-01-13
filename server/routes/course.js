@@ -27,6 +27,8 @@ import {
   getTags,
   enrollCourse,
   comment,
+  rateCourse,
+  getUserRating,
 } from "../controllers/course";
 
 router.get("/courses", getPublishedCourses);
@@ -68,6 +70,9 @@ router.get("/user/course/:slug", isAuthenticated, isEnrolled, getCourse);
 router.post("/mark-completed", isAuthenticated, markCompleted);
 router.post("/mark-incomplete", isAuthenticated, markIncomplete);
 router.get("/list-completed/:courseId", isAuthenticated, listCompleted);
+
 router.post("/course/:courseId/comment", isAuthenticated, comment);
+router.post("/course/:courseId/rate", isAuthenticated, rateCourse);
+router.get("/course/:courseId/userRating", isAuthenticated, getUserRating);
 
 module.exports = router;

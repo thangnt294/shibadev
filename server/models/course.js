@@ -90,6 +90,13 @@ const courseSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    avgRating: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5,
+      required: true,
+    },
     lessons: [lessonSchema],
     comments: [commentSchema],
   },
