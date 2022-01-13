@@ -2,7 +2,7 @@ import cron from "node-cron";
 import DailyReport from "../models/dailyReport";
 import { randomNumber } from "../utils/helpers";
 
-cron.schedule("0 0 * * *", async () => {
+cron.schedule("1 10 * * *", async () => {
   console.log("CRON: Daily Report Created");
   await DailyReport.create({
     date: moment().utc().startOf("day"),
