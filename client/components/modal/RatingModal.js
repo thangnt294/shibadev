@@ -29,11 +29,6 @@ const RatingModal = ({
             tooltips={desc}
             onChange={(val) => setRating(val)}
           />
-          {rating ? (
-            <span className="ant-rate-text">{desc[Math.ceil(rating) - 1]}</span>
-          ) : (
-            ""
-          )}
         </span>
       </div>
     </Modal>
