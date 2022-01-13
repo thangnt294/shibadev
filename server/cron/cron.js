@@ -10,7 +10,7 @@ cron.schedule("0 0 * * *", async () => {
     { date: moment().utc().startOf("day") },
     {
       $inc: {
-        courses: randomNumber(1, 20),
+        courses: randomNumber(1, 10),
         users: randomNumber(1, 10),
         enrollments: randomNumber(1, 30),
         profit: randomNumber(10, 50),
