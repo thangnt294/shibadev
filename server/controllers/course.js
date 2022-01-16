@@ -76,7 +76,7 @@ export const update = async (req, res, next) => {
 
     const { slug } = req.params;
 
-    const course = await Course.findOne({ slug }).exec();
+    const course = await Course.findOne({ slug });
     if (req.user._id !== course.instructor.toString()) {
       return res.status(400).send("Unauthorized");
     }
@@ -110,7 +110,7 @@ export const update = async (req, res, next) => {
 
     const updated = await Course.findOneAndUpdate({ slug }, updatedCourse, {
       new: true,
-    }).exec();
+    });
 
     res.json(updated);
   } catch (err) {
@@ -122,7 +122,7 @@ export const getCourse = async (req, res, next) => {
   try {
     const course = await Course.findOne({ slug: req.params.slug })
       .populate("instructor", "_id name")
-      .exec();
+      .populate("comments.commenter", "_id name avatar");
     res.json(course);
   } catch (err) {
     next(err);
@@ -174,9 +174,7 @@ export const addLesson = async (req, res, next) => {
         $push: { lessons: { title, content, video, slug: slugify(title) } },
       },
       { new: true }
-    )
-      .populate("instructor", "_id name")
-      .exec();
+    ).populate("instructor", "_id name");
 
     res.json(updated);
   } catch (err) {
@@ -187,7 +185,7 @@ export const addLesson = async (req, res, next) => {
 export const removeLesson = async (req, res, next) => {
   try {
     const { slug, lessonId } = req.params;
-    const course = await Course.findOne({ slug }).exec();
+    const course = await Course.findOne({ slug });
     if (req.user._id !== course.instructor._id.toString()) {
       return res.status(400).send("Unauthorized");
     }
@@ -210,7 +208,7 @@ export const removeLesson = async (req, res, next) => {
 
     const updatedCourse = await Course.findByIdAndUpdate(course._id, {
       $pull: { lessons: { _id: lessonId } },
-    }).exec();
+    });
     res.json(updatedCourse);
   } catch (err) {
     next(err);
@@ -220,7 +218,7 @@ export const removeLesson = async (req, res, next) => {
 export const updateLesson = async (req, res, next) => {
   try {
     const { slug } = req.params;
-    const course = await Course.findOne({ slug }).select("instructor").exec();
+    const course = await Course.findOne({ slug }).select("instructor");
     if (req.user._id !== course.instructor._id.toString()) {
       return res.status(400).send("Unauthorized");
     }
@@ -237,7 +235,7 @@ export const updateLesson = async (req, res, next) => {
         },
       },
       { new: true }
-    ).exec();
+    );
 
     res.json({ ok: true });
   } catch (err) {
@@ -248,7 +246,7 @@ export const updateLesson = async (req, res, next) => {
 export const publishCourse = async (req, res, next) => {
   try {
     const { courseId } = req.params;
-    const course = await Course.findById(courseId).select("instructor").exec();
+    const course = await Course.findById(courseId).select("instructor");
 
     if (req.user._id !== course.instructor._id.toString()) {
       return res.status(400).send("Unauthorized");
@@ -260,7 +258,7 @@ export const publishCourse = async (req, res, next) => {
         published: true,
       },
       { new: true }
-    ).exec();
+    );
 
     res.json(updated);
   } catch (err) {
@@ -271,7 +269,7 @@ export const publishCourse = async (req, res, next) => {
 export const unpublishCourse = async (req, res, next) => {
   try {
     const { courseId } = req.params;
-    const course = await Course.findById(courseId).select("instructor").exec();
+    const course = await Course.findById(courseId).select("instructor");
 
     if (req.user._id !== course.instructor._id.toString()) {
       return res.status(400).send("Unauthorized");
@@ -283,7 +281,7 @@ export const unpublishCourse = async (req, res, next) => {
         published: false,
       },
       { new: true }
-    ).exec();
+    );
 
     res.json(updated);
   } catch (err) {
@@ -318,7 +316,7 @@ export const checkEnrollment = async (req, res, next) => {
   try {
     const { courseId } = req.params;
     // find courses of the currently logged in user
-    const user = await User.findById(req.user._id).exec();
+    const user = await User.findById(req.user._id);
     // check if course id is found in user courses array
     const enrolled = user.enrolled_courses.some(
       (course) => course._id == courseId
@@ -333,9 +331,9 @@ export const checkEnrollment = async (req, res, next) => {
 
 export const enrollCourse = async (req, res, next) => {
   try {
-    const course = await Course.findById(req.params.courseId)
-      .populate("instructor")
-      .exec();
+    const course = await Course.findById(req.params.courseId).populate(
+      "instructor"
+    );
 
     if (course.instructor._id.toString() === req.user._id) {
       return res.status(400).send("You cannot enroll in your own course");
@@ -369,7 +367,7 @@ export const enrollCourse = async (req, res, next) => {
         $addToSet: { enrolled_courses: course._id },
       },
       { new: true }
-    ).exec();
+    );
     res.json(course);
   } catch (err) {
     next(err);
@@ -379,15 +377,14 @@ export const enrollCourse = async (req, res, next) => {
 export const getUserCourses = async (req, res, next) => {
   try {
     const { page = 0, limit = 8 } = req.query;
-    const user = await User.findById(req.user._id).exec();
+    const user = await User.findById(req.user._id);
 
     const courses = await Course.find({
       _id: { $in: user.enrolled_courses },
     })
       .skip(parseInt(page * limit))
       .limit(parseInt(limit))
-      .populate("instructor", "_id name")
-      .exec();
+      .populate("instructor", "_id name");
 
     const total = await Course.countDocuments({
       _id: { $in: user.enrolled_courses },
@@ -409,7 +406,7 @@ export const markCompleted = async (req, res, next) => {
     const existing = await CompletedLesson.findOne({
       user: req.user._id,
       course: courseId,
-    }).exec();
+    });
 
     if (existing) {
       // update
@@ -421,7 +418,7 @@ export const markCompleted = async (req, res, next) => {
         {
           $addToSet: { lessons: lessonId },
         }
-      ).exec();
+      );
     } else {
       // create
       await new CompletedLesson({
@@ -445,7 +442,7 @@ export const markIncomplete = async (req, res, next) => {
       {
         $pull: { lessons: lessonId },
       }
-    ).exec();
+    );
     res.json({ ok: true });
   } catch (err) {
     next(err);
@@ -458,7 +455,7 @@ export const listCompleted = async (req, res, next) => {
     const list = await CompletedLesson.findOne({
       user: req.user._id,
       course: courseId,
-    }).exec();
+    });
     res.json(list ? list.lessons : []);
   } catch (err) {
     next(err);

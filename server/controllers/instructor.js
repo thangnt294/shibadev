@@ -11,9 +11,7 @@ export const becomeInstructor = async (req, res, next) => {
       {
         new: true,
       }
-    )
-      .select("-password")
-      .exec();
+    ).select("-password");
     res.json(instructor);
   } catch (err) {
     next(err);
@@ -22,7 +20,7 @@ export const becomeInstructor = async (req, res, next) => {
 
 export const getCurrentInstructor = async (req, res, next) => {
   try {
-    let user = await User.findById(req.user._id).select("-password").exec();
+    let user = await User.findById(req.user._id).select("-password");
     if (!user.role.includes("Instructor")) {
       // not an instructor
       return res.sendStatus(403);

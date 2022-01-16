@@ -10,7 +10,7 @@ import {
 
 export const getCurrentAdmin = async (req, res, next) => {
   try {
-    let user = await User.findById(req.user._id).select("-password").exec();
+    let user = await User.findById(req.user._id).select("-password");
     if (!user.role.includes("Admin")) {
       // not an admin
       return res.sendStatus(403);
