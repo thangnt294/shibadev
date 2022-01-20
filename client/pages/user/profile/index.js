@@ -9,6 +9,7 @@ import BalanceCard from "../../../components/cards/BalanceCard";
 import UpdatePasswordCard from "../../../components/cards/UpdatePasswordCard";
 import PersonalInformationCard from "../../../components/cards/PersonalInformationCard";
 import { Context } from "../../../global/Context";
+import AddBalanceModal from "../../../components/modal/AddBalanceModal";
 
 const UserProfile = () => {
   const [user, setUser] = useState(null);
@@ -20,6 +21,9 @@ const UserProfile = () => {
   const [updating, setUpdating] = useState(false);
   const [editingPassword, setEditingPassword] = useState(false);
   const [updatingPassword, setUpdatingPassword] = useState(false);
+  const [addBalanceModalVisible, setAddBalanceModalVisible] = useState(false);
+  const [addingBalance, setAddingBalance] = useState(false);
+  const [addBalance, setAddBalance] = useState(10);
   const [password, setPassword] = useState({
     oldPassword: "",
     newPassword: "",
@@ -190,6 +194,30 @@ const UserProfile = () => {
     }
   };
 
+  const handleCloseAddBalanceModal = () => {
+    setAddBalanceModalVisible(false);
+    setAddBalance(10);
+    setAddingBalance(false);
+  };
+
+  const handleAddBalance = async () => {
+    setAddingBalance(true);
+    try {
+      const { data } = await axios.post("/api/add-balance", {
+        amount: addBalance,
+      });
+      console.log(data);
+      setUser(data);
+      setInitialUser(data);
+      toast.success("You added some balance");
+      handleCloseAddBalanceModal();
+    } catch (err) {
+      console.log(err);
+      handleCloseAddBalanceModal();
+      if (err.response) toast.error(err.response.data);
+    }
+  };
+
   return (
     <UserRoute>
       {user && (
@@ -209,6 +237,15 @@ const UserProfile = () => {
                 <BalanceCard
                   balance={user && user.balance}
                   handleTransferBalance={handleTransferBalance}
+                  setAddBalanceModalVisible={setAddBalanceModalVisible}
+                />
+                <AddBalanceModal
+                  addBalanceModalVisible={addBalanceModalVisible}
+                  addingBalance={addingBalance}
+                  addBalance={addBalance}
+                  setAddBalance={setAddBalance}
+                  handleCloseAddBalanceModal={handleCloseAddBalanceModal}
+                  handleAddBalance={handleAddBalance}
                 />
               </div>
               <div className="col-md-8">

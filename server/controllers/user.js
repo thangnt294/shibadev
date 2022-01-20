@@ -74,3 +74,21 @@ export const transferBalance = async (req, res, next) => {
     next(err);
   }
 };
+
+export const addBalance = async (req, res, next) => {
+  try {
+    const { amount } = req.body;
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        $inc: {
+          balance: amount,
+        },
+      },
+      { new: true }
+    ).select("-password");
+    res.json(user);
+  } catch (err) {
+    next(err);
+  }
+};

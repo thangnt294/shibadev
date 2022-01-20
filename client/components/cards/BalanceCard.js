@@ -1,8 +1,12 @@
 import { DollarCircleOutlined, CreditCardOutlined } from "@ant-design/icons";
-import { Tooltip, Popconfirm } from "antd";
+import { Tooltip, Popconfirm, Button } from "antd";
 import { currencyFormatter } from "../../utils/helpers";
 
-const BalanceCard = ({ balance, handleTransferBalance }) => {
+const BalanceCard = ({
+  balance,
+  handleTransferBalance,
+  setAddBalanceModalVisible,
+}) => {
   return (
     <div className="card mt-3">
       <div className="card-body">
@@ -20,9 +24,9 @@ const BalanceCard = ({ balance, handleTransferBalance }) => {
             })}
           </h5>
           <div className="col">
-            <Tooltip title="Transfer balance">
+            <Tooltip title="Withdraw">
               <Popconfirm
-                title="ALl your balance will be transferred to your bank account. Proceed?"
+                title="All your balance will be transferred to your bank account. Proceed?"
                 onConfirm={handleTransferBalance}
                 okText="OK"
                 cancelText="Cancel"
@@ -32,6 +36,9 @@ const BalanceCard = ({ balance, handleTransferBalance }) => {
             </Tooltip>
           </div>
         </div>
+        <Button onClick={() => setAddBalanceModalVisible(true)}>
+          Add Balance
+        </Button>
       </div>
     </div>
   );
