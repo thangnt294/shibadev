@@ -12,6 +12,7 @@ import {
   updateUser,
   transferBalance,
   addBalance,
+  getUserInfo,
 } from "../controllers/user";
 
 router.post("/user/upload-avatar", isAuthenticated, uploadAvatar);
@@ -19,5 +20,6 @@ router.post("/user/remove-avatar", isAuthenticated, removeAvatar);
 router.put("/user", isAuthenticated, updateUser);
 router.post("/transfer-balance", isAuthenticated, transferBalance);
 router.post("/add-balance", isAuthenticated, addBalance);
+router.get("/user/:userId", isAuthenticated, getUserInfo);
 
 module.exports = router;

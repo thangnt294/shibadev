@@ -92,3 +92,13 @@ export const addBalance = async (req, res, next) => {
     next(err);
   }
 };
+
+export const getUserInfo = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId).select("-password");
+    res.json(user);
+  } catch (err) {
+    next(err);
+  }
+};

@@ -6,6 +6,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import TopCourseNav from "../nav/TopCourseNav";
 import CourseAbout from "./CourseAbout";
 import CourseComments from "./CourseComments";
+import CourseInstructor from "./CourseInstructor";
 
 const CourseContent = ({
   course,
@@ -35,6 +36,8 @@ const CourseContent = ({
             comments={course.comments}
           />
         );
+      case "instructor":
+        return <CourseInstructor courseInstructor={course.instructor} />;
       default:
         return (
           <CourseAbout course={course} handleRateCourse={handleRateCourse} />
