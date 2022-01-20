@@ -339,15 +339,15 @@ export const enrollCourse = async (req, res, next) => {
       return res.status(400).send("You cannot enroll in your own course");
     }
 
-    const user = await User.findById(req.user._id);
-
-    if (course.price > user.balance) {
-      return res
-        .status(400)
-        .send("Not enough balance to enroll in this course");
-    }
-
     if (course.paid) {
+      const user = await User.findById(req.user._id);
+
+      if (course.price > user.balance) {
+        return res
+          .status(400)
+          .send("Not enough balance to enroll in this course");
+      }
+
       // application fee 30%
       const fee = ((course.price * 30) / 100).toFixed(2);
 

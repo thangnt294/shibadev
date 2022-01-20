@@ -1,7 +1,8 @@
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import AdminRoute from "../../components/routes/AdminRoute";
-import { Table, Tag, Badge, Popconfirm, Rate } from "antd";
+import { Table, Tag, Badge, Modal, Rate } from "antd";
+import { WarningOutlined } from "@ant-design/icons";
 import ViewLessonModal from "../../components/modal/ViewLessonModal";
 import { currencyFormatter, truncateText } from "../../utils/helpers";
 import { Context } from "../../global/Context";
@@ -15,6 +16,9 @@ const ManageCourses = () => {
   const [viewLessonModalVisible, setViewLessonModalVisible] = useState(false);
   const [currentLesson, setCurrentLesson] = useState(null);
   const [pageSize, setPageSize] = useState(10);
+  const [currentCourseId, setCurrentCourseId] = useState(null);
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+  const [deletingCourse, setDeletingCourse] = useState(false);
 
   const { dispatch } = useContext(Context);
 
@@ -82,12 +86,20 @@ const ManageCourses = () => {
       title: "Action",
       dataIndex: "",
       render: (_, record) => (
-        <Popconfirm
-          title="Are you sure you want to delete this course?"
-          onConfirm={() => handleDeleteCourse(record._id.toString())}
+        // <Popconfirm
+        //   title="Are you sure you want to delete this course?"
+        //   onConfirm={() => handleDeleteCourse(record._id.toString())}
+        // >
+        <span
+          onClick={() => {
+            setCurrentCourseId(record._id.toString());
+            setConfirmModalVisible(true);
+          }}
+          className="pointer text-primary"
         >
-          <span className="pointer text-primary">Delete</span>
-        </Popconfirm>
+          Delete
+        </span>
+        // </Popconfirm>
       ),
     },
   ];
@@ -139,16 +151,24 @@ const ManageCourses = () => {
     setPageSize(pageSize);
   };
 
-  const handleDeleteCourse = async (courseId) => {
+  const handleCloseConfirmModal = () => {
+    setConfirmModalVisible(false);
+    setCurrentCourseId(null);
+  };
+
+  const handleDeleteCourse = async () => {
+    setDeletingCourse(true);
     try {
-      await axios.delete(`/api/delete-course/${courseId}`);
+      await axios.delete(`/api/delete-course/${currentCourseId}`);
       const updatedCourses = courses.filter(
-        (course) => course._id.toString() !== courseId
+        (course) => course._id.toString() !== currentCourseId
       );
       setCourses(updatedCourses);
+      handleCloseConfirmModal();
       toast.success("Course has been deleted");
     } catch (err) {
       console.log(err);
+      handleCloseConfirmModal();
       if (err.response) toast.error(err.response.data);
     }
   };
@@ -188,6 +208,24 @@ const ManageCourses = () => {
         handleCloseModal={handleCloseModal}
         visible={viewLessonModalVisible}
       />
+      <Modal
+        title={
+          <>
+            <WarningOutlined className="text-warning lead me-2" />{" "}
+            <span className="lead">Delete Course</span>
+          </>
+        }
+        visible={confirmModalVisible}
+        onOk={handleDeleteCourse}
+        confirmLoading={deletingCourse}
+        onCancel={handleCloseConfirmModal}
+      >
+        <p>
+          Once you delete this course, your balance will automatically be
+          deducted to refund all students who have enrolled.
+        </p>
+        <p>Are you sure you want to delete this course?</p>
+      </Modal>
     </AdminRoute>
   );
 };

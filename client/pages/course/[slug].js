@@ -64,6 +64,7 @@ const SingleCourse = ({ course }) => {
     } catch (err) {
       console.log(err);
       setLoadingEnrollment(false);
+      setVisible(false);
       if (err.response) toast.error(err.response.data);
     }
   };
