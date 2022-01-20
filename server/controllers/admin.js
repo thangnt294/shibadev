@@ -61,7 +61,17 @@ export const getAllCourses = async (req, res, next) => {
 export const deleteCourse = async (req, res, next) => {
   try {
     const { courseId } = req.params;
+
     const course = await Course.findById(courseId);
+
+    const admin = await User.findById(req.user._id);
+
+    // check if enough balance to refund
+    if (admin.balance < course.enrollments * course.price) {
+      return res
+        .status(400)
+        .send("You don't have enough balance to refund all students");
+    }
 
     // remove course image
     if (!isEmpty(course.image)) {
@@ -79,7 +89,7 @@ export const deleteCourse = async (req, res, next) => {
 
     await Promise.all(removeVideos);
 
-    // remove course from enroll_courses of user
+    // remove course from enroll_courses of user, and refund
     await User.updateMany(
       {
         enroll_courses: courseId,
@@ -88,8 +98,17 @@ export const deleteCourse = async (req, res, next) => {
         $pull: {
           enroll_courses: courseId,
         },
+        $inc: {
+          balance: course.price,
+        },
       }
     );
+
+    // remove balance from admin
+    await User.findByIdAndUpdate(req.user._id, {
+      $inc: -(course.enrollments * course.price),
+    });
+
     // delete the course
     await Course.findByIdAndDelete(courseId);
 

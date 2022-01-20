@@ -97,6 +97,10 @@ const courseSchema = new mongoose.Schema(
       max: 5,
       required: true,
     },
+    enrollments: {
+      type: Number,
+      default: 0,
+    },
     lessons: [lessonSchema],
     comments: [commentSchema],
   },

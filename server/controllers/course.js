@@ -338,6 +338,15 @@ export const enrollCourse = async (req, res, next) => {
     if (course.instructor._id.toString() === req.user._id) {
       return res.status(400).send("You cannot enroll in your own course");
     }
+
+    const user = await User.findById(req.user._id);
+
+    if (course.price > user.balance) {
+      return res
+        .status(400)
+        .send("Not enough balance to enroll in this course");
+    }
+
     if (course.paid) {
       // application fee 30%
       const fee = ((course.price * 30) / 100).toFixed(2);
@@ -353,6 +362,7 @@ export const enrollCourse = async (req, res, next) => {
         $inc: { balance: (course.price - fee).toFixed(2) },
       });
 
+      // update daily report
       await DailyReport.updateOne(
         { date: moment().utc().startOf("day") },
         { $inc: { profit: fee, enrollments: 1 } },
@@ -365,9 +375,14 @@ export const enrollCourse = async (req, res, next) => {
       req.user._id,
       {
         $addToSet: { enrolled_courses: course._id },
+        $inc: { balance: -course.price },
       },
       { new: true }
     );
+
+    // update enroll count in course
+    course.enrollments = course.enrollments + 1;
+    await course.save();
     res.json(course);
   } catch (err) {
     next(err);
