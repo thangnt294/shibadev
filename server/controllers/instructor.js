@@ -1,8 +1,19 @@
 import User from "../models/user";
 import Course from "../models/course";
+import { isEmpty } from "../utils/helpers";
 
 export const becomeInstructor = async (req, res, next) => {
   try {
+    const user = await User.findById(req.user._id);
+
+    if (isEmpty(user.title) || isEmpty(user.bio)) {
+      res
+        .status(400)
+        .send(
+          "Please finish your profile first before signing up as an instructor"
+        );
+    }
+
     const instructor = await User.findByIdAndUpdate(
       req.user._id,
       {
