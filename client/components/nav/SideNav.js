@@ -6,6 +6,7 @@ import {
   PlusOutlined,
   UserOutlined,
   ExceptionOutlined,
+  HeartOutlined,
 } from "@ant-design/icons";
 
 const { Item } = Menu;
@@ -62,6 +63,11 @@ const SideNav = ({ type }) => {
           ])
         : generateItem([
             { title: "Dashboard", key: "/user", icon: <DesktopOutlined /> },
+            {
+              title: "Wish List",
+              key: "/user/wish-list",
+              icon: <HeartOutlined />,
+            },
             { title: "Profile", key: "/user/profile", icon: <UserOutlined /> },
           ])}
     </Menu>

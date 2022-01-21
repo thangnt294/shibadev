@@ -17,6 +17,7 @@ const SingleCourseJumbotron = ({
   status,
   addToWishList,
   removeFromWishList,
+  wishListed,
 }) => {
   const {
     name,
@@ -29,6 +30,7 @@ const SingleCourseJumbotron = ({
     tags,
     avgRating,
   } = course;
+
   return (
     <div className="jumbotron square">
       <div className="row">
@@ -62,7 +64,7 @@ const SingleCourseJumbotron = ({
               ? currencyFormatter({ amount: price, currency: "usd" })
               : "Free"}
           </h4>
-          {user?.wish_list?.includes(course._id.toString()) ? (
+          {wishListed ? (
             <Tooltip title="Remove from wish list">
               <HeartFilled
                 className="text-light h3 pointer"

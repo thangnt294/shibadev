@@ -415,6 +415,31 @@ export const getUserCourses = async (req, res, next) => {
   }
 };
 
+export const getUserWishListCourses = async (req, res, next) => {
+  try {
+    const { page = 0, limit = 8 } = req.query;
+    const user = await User.findById(req.user._id);
+
+    const courses = await Course.find({
+      _id: { $in: user.wish_list },
+    })
+      .skip(parseInt(page * limit))
+      .limit(parseInt(limit))
+      .populate("instructor", "_id name");
+
+    const total = await Course.countDocuments({
+      _id: { $in: user.wish_list },
+    });
+
+    res.json({
+      courses,
+      total,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const markCompleted = async (req, res, next) => {
   try {
     const { courseId, lessonId } = req.body;
@@ -556,14 +581,28 @@ export const addToWishList = async (req, res, next) => {
       enrolled_courses: courseId,
     });
     if (!isEmpty(user)) {
-      res.status(400).send("You already enrolled in this course");
+      return res.status(400).send("You already enrolled in this course");
     }
-    await User.findByIdAndUpdate(req.user._id, {
+    const updatedUser = await User.findByIdAndUpdate(req.user._id, {
       $addToSet: {
         wish_list: courseId,
       },
-    });
-    res.json({ ok: true });
+    }).select("-password");
+    res.json(updatedUser);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const removeFromWishList = async (req, res, next) => {
+  try {
+    const { courseId } = req.params;
+    const updatedUser = await User.findByIdAndUpdate(req.user._id, {
+      $pull: {
+        wish_list: courseId,
+      },
+    }).select("-password");
+    res.json(updatedUser);
   } catch (err) {
     next(err);
   }
@@ -579,6 +618,24 @@ export const getUserRating = async (req, res, next) => {
     });
 
     res.json(rating);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const checkWishListed = async (req, res, next) => {
+  try {
+    const { courseId } = req.params;
+    const count = await User.countDocuments({
+      _id: req.user._id,
+      wish_list: courseId,
+    });
+
+    if (count > 0) {
+      res.json({ ok: true });
+    }
+
+    res.json({ ok: false });
   } catch (err) {
     next(err);
   }

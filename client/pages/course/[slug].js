@@ -12,6 +12,7 @@ const SingleCourse = ({ course }) => {
   const [loadingEnrollment, setLoadingEnrollment] = useState(false);
   const [status, setStatus] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [wishListed, setWishListed] = useState(false);
 
   const {
     state: { user, pageLoading },
@@ -21,6 +22,15 @@ const SingleCourse = ({ course }) => {
   useEffect(() => {
     if (user && course) checkEnrollment();
   }, [user, course]);
+
+  useEffect(() => {
+    if (course) checkWishListed();
+  }, [course]);
+
+  const checkWishListed = async () => {
+    const { data } = await axios.get(`/api/check-wishlisted/${course._id}`);
+    setWishListed(data.ok);
+  };
 
   const checkEnrollment = async () => {
     dispatch({ type: "LOADING", payload: true });
@@ -72,6 +82,7 @@ const SingleCourse = ({ course }) => {
   const addToWishList = async () => {
     try {
       await axios.post(`/api/course/${course._id}/add-to-wishlist`);
+      setWishListed(true);
       toast.success("Added to wish list successfully");
     } catch (err) {
       console.log(err);
@@ -82,6 +93,7 @@ const SingleCourse = ({ course }) => {
   const removeFromWishList = async () => {
     try {
       await axios.post(`/api/course/${course._id}/remove-from-wishlist`);
+      setWishListed(false);
       toast.success("Removed from wish list successfully");
     } catch (err) {
       console.log(err);
@@ -101,6 +113,7 @@ const SingleCourse = ({ course }) => {
         status={status}
         addToWishList={addToWishList}
         removeFromWishList={removeFromWishList}
+        wishListed={wishListed}
       />
 
       <Modal
