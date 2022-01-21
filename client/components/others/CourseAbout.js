@@ -1,9 +1,21 @@
 import { useEffect, useState } from "react";
-import { Badge, Image, Rate, Button } from "antd";
+import { Badge, Image, Rate, Button, Space } from "antd";
 import { truncateText } from "../../utils/helpers";
+import {
+  FacebookFilled,
+  LinkedinFilled,
+  TwitterOutlined,
+  RedditCircleFilled,
+} from "@ant-design/icons";
 import axios from "axios";
 import RatingModal from "../modal/RatingModal";
 import { toast } from "react-toastify";
+import {
+  FacebookShareButton,
+  LinkedinShareButton,
+  RedditShareButton,
+  TwitterShareButton,
+} from "react-share";
 
 const CourseAbout = ({ course, handleRateCourse }) => {
   const {
@@ -15,6 +27,7 @@ const CourseAbout = ({ course, handleRateCourse }) => {
     tags,
     image,
     avgRating,
+    slug,
   } = course;
 
   const [rating, setRating] = useState(0);
@@ -57,6 +70,9 @@ const CourseAbout = ({ course, handleRateCourse }) => {
     }
     setVisible(false);
   };
+
+  const shareURL = `shibadev.net/course/${slug}`;
+  const shareTitle = "Check out this amazing course on ShibaDev!";
   return (
     <div className="row">
       <RatingModal
@@ -89,11 +105,28 @@ const CourseAbout = ({ course, handleRateCourse }) => {
         <p>Created by {instructor.name}</p>
         <p>Last updated {new Date(updatedAt).toLocaleDateString()}</p>
         <p>{lessons.length} lessons</p>
-        <Rate allowHalf disabled value={avgRating} className="me-3" />{" "}
-        <b>{avgRating}</b>
         <div className="mt-3">
-          <Button onClick={() => setVisible(true)}>Rate this course</Button>
+          <Button className="me-3" onClick={() => setVisible(true)}>
+            Rate this course
+          </Button>
+          <Rate allowHalf disabled value={avgRating} className="me-3" />{" "}
+          <b>{avgRating}</b>
         </div>
+        <Space className="mt-4" size="middle">
+          <p className="h5">Share this course on social media: </p>
+          <FacebookShareButton url={shareURL} quote={shareTitle}>
+            <FacebookFilled className="h3" style={{ color: "#4267B2" }} />
+          </FacebookShareButton>
+          <TwitterShareButton url={shareURL} title={shareTitle}>
+            <TwitterOutlined className="h3" style={{ color: "#00acee" }} />
+          </TwitterShareButton>
+          <LinkedinShareButton url={shareURL} title={shareTitle}>
+            <LinkedinFilled className="h3" style={{ color: "#0077b5" }} />
+          </LinkedinShareButton>
+          <RedditShareButton url={shareURL} title={shareTitle}>
+            <RedditCircleFilled className="h3" style={{ color: "#FF4301" }} />
+          </RedditShareButton>
+        </Space>
       </div>
       <div className="col-md-4">
         <Image

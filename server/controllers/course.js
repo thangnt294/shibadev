@@ -121,7 +121,7 @@ export const update = async (req, res, next) => {
 export const getCourse = async (req, res, next) => {
   try {
     const course = await Course.findOne({ slug: req.params.slug })
-      .populate("instructor", "_id name")
+      .populate("instructor", "_id name avatar bio title address email")
       .populate("comments.commenter", "_id name avatar");
     res.json(course);
   } catch (err) {

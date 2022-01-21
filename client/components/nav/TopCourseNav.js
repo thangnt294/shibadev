@@ -1,4 +1,8 @@
-import { InfoCircleOutlined, CommentOutlined } from "@ant-design/icons";
+import {
+  InfoCircleOutlined,
+  CommentOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { Menu } from "antd";
 
 const TopCourseNav = ({ current, handleChangeTab }) => {
@@ -14,6 +18,9 @@ const TopCourseNav = ({ current, handleChangeTab }) => {
       </Menu.Item>
       <Menu.Item key="comments" icon={<CommentOutlined />}>
         Comments
+      </Menu.Item>
+      <Menu.Item key="instructor" icon={<UserOutlined />}>
+        Instructor
       </Menu.Item>
     </Menu>
   );
