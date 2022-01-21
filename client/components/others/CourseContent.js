@@ -37,7 +37,7 @@ const CourseContent = ({
           />
         );
       case "instructor":
-        return <CourseInstructor courseInstructor={course.instructor} />;
+        return <CourseInstructor instructor={course.instructor} />;
       default:
         return (
           <CourseAbout course={course} handleRateCourse={handleRateCourse} />

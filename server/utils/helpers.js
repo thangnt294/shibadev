@@ -126,6 +126,30 @@ export const sendResetPasswordEmail = async (email, resetCode) => {
   await SES.sendEmail(params).promise();
 };
 
+export const sendAnEmail = async (emailFrom, emailTo, subject, content) => {
+  const params = {
+    Source: emailFrom,
+    Destination: {
+      ToAddresses: [emailTo],
+    },
+    ReplyToAddresses: [emailFrom],
+    Message: {
+      Body: {
+        Html: {
+          Charset: "UTF-8",
+          Data: content,
+        },
+      },
+      Subject: {
+        Charset: "UTF-8",
+        Data: `${subject} (sent from ${emailFrom})`,
+      },
+    },
+  };
+
+  await SES.sendEmail(params).promise();
+};
+
 export const verifyEmail = async (email) => {
   const params = {
     EmailAddress: email,
