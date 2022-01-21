@@ -370,11 +370,12 @@ export const enrollCourse = async (req, res, next) => {
       );
     }
 
-    // enroll user
+    // enroll user and pull from wish list
     await User.findByIdAndUpdate(
       req.user._id,
       {
         $addToSet: { enrolled_courses: course._id },
+        $pull: { wish_list: course._id },
         $inc: { balance: -course.price },
       },
       { new: true }
@@ -403,6 +404,31 @@ export const getUserCourses = async (req, res, next) => {
 
     const total = await Course.countDocuments({
       _id: { $in: user.enrolled_courses },
+    });
+
+    res.json({
+      courses,
+      total,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getUserWishListCourses = async (req, res, next) => {
+  try {
+    const { page = 0, limit = 8 } = req.query;
+    const user = await User.findById(req.user._id);
+
+    const courses = await Course.find({
+      _id: { $in: user.wish_list },
+    })
+      .skip(parseInt(page * limit))
+      .limit(parseInt(limit))
+      .populate("instructor", "_id name");
+
+    const total = await Course.countDocuments({
+      _id: { $in: user.wish_list },
     });
 
     res.json({
@@ -547,6 +573,41 @@ export const rateCourse = async (req, res, next) => {
   }
 };
 
+export const addToWishList = async (req, res, next) => {
+  try {
+    const { courseId } = req.params;
+    const user = await User.findOne({
+      _id: req.user._id,
+      enrolled_courses: courseId,
+    });
+    if (!isEmpty(user)) {
+      return res.status(400).send("You already enrolled in this course");
+    }
+    const updatedUser = await User.findByIdAndUpdate(req.user._id, {
+      $addToSet: {
+        wish_list: courseId,
+      },
+    }).select("-password");
+    res.json(updatedUser);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const removeFromWishList = async (req, res, next) => {
+  try {
+    const { courseId } = req.params;
+    const updatedUser = await User.findByIdAndUpdate(req.user._id, {
+      $pull: {
+        wish_list: courseId,
+      },
+    }).select("-password");
+    res.json(updatedUser);
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const getUserRating = async (req, res, next) => {
   try {
     const { courseId } = req.params;
@@ -557,6 +618,24 @@ export const getUserRating = async (req, res, next) => {
     });
 
     res.json(rating);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const checkWishListed = async (req, res, next) => {
+  try {
+    const { courseId } = req.params;
+    const count = await User.countDocuments({
+      _id: req.user._id,
+      wish_list: courseId,
+    });
+
+    if (count > 0) {
+      res.json({ ok: true });
+    }
+
+    res.json({ ok: false });
   } catch (err) {
     next(err);
   }

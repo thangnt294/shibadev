@@ -29,6 +29,10 @@ import {
   comment,
   rateCourse,
   getUserRating,
+  addToWishList,
+  getUserWishListCourses,
+  removeFromWishList,
+  checkWishListed,
 } from "../controllers/course";
 
 router.get("/courses", getPublishedCourses);
@@ -73,6 +77,21 @@ router.get("/list-completed/:courseId", isAuthenticated, listCompleted);
 
 router.post("/course/:courseId/comment", isAuthenticated, comment);
 router.post("/course/:courseId/rate", isAuthenticated, rateCourse);
+
 router.get("/course/:courseId/userRating", isAuthenticated, getUserRating);
+
+// wish list
+router.get("/user-wishlist-courses", isAuthenticated, getUserWishListCourses);
+router.post(
+  "/course/:courseId/add-to-wishlist",
+  isAuthenticated,
+  addToWishList
+);
+router.post(
+  "/course/:courseId/remove-from-wishlist",
+  isAuthenticated,
+  removeFromWishList
+);
+router.get("/check-wishlisted/:courseId", isAuthenticated, checkWishListed);
 
 module.exports = router;

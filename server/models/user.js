@@ -40,6 +40,7 @@ const userSchema = new mongoose.Schema(
       enum: ["Subscriber", "Instructor", "Admin"],
     },
     enrolled_courses: [{ type: ObjectId, ref: "Course" }],
+    wish_list: [{ type: ObjectId, ref: "Course" }],
     balance: {
       type: Number,
       default: 0,

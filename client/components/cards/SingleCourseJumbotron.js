@@ -1,9 +1,11 @@
 import { currencyFormatter } from "../../utils/helpers";
-import { Badge, Button, Image, Rate } from "antd";
+import { Badge, Button, Image, Rate, Tooltip } from "antd";
 import {
   SafetyOutlined,
   ArrowRightOutlined,
   UserAddOutlined,
+  HeartOutlined,
+  HeartFilled,
 } from "@ant-design/icons";
 import { truncateText } from "../../utils/helpers";
 
@@ -13,6 +15,9 @@ const SingleCourseJumbotron = ({
   loadingEnrollment,
   handleEnrollment,
   status,
+  addToWishList,
+  removeFromWishList,
+  wishListed,
 }) => {
   const {
     name,
@@ -25,6 +30,7 @@ const SingleCourseJumbotron = ({
     tags,
     avgRating,
   } = course;
+
   return (
     <div className="jumbotron square">
       <div className="row">
@@ -58,6 +64,21 @@ const SingleCourseJumbotron = ({
               ? currencyFormatter({ amount: price, currency: "usd" })
               : "Free"}
           </h4>
+          {wishListed ? (
+            <Tooltip title="Remove from wish list">
+              <HeartFilled
+                className="text-light h3 pointer"
+                onClick={removeFromWishList}
+              />
+            </Tooltip>
+          ) : (
+            <Tooltip title="Add to wish list">
+              <HeartOutlined
+                className="text-light h3 pointer"
+                onClick={addToWishList}
+              />
+            </Tooltip>
+          )}
         </div>
         <div className="col-md-4">
           <Image

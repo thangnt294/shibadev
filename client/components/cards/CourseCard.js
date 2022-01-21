@@ -17,16 +17,21 @@ const CourseCard = ({ course, page }) => {
     published,
     avgRating,
   } = course;
+
+  const getLink = () => {
+    switch (page) {
+      case "home":
+        return `/course/${slug}`;
+      case "wishlist":
+        return `/course/${slug}`;
+      case "instructor":
+        return `/instructor/course/view/${slug}`;
+      default:
+        return `/user/course/${slug}`;
+    }
+  };
   return (
-    <Link
-      href={
-        page === "home"
-          ? `/course/${slug}`
-          : page === "instructor"
-          ? `/instructor/course/view/${slug}`
-          : `/user/course/${slug}`
-      }
-    >
+    <Link href={getLink()}>
       <a>
         <Card
           hoverable={true}
