@@ -69,6 +69,26 @@ const SingleCourse = ({ course }) => {
     }
   };
 
+  const addToWishList = async () => {
+    try {
+      await axios.post(`/api/course/${course._id}/add-to-wishlist`);
+      toast.success("Added to wish list successfully");
+    } catch (err) {
+      console.log(err);
+      if (err.response) toast.error(err.response.data);
+    }
+  };
+
+  const removeFromWishList = async () => {
+    try {
+      await axios.post(`/api/course/${course._id}/remove-from-wishlist`);
+      toast.success("Removed from wish list successfully");
+    } catch (err) {
+      console.log(err);
+      if (err.response) toast.error(err.response.data);
+    }
+  };
+
   return pageLoading ? (
     <Loading />
   ) : (
@@ -79,6 +99,8 @@ const SingleCourse = ({ course }) => {
         loadingEnrollment={loadingEnrollment}
         handleEnrollment={handleEnrollment}
         status={status}
+        addToWishList={addToWishList}
+        removeFromWishList={removeFromWishList}
       />
 
       <Modal

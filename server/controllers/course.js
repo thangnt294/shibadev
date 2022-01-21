@@ -370,11 +370,12 @@ export const enrollCourse = async (req, res, next) => {
       );
     }
 
-    // enroll user
+    // enroll user and pull from wish list
     await User.findByIdAndUpdate(
       req.user._id,
       {
         $addToSet: { enrolled_courses: course._id },
+        $pull: { wish_list: course._id },
         $inc: { balance: -course.price },
       },
       { new: true }
@@ -542,6 +543,27 @@ export const rateCourse = async (req, res, next) => {
     );
 
     res.json(course);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const addToWishList = async (req, res, next) => {
+  try {
+    const { courseId } = req.params;
+    const user = await User.findOne({
+      _id: req.user._id,
+      enrolled_courses: courseId,
+    });
+    if (!isEmpty(user)) {
+      res.status(400).send("You already enrolled in this course");
+    }
+    await User.findByIdAndUpdate(req.user._id, {
+      $addToSet: {
+        wish_list: courseId,
+      },
+    });
+    res.json({ ok: true });
   } catch (err) {
     next(err);
   }
