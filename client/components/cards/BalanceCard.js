@@ -36,9 +36,11 @@ const BalanceCard = ({
             </Tooltip>
           </div>
         </div>
-        <Button onClick={() => setAddBalanceModalVisible(true)}>
-          Add Balance
-        </Button>
+        <div className="text-center">
+          <Button onClick={() => setAddBalanceModalVisible(true)}>
+            Add Balance
+          </Button>
+        </div>
       </div>
     </div>
   );

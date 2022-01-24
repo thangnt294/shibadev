@@ -65,19 +65,15 @@ const SingleCourseJumbotron = ({
               : "Free"}
           </h4>
           {wishListed ? (
-            <Tooltip title="Remove from wish list">
-              <HeartFilled
-                className="text-light h3 pointer"
-                onClick={removeFromWishList}
-              />
-            </Tooltip>
+            <Button type="primary" onClick={removeFromWishList}>
+              <HeartFilled />
+              Remove from wish list
+            </Button>
           ) : (
-            <Tooltip title="Add to wish list">
-              <HeartOutlined
-                className="text-light h3 pointer"
-                onClick={addToWishList}
-              />
-            </Tooltip>
+            <Button type="primary" onClick={addToWishList}>
+              <HeartOutlined />
+              Add to wish list
+            </Button>
           )}
         </div>
         <div className="col-md-4">

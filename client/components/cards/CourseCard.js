@@ -47,7 +47,7 @@ const CourseCard = ({ course, page }) => {
           size="small"
         >
           <h3 className="font-weight-bold">{truncateText(name, 200)}</h3>
-          {page === "home" ? (
+          {page === "home" || page === "wishlist" ? (
             <p>by {instructor.name}</p>
           ) : (
             <p>{lessons.length} lessons</p>
@@ -69,7 +69,7 @@ const CourseCard = ({ course, page }) => {
             />
           )}
 
-          {page === "home" ? (
+          {page === "home" || page === "wishlist" ? (
             <div>
               <Rate allowHalf disabled value={avgRating} />
               <h4 className="pt-2">
