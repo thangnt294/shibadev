@@ -4,6 +4,9 @@ import { readdirSync } from "fs";
 import mongoose from "mongoose";
 import csrf from "csurf";
 import cookieParser from "cookie-parser";
+import socketio from "socket.io";
+import http from "http";
+import jwt from "express-jwt";
 const morgan = require("morgan");
 require("dotenv").config({ path: `.env.local` });
 require("./cron/cron");
@@ -37,6 +40,38 @@ app.get("/api/csrf-token", (req, res) => {
   res.json({ csrfToken: req.csrfToken() });
 });
 
+// socket.io
+const server = http.createServer(app);
+const io = socketio(server, {
+  cors: {
+    origin: "http://localhost:3000",
+  },
+});
+io.use(async (socket, next) => {
+  try {
+    const token = socket.handshake.query.token;
+    const payload = await jwt.verify(token, process.env.SECRET);
+    socket.user._id = payload._id;
+  } catch (err) {
+    next(err);
+  }
+});
+io.on("connection", (socket) => {
+  console.log("We have a new connection: " + socket.user._id);
+
+  socket.on("join", ({ name, room }, callback) => {
+    const error = false;
+
+    if (error) {
+      callback({ error: "error" });
+    }
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User has left");
+  });
+});
+
 app.use((err, req, res, next) => {
   console.log("Error Handling Middleware called");
   console.log("Path: ", req.path);
@@ -48,4 +83,4 @@ app.use((err, req, res, next) => {
 });
 // app boot
 const port = process.env.PORT || 8000;
-app.listen(port, () => console.log(`Server is running on port ${port}`));
+server.listen(port, () => console.log(`Server is running on port ${port}`));
