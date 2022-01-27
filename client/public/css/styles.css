@@ -94,3 +94,11 @@ svg {
   background-image: linear-gradient(to right, #ff5f6d, #ffc371);
   padding: 4rem 4rem;
 }
+
+.own-message {
+  color: #236af0;
+}
+
+.other-message {
+  color: #9c4a29;
+}

@@ -6,8 +6,14 @@ const router = express.Router();
 import { isAuthenticated } from "../middlewares";
 
 // controllers
-import { getChatRooms, createChatroom } from "../controllers/chatroom";
+import {
+  getChatRooms,
+  createChatRoom,
+  getChatRoom,
+} from "../controllers/chatroom";
 
-router.get("/chat-rooms", isAuthenticated, getChatRooms);
+router.get("/user/:userId/chat-rooms", isAuthenticated, getChatRooms);
+router.post("/chat-room", isAuthenticated, createChatRoom);
+router.get("/chat-room", isAuthenticated, getChatRoom);
 
 module.exports = router;

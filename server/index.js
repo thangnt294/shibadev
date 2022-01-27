@@ -11,6 +11,10 @@ const morgan = require("morgan");
 require("dotenv").config({ path: `.env.local` });
 require("./cron/cron");
 
+// test socket io
+import User from "./models/user";
+import ChatRoom from "./models/chatroom";
+
 const csrfProtection = csrf({ cookie: true });
 
 // create express app
@@ -47,28 +51,40 @@ const io = socketio(server, {
     origin: "http://localhost:3000",
   },
 });
-io.use(async (socket, next) => {
-  try {
-    const token = socket.handshake.query.token;
-    const payload = await jwt.verify(token, process.env.SECRET);
-    socket.user._id = payload._id;
-  } catch (err) {
-    next(err);
-  }
-});
 io.on("connection", (socket) => {
-  console.log("We have a new connection: " + socket.user._id);
+  console.log("We have a new connection");
 
-  socket.on("join", ({ name, room }, callback) => {
-    const error = false;
-
-    if (error) {
-      callback({ error: "error" });
-    }
+  socket.on("join", ({ roomId }) => {
+    socket.join(roomId);
+    console.log("A user joined chat room: " + roomId);
   });
 
-  socket.on("disconnect", () => {
-    console.log("User has left");
+  socket.on("leave", ({ roomId }) => {
+    socket.leave(roomId);
+    console.log("A user left chat room: " + roomId);
+  });
+
+  socket.on("message", async ({ roomId, userId, message }) => {
+    console.log(
+      `Received message ${message} from user ${userId} to room ${roomId}`
+    );
+    if (message.trim().length > 0) {
+      const user = await User.findById(userId).select("_id name avatar");
+      io.to(roomId).emit("new_message", {
+        user: user,
+        content: message,
+      });
+      await ChatRoom.findByIdAndUpdate(roomId, {
+        $push: {
+          messages: {
+            $each: [{ user: userId, content: message }],
+            $sort: {
+              createdAt: -1,
+            },
+          },
+        },
+      });
+    }
   });
 });
 

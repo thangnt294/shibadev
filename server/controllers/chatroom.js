@@ -1,26 +1,15 @@
 import ChatRoom from "../models/chatroom";
 
-export const createChatroom = async (req, res, next) => {
+export const createChatRoom = async (req, res, next) => {
   try {
-    const { name } = req.body;
+    const { users } = req.body;
 
-    const nameRegex = /^[A-Za-z\s]+$/;
-
-    if (!nameRegex.test(name))
-      res.json(400).send("Chat room name can only contain alphabets");
-
-    const chatRoonExist = await ChatRoom.findOne({ name });
-
-    if (chatRoonExist) {
-      res.json(400).send("Chat room with the same name already exists");
-    }
-
-    const chatRoom = new Chatroom({
-      name,
+    const chatRoom = new ChatRoom({
+      users,
     });
 
-    await chatRoom.save();
-    res.json({ ok: true });
+    const createdChatRoom = await chatRoom.save();
+    res.json(createdChatRoom);
   } catch (err) {
     next(err);
   }
@@ -28,9 +17,36 @@ export const createChatroom = async (req, res, next) => {
 
 export const getChatRooms = async (req, res, next) => {
   try {
-    const chatRooms = await ChatRoom.find({});
-
+    const { userId } = req.params;
+    const chatRooms = await ChatRoom.find({
+      users: userId,
+    })
+      .populate("users", "_id name avatar")
+      .populate("messages.user", "_id name avatar");
     res.json(chatRooms);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getChatRoom = async (req, res, next) => {
+  try {
+    const { users, roomId } = req.query;
+    let chatRoom;
+    if (roomId) {
+      chatRoom = await ChatRoom.findById(roomId)
+        .populate("users", "_id name avatar")
+        .populate("messages.user", "_id name avatar");
+    } else {
+      chatRoom = await ChatRoom.findOne({
+        users: {
+          $all: users,
+        },
+      })
+        .populate("users", "_id name avatar")
+        .populate("messages.user", "_id name avatar");
+    }
+    res.json(chatRoom);
   } catch (err) {
     next(err);
   }

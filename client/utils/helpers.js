@@ -9,5 +9,9 @@ export const isEmpty = (obj) =>
   obj === null || obj === undefined || obj.length === 0;
 
 export const truncateText = (text, length) => {
-  return text.length > length ? text.substring(0, length) + "..." : text;
+  return text?.length > length ? text.substring(0, length) + "..." : text;
+};
+
+export const getUserId = () => {
+  return JSON.parse(localStorage.getItem("user"))._id;
 };
