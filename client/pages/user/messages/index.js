@@ -27,6 +27,7 @@ const Messages = () => {
 
   return (
     <UserRoute>
+      <h1 className="jumbotron text-center square">Messages</h1>
       <List
         dataSource={chatRooms}
         renderItem={(item, index) => {
@@ -46,11 +47,12 @@ const Messages = () => {
                       <h4>{target.name}</h4>
                     </b>
                     <p className="lead" style={{ color: "gray" }}>
-                      {item.messages.length > 0 &&
-                        truncateText(
-                          item.messages[item.messages.length - 1].content,
-                          30
-                        )}
+                      {item.messages.length > 0
+                        ? truncateText(
+                            item.messages[item.messages.length - 1].content,
+                            30
+                          )
+                        : "No messages yet"}
                     </p>
                   </div>
                 </div>
