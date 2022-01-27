@@ -39,14 +39,13 @@ const MessagePage = () => {
         setClicked(data._id.toString());
       }
     }
-
-    setLoading(false);
   };
 
   const getChatRooms = async () => {
     const userId = getUserId();
     const { data } = await axios.get(`/api/user/${userId}/chat-rooms`);
     setChatRooms(data);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -57,6 +56,7 @@ const MessagePage = () => {
       if (socket) {
         socket.emit("leave", { roomId });
         socket.off();
+        setSocket(null);
       }
     };
   }, []);
