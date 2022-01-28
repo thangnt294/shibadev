@@ -1,15 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { io } from "socket.io-client";
 import axios from "axios";
-import { getUserId, isEmpty } from "../../../utils/helpers";
+import { getUserId } from "../../../utils/helpers";
 import ChatNav from "../../../components/nav/ChatNav";
 import ChatBody from "../../../components/others/ChatBody";
 import Loading from "../../../components/others/Loading";
 
 const MessagePage = () => {
   const [clicked, setClicked] = useState(null);
-  const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const [chatRooms, setChatRooms] = useState([]);
@@ -17,15 +16,7 @@ const MessagePage = () => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { roomId } = router.query;
-
-  const setupSocket = () => {
-    if (!socket && !isEmpty(router.query)) {
-      const newSocket = io("http://localhost:8000");
-      newSocket.emit("join", { roomId });
-
-      setSocket(newSocket);
-    }
-  };
+  const socketRef = useRef();
 
   const getChatRooms = async () => {
     const userId = getUserId();
@@ -49,31 +40,26 @@ const MessagePage = () => {
 
   useEffect(() => {
     setLoading(true);
-    setupSocket();
     getChatRooms();
     getChatRoom();
     setLoading(false);
 
+    const socket = io("http://localhost:8000");
+    socketRef.current = socket;
+    socket.emit("join", { roomId });
+    socket.on("new_message", (message) => {
+      setMessages((messages) => [...messages, message]);
+    });
     return () => {
-      if (socket) {
-        socket.emit("leave", { roomId });
-        setSocket(null);
-      }
+      socket.emit("leave", { roomId });
+      socket.disconnect();
     };
   }, [roomId]);
 
-  useEffect(() => {
-    if (socket) {
-      socket.on("new_message", (message) => {
-        setMessages((messages) => [...messages, message]);
-      });
-    }
-  }, [messages]);
-
   const sendMessage = () => {
-    if (socket) {
+    if (socketRef.current) {
       const userId = getUserId();
-      socket.emit("message", { roomId, userId, message });
+      socketRef.current.emit("message", { roomId, userId, message });
       setMessage("");
     }
   };

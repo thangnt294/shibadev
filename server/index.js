@@ -52,7 +52,7 @@ const io = socketio(server, {
   },
 });
 io.on("connection", (socket) => {
-  console.log("We have a new connection");
+  console.log("New connection established");
 
   socket.on("join", ({ roomId }) => {
     socket.join(roomId);
@@ -79,7 +79,7 @@ io.on("connection", (socket) => {
           messages: {
             $each: [{ user: userId, content: message }],
             $sort: {
-              createdAt: -1,
+              createdAt: 1,
             },
           },
         },
