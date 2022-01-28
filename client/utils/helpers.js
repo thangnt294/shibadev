@@ -13,5 +13,9 @@ export const truncateText = (text, length) => {
 };
 
 export const getUserId = () => {
-  return JSON.parse(localStorage.getItem("user"))._id;
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (user) {
+    return user._id;
+  }
+  return null;
 };

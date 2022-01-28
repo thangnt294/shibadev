@@ -4,7 +4,7 @@ import { getUserId } from "../../utils/helpers";
 
 const { Item } = Menu;
 
-const ChatNav = ({ chatRooms, clicked, setClicked }) => {
+const ChatNav = ({ chatRooms, clicked, handleChangeTab }) => {
   return (
     <Menu selectedKeys={[clicked]} className="mt-3">
       {chatRooms.map((chatRoom) => {
@@ -14,7 +14,7 @@ const ChatNav = ({ chatRooms, clicked, setClicked }) => {
         return (
           <Item
             key={chatRoom._id}
-            onClick={() => setClicked(chatRoom._id.toString())}
+            onClick={() => handleChangeTab(chatRoom._id.toString())}
             icon={
               <Avatar src={target.avatar ? target.avatar : "/avatar.png"} />
             }

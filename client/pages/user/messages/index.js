@@ -30,7 +30,7 @@ const Messages = () => {
       <h1 className="jumbotron text-center square">Messages</h1>
       <List
         dataSource={chatRooms}
-        renderItem={(item, index) => {
+        renderItem={(item) => {
           const target = item.users.find(
             (user) => user._id.toString() !== getUserId()
           );

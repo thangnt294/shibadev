@@ -40,7 +40,7 @@ export const getChatRoom = async (req, res, next) => {
     } else {
       chatRoom = await ChatRoom.findOne({
         users: {
-          $all: users,
+          $all: users.split(","),
         },
       })
         .populate("users", "_id name avatar")
