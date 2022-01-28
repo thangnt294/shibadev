@@ -4,16 +4,11 @@ import { readdirSync } from "fs";
 import mongoose from "mongoose";
 import csrf from "csurf";
 import cookieParser from "cookie-parser";
-import socketio from "socket.io";
-import http from "http";
-import jwt from "express-jwt";
+import setUpSocketIO from "./socket-io";
+
 const morgan = require("morgan");
 require("dotenv").config({ path: `.env.local` });
 require("./cron/cron");
-
-// test socket io
-import User from "./models/user";
-import ChatRoom from "./models/chatroom";
 
 const csrfProtection = csrf({ cookie: true });
 
@@ -44,49 +39,8 @@ app.get("/api/csrf-token", (req, res) => {
   res.json({ csrfToken: req.csrfToken() });
 });
 
-// socket.io
-const server = http.createServer(app);
-const io = socketio(server, {
-  cors: {
-    origin: "http://localhost:3000",
-  },
-});
-io.on("connection", (socket) => {
-  console.log("New connection established");
-
-  socket.on("join", ({ roomId }) => {
-    socket.join(roomId);
-    console.log("A user joined chat room: " + roomId);
-  });
-
-  socket.on("leave", ({ roomId }) => {
-    socket.leave(roomId);
-    console.log("A user left chat room: " + roomId);
-  });
-
-  socket.on("message", async ({ roomId, userId, message }) => {
-    console.log(
-      `Received message ${message} from user ${userId} to room ${roomId}`
-    );
-    if (message.trim().length > 0) {
-      const user = await User.findById(userId).select("_id name avatar");
-      io.to(roomId).emit("new_message", {
-        user: user,
-        content: message,
-      });
-      await ChatRoom.findByIdAndUpdate(roomId, {
-        $push: {
-          messages: {
-            $each: [{ user: userId, content: message }],
-            $sort: {
-              createdAt: 1,
-            },
-          },
-        },
-      });
-    }
-  });
-});
+// setup socket.io
+const server = setUpSocketIO(app);
 
 app.use((err, req, res, next) => {
   console.log("Error Handling Middleware called");
