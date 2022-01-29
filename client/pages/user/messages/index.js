@@ -70,13 +70,13 @@ const Messages = () => {
                 <div className="d-flex border mt-3">
                   <Avatar
                     src={target.avatar ? target.avatar : "/avatar.png"}
-                    size={100}
+                    size={80}
                   />
                   <div className="mt-3 ms-2">
                     <b>
-                      <h4>{target.name}</h4>
+                      <h5>{target.name}</h5>
                     </b>
-                    <p className="lead" style={{ color: "gray" }}>
+                    <p style={{ color: "gray" }}>
                       {item?.messages?.length > 0
                         ? truncateText(
                             item?.messages[item.messages?.length - 1]?.content,
