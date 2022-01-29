@@ -1,20 +1,31 @@
 import { List, Avatar } from "antd";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import Link from "next/link";
 import axios from "axios";
 import UserRoute from "../../../components/routes/UserRoute";
 import { getUserId, truncateText } from "../../../utils/helpers";
 import { Context } from "../../../global/Context";
-
-const { Item } = List;
+import { io } from "socket.io-client";
 
 const Messages = () => {
   const [chatRooms, setChatRooms] = useState([]);
 
   const { dispatch } = useContext(Context);
 
+  const chatRoomRef = useRef();
+  const socketRef = useRef();
+
   useEffect(() => {
     getChatRooms();
+    return () => {
+      chatRoomRef.current.forEach((chatRoom) => {
+        console.log("LEAVING " + chatRoom._id);
+        socketRef.current.emit("leave", { roomId: chatRoom._id });
+      });
+      chatRoomRef.current = null;
+      socketRef.current.disconnect();
+      socketRef.current = null;
+    };
   }, []);
 
   const getChatRooms = async () => {
@@ -23,6 +34,25 @@ const Messages = () => {
     const { data } = await axios.get(`/api/user/${userId}/chat-rooms`);
     setChatRooms(data);
     dispatch({ type: "LOADING", payload: false });
+    chatRoomRef.current = chatRooms;
+
+    // setup socket
+    console.log("SETUP A NEW SOCKET CONNECTION");
+    const socket = io("http://localhost:8000");
+    socketRef.current = socket;
+    data.forEach((chatRoom) => {
+      console.log("JOINING " + chatRoom._id);
+      socket.emit("join", { roomId: chatRoom._id });
+    });
+    socket.on("new_message", (message) => {
+      const cloneChatRooms = data.map((chatRoom) => {
+        if (chatRoom._id.toString() === message.roomId.toString()) {
+          chatRoom.messages = [...chatRoom.messages, message.message];
+        }
+        return chatRoom;
+      });
+      setChatRooms(cloneChatRooms);
+    });
   };
 
   return (
@@ -47,9 +77,9 @@ const Messages = () => {
                       <h4>{target.name}</h4>
                     </b>
                     <p className="lead" style={{ color: "gray" }}>
-                      {item.messages.length > 0
+                      {item?.messages?.length > 0
                         ? truncateText(
-                            item.messages[item.messages.length - 1].content,
+                            item?.messages[item.messages?.length - 1]?.content,
                             30
                           )
                         : "No messages yet"}

@@ -32,7 +32,7 @@ const CourseInstructor = ({ instructor }) => {
         content: emailContent,
       });
       handleCloseModal();
-      toast.success("Message sent successfully");
+      toast.success("Email sent successfully");
     } catch (err) {
       console.log(err);
       handleCloseModal();

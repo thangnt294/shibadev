@@ -48,7 +48,7 @@ const MessagePage = () => {
     socketRef.current = socket;
     socket.emit("join", { roomId });
     socket.on("new_message", (message) => {
-      setMessages((messages) => [...messages, message]);
+      setMessages((messages) => [...messages, message.message]);
     });
     return () => {
       socket.emit("leave", { roomId });

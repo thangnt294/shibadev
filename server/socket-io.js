@@ -40,9 +40,12 @@ const addEventToSocket = (io, socket) => {
     if (message.trim().length > 0) {
       const user = await User.findById(userId).select("_id name avatar");
       io.to(roomId).emit("new_message", {
-        user: user,
-        content: message,
-        createdAt: Date.now(),
+        roomId,
+        message: {
+          user,
+          content: message,
+          createdAt: Date.now(),
+        },
       });
       await updateMessage(roomId, userId, message);
     }
