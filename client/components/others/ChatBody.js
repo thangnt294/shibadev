@@ -21,31 +21,44 @@ const ChatBody = ({ target, messages, setMessage, sendMessage, message }) => {
           overflow: "auto",
           padding: "0 16px",
         }}
+        className="msger-chat"
       >
-        <InfiniteScroll
+        {/* <InfiniteScroll
           dataLength={messages.length}
           scrollableTarget="scrollableDiv"
-        >
-          <List
-            dataSource={messages}
-            renderItem={(item) => (
-              <Item>
-                <div className="d-flex">
-                  <h5
-                    className={
-                      item.user._id.toString() === getUserId()
-                        ? "own-message"
-                        : "other-message"
-                    }
-                  >
-                    {item.user.name}:
-                  </h5>
-                  <h5 className="ms-2">{item.content}</h5>
+        > */}
+        <List
+          dataSource={messages}
+          renderItem={(item) => (
+            <Item className="chat-item">
+              <div
+                className={`msg ${
+                  item.user._id.toString() === getUserId()
+                    ? "right-msg"
+                    : "left-msg"
+                }`}
+              >
+                <Avatar
+                  className="msg-img"
+                  src={item.user.avatar ? item.user.avatar : "/avatar.png"}
+                />
+
+                <div className="msg-bubble">
+                  <div className="msg-info">
+                    <div className="msg-info-name">{item.user.name}</div>
+                    <div className="msg-info-time">12:45</div>
+                  </div>
+
+                  <div className="msg-text">
+                    Hi, welcome to SimpleChat! Go ahead and send me a message.
+                    😄
+                  </div>
                 </div>
-              </Item>
-            )}
-          />
-        </InfiniteScroll>
+              </div>
+            </Item>
+          )}
+        />
+        {/* </InfiniteScroll> */}
       </div>
 
       <div>
