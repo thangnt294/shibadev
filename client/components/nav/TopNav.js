@@ -10,6 +10,7 @@ import {
   UserOutlined,
   LogoutOutlined,
   HeartOutlined,
+  MessageOutlined,
 } from "@ant-design/icons";
 import { Context } from "../../global/Context";
 import axios from "axios";
@@ -167,14 +168,19 @@ const TopNav = () => {
                 <a>Dashboard</a>
               </Link>
             </Item>
-            <Item key="/user/profile" icon={<UserOutlined />}>
-              <Link href="/user/profile">
-                <a>Profile</a>
-              </Link>
-            </Item>
             <Item key="/user/wish-list" icon={<HeartOutlined />}>
               <Link href="/user/wish-list">
                 <a>Wish List</a>
+              </Link>
+            </Item>
+            <Item key="/user/messages" icon={<MessageOutlined />}>
+              <Link href="/user/messages">
+                <a>Messages</a>
+              </Link>
+            </Item>
+            <Item key="/user/profile" icon={<UserOutlined />}>
+              <Link href="/user/profile">
+                <a>Profile</a>
               </Link>
             </Item>
             <Item key="/logout" icon={<LogoutOutlined />} onClick={logout}>

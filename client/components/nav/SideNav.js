@@ -7,6 +7,7 @@ import {
   UserOutlined,
   ExceptionOutlined,
   HeartOutlined,
+  MessageOutlined,
 } from "@ant-design/icons";
 
 const { Item } = Menu;
@@ -34,7 +35,6 @@ const SideNav = ({ type }) => {
 
   return (
     <Menu
-      // theme="dark"
       onClick={handleClick}
       selectedKeys={[current]}
       style={{ height: "100%" }}
@@ -67,6 +67,11 @@ const SideNav = ({ type }) => {
               title: "Wish List",
               key: "/user/wish-list",
               icon: <HeartOutlined />,
+            },
+            {
+              title: "Messages",
+              key: "/user/messages",
+              icon: <MessageOutlined />,
             },
             { title: "Profile", key: "/user/profile", icon: <UserOutlined /> },
           ])}

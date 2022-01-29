@@ -14,7 +14,7 @@ const SendEmailModal = ({
 }) => {
   return (
     <Modal
-      title="Send Message"
+      title="Send Email"
       centered
       visible={visible}
       onCancel={handleCloseModal}
