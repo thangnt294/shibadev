@@ -42,6 +42,7 @@ const addEventToSocket = (io, socket) => {
       io.to(roomId).emit("new_message", {
         user: user,
         content: message,
+        createdAt: Date.now(),
       });
       await updateMessage(roomId, userId, message);
     }

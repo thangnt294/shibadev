@@ -78,7 +78,9 @@ const CourseInstructor = ({ instructor }) => {
       <div className="col-md-10 ms-4">
         <h3>Bio</h3>
         <ReactMarkdown>{instructor?.bio}</ReactMarkdown>
-        <Button onClick={() => setVisible(true)}>Send an email</Button>
+        <Button onClick={() => setVisible(true)} className="me-3">
+          Send an email
+        </Button>
         <Button onClick={handleMessage}>Message</Button>
       </div>
       <SendEmailModal

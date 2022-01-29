@@ -1,34 +1,60 @@
+import { useEffect, useRef } from "react";
 import { Avatar, Input, Button, List } from "antd";
 import { getUserId } from "../../utils/helpers";
-import InfiniteScroll from "react-infinite-scroll-component";
+import moment from "moment";
 
 const ChatBody = ({ target, messages, setMessage, sendMessage, message }) => {
   const { Item } = List;
+
+  const scrollRef = useRef();
+
+  const scrollToMyRef = () => {
+    const scroll =
+      scrollRef.current.scrollHeight - scrollRef.current.clientHeight;
+    scrollRef.current.scrollTo(0, scroll);
+  };
+
+  useEffect(() => {
+    scrollToMyRef();
+  }, [messages]);
+
+  const formatChatTime = (time) => {
+    const now = moment();
+    const difference = now.diff(moment(time).startOf("day"), "days");
+    console.log(difference);
+    if (difference < 1) {
+      return moment(time).format("HH:MM");
+    }
+
+    if (difference < 2) {
+      return `Yesterday ${moment(time).format("HH:MM")}`;
+    }
+
+    return moment(time).format("DD/MM HH:MM");
+  };
+
   return (
     <div className="mt-4">
       <div className="d-flex mb-3">
         <Avatar
-          className="me-3"
+          className="me-3 ms-3"
           size="large"
           src={target?.avatar ? target.avatar : "/avatar.png"}
         />
         <h3>{target?.name}</h3>
       </div>
       <div
+        ref={scrollRef}
         id="scrollableDiv"
         style={{
           height: "70vh",
           overflow: "auto",
-          padding: "0 16px",
         }}
         className="msger-chat"
       >
-        {/* <InfiniteScroll
-          dataLength={messages.length}
-          scrollableTarget="scrollableDiv"
-        > */}
         <List
           dataSource={messages}
+          split={false}
           renderItem={(item) => (
             <Item className="chat-item">
               <div
@@ -44,21 +70,19 @@ const ChatBody = ({ target, messages, setMessage, sendMessage, message }) => {
                 />
 
                 <div className="msg-bubble">
-                  <div className="msg-info">
-                    <div className="msg-info-name">{item.user.name}</div>
-                    <div className="msg-info-time">12:45</div>
+                  <div className="msg-info mb-2">
+                    <div className="msg-info-name me-4">{item.user.name}</div>
+                    <div className="msg-info-time">
+                      {formatChatTime(item.createdAt)}
+                    </div>
                   </div>
 
-                  <div className="msg-text">
-                    Hi, welcome to SimpleChat! Go ahead and send me a message.
-                    😄
-                  </div>
+                  <div className="msg-text">{item.content}</div>
                 </div>
               </div>
             </Item>
           )}
         />
-        {/* </InfiniteScroll> */}
       </div>
 
       <div>
