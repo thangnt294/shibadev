@@ -36,6 +36,7 @@ const MessagePage = () => {
         setClicked(data._id.toString());
       }
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -43,7 +44,6 @@ const MessagePage = () => {
   }, []);
 
   useEffect(() => {
-    setLoading(true);
     getChatRoom();
 
     const dev = process.env.NODE_ENV === "development";
@@ -58,7 +58,6 @@ const MessagePage = () => {
       setChatRooms((chatRooms) => [...chatRooms, chatRoom]);
       socketRef.current.emit("join", { roomId: chatRoom._id });
     });
-    setLoading(false);
 
     return () => {
       socket.emit("leave", { roomId });

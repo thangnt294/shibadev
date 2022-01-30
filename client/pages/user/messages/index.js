@@ -18,7 +18,7 @@ const Messages = () => {
   useEffect(() => {
     getChatRooms();
     return () => {
-      chatRoomRef.current.forEach((chatRoom) => {
+      chatRoomRef.current?.forEach((chatRoom) => {
         console.log("LEAVING " + chatRoom._id);
         socketRef.current.emit("leave", { roomId: chatRoom._id });
       });
