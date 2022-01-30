@@ -22,6 +22,7 @@ const Messages = () => {
         console.log("LEAVING " + chatRoom._id);
         socketRef.current.emit("leave", { roomId: chatRoom._id });
       });
+      socketRef.current.emit("user_leave", { userId: getUserId() });
       chatRoomRef.current = null;
       socketRef.current.disconnect();
       socketRef.current = null;
@@ -45,6 +46,7 @@ const Messages = () => {
       console.log("JOINING " + chatRoom._id);
       socket.emit("join", { roomId: chatRoom._id });
     });
+    socket.emit("user_listen", { userId });
     socket.on("new_message", (message) => {
       const cloneChatRooms = data.map((chatRoom) => {
         if (chatRoom._id.toString() === message.roomId.toString()) {
@@ -54,6 +56,11 @@ const Messages = () => {
       });
       setChatRooms(cloneChatRooms);
     });
+    socket.on("new_chat_room", ({ chatRoom }) => {
+      setChatRooms((chatRooms) => [...chatRooms, chatRoom]);
+      data.push(chatRoom);
+      socketRef.current.emit("join", { roomId: chatRoom._id });
+    });
   };
 
   return (
@@ -62,15 +69,15 @@ const Messages = () => {
       <List
         dataSource={chatRooms}
         renderItem={(item) => {
-          const target = item.users.find(
-            (user) => user._id.toString() !== getUserId()
+          const target = item?.users?.find(
+            (user) => user?._id?.toString() !== getUserId()
           );
           return (
             <Link href={`/user/messages/${item._id}`}>
               <a>
                 <div className="d-flex border mt-3">
                   <Avatar
-                    src={target.avatar ? target.avatar : "/avatar.png"}
+                    src={target?.avatar ? target?.avatar : "/avatar.png"}
                     size={80}
                   />
                   <div className="mt-3 ms-2">

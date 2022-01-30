@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Image, Button } from "antd";
 import ReactMarkdown from "react-markdown";
 import { toast } from "react-toastify";
@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import SendEmailModal from "../modal/SendEmailModal";
 import axios from "axios";
 import { getUserId } from "../../utils/helpers";
+import { io } from "socket.io-client";
 
 const CourseInstructor = ({ instructor }) => {
   const [visible, setVisible] = useState(false);
@@ -14,6 +15,13 @@ const CourseInstructor = ({ instructor }) => {
   const [emailSubject, setEmailSubject] = useState("");
 
   const router = useRouter();
+  const socketRef = useRef();
+
+  useEffect(() => {
+    const dev = process.env.NODE_ENV === "development";
+    const socket = dev ? io("http://localhost:8000") : io();
+    socketRef.current = socket;
+  }, []);
 
   const handleCloseModal = () => {
     setVisible(false);
@@ -42,17 +50,23 @@ const CourseInstructor = ({ instructor }) => {
 
   const handleMessage = async () => {
     const userId = getUserId();
-    const { data } = await axios.get(
+    let { data } = await axios.get(
       `/api/chat-room?users=${userId},${instructor._id}`
     );
-    if (data) {
-      router.push(`/user/messages/${data._id}`);
-    } else {
-      const { data } = await axios.post("/api/chat-room", {
-        users: [userId, instructor._id],
+    if (!data) {
+      data = (
+        await axios.post("/api/chat-room", {
+          users: [userId, instructor._id],
+        })
+      ).data;
+      socketRef.current.emit("chat_room", {
+        instructorId: instructor._id,
+        chatRoom: data,
       });
-      router.push(`/user/messages/${data._id}`);
     }
+    socketRef.current.disconnect();
+    socketRef.current = null;
+    router.push(`/user/messages/${data._id}`);
   };
 
   return (

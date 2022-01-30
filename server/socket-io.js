@@ -32,6 +32,16 @@ const addEventToSocket = (io, socket) => {
     console.log("A user left chat room: " + roomId);
   });
 
+  socket.on("user_listen", ({ userId }) => {
+    socket.join(userId);
+    console.log("This user is listening: " + userId);
+  });
+
+  socket.on("user_leave", ({ userId }) => {
+    socket.leave(userId);
+    console.log("This user is leaving: " + userId);
+  });
+
   // send message event
   socket.on("message", async ({ roomId, userId, message }) => {
     console.log(
@@ -49,6 +59,15 @@ const addEventToSocket = (io, socket) => {
       });
       await updateMessage(roomId, userId, message);
     }
+  });
+
+  socket.on("chat_room", async ({ instructorId, chatRoom }) => {
+    console.log(`Someone created a chat room with instructor ${instructorId}`);
+    io.to(instructorId).emit("new_chat_room", {
+      chatRoom: await ChatRoom.findById(chatRoom._id)
+        .populate("users", "_id name avatar")
+        .populate("messages.user", "_id name avatar"),
+    });
   });
 };
 
