@@ -64,7 +64,7 @@ const CourseInstructor = ({ instructor }) => {
         chatRoom: data,
       });
     }
-    socketRef.current.disconnect();
+    socketRef.current?.disconnect();
     socketRef.current = null;
     router.push(`/user/messages/${data._id}`);
   };
