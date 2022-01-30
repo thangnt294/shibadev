@@ -21,7 +21,6 @@ const ChatBody = ({ target, messages, setMessage, sendMessage, message }) => {
   const formatChatTime = (time) => {
     const now = moment();
     const difference = now.diff(moment(time).startOf("day"), "days");
-    console.log(difference);
     if (difference < 1) {
       return moment(time).format("HH:MM");
     }
