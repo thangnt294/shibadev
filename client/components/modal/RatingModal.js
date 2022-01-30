@@ -23,7 +23,6 @@ const RatingModal = ({
         <span>
           <Rate
             allowHalf
-            defaultValue={2.5}
             disabled={savingRating}
             value={rating}
             tooltips={desc}
