@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { Avatar, Input, Button, List } from "antd";
 import { getUserId } from "../../utils/helpers";
 import moment from "moment";
+import { MessageOutlined } from "@ant-design/icons";
 
 const ChatBody = ({ target, messages, setMessage, sendMessage, message }) => {
   const { Item } = List;
@@ -22,14 +23,14 @@ const ChatBody = ({ target, messages, setMessage, sendMessage, message }) => {
     const now = moment();
     const difference = now.diff(moment(time).startOf("day"), "days");
     if (difference < 1) {
-      return moment(time).format("HH:MM");
+      return moment(time).format("HH:mm");
     }
 
     if (difference < 2) {
-      return `Yesterday ${moment(time).format("HH:MM")}`;
+      return `Yesterday ${moment(time).format("HH:mm")}`;
     }
 
-    return moment(time).format("DD/MM HH:MM");
+    return moment(time).format("DD/MM HH:mm");
   };
 
   return (
@@ -51,37 +52,46 @@ const ChatBody = ({ target, messages, setMessage, sendMessage, message }) => {
         }}
         className="msger-chat"
       >
-        <List
-          dataSource={messages}
-          split={false}
-          renderItem={(item) => (
-            <Item className="chat-item">
-              <div
-                className={`msg ${
-                  item.user._id.toString() === getUserId()
-                    ? "right-msg"
-                    : "left-msg"
-                }`}
-              >
-                <Avatar
-                  className="msg-img"
-                  src={item.user.avatar ? item.user.avatar : "/avatar.png"}
-                />
+        {messages?.length > 0 ? (
+          <List
+            dataSource={messages}
+            split={false}
+            renderItem={(item) => (
+              <Item className="chat-item">
+                <div
+                  className={`msg ${
+                    item.user._id.toString() === getUserId()
+                      ? "right-msg"
+                      : "left-msg"
+                  }`}
+                >
+                  <Avatar
+                    className="msg-img"
+                    src={item.user.avatar ? item.user.avatar : "/avatar.png"}
+                  />
 
-                <div className="msg-bubble">
-                  <div className="msg-info mb-2">
-                    <div className="msg-info-name me-4">{item.user.name}</div>
-                    <div className="msg-info-time">
-                      {formatChatTime(item.createdAt)}
+                  <div className="msg-bubble">
+                    <div className="msg-info mb-2">
+                      <div className="msg-info-name me-4">{item.user.name}</div>
+                      <div className="msg-info-time">
+                        {formatChatTime(item.createdAt)}
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="msg-text">{item.content}</div>
+                    <div className="msg-text">{item.content}</div>
+                  </div>
                 </div>
-              </div>
-            </Item>
-          )}
-        />
+              </Item>
+            )}
+          />
+        ) : (
+          <div className="d-flex justify-content-center p-5">
+            <div className="text-center p-5 d-flex">
+              <p className="lead text-muted">No messages yet</p>
+              <MessageOutlined className="text-muted lead ms-2 mt-1" />
+            </div>
+          </div>
+        )}
       </div>
 
       <div>
@@ -90,7 +100,7 @@ const ChatBody = ({ target, messages, setMessage, sendMessage, message }) => {
             type="text"
             name="message"
             value={message}
-            placeholder="Say something"
+            placeholder="Say something..."
             onChange={(e) => setMessage(e.target.value)}
             className="me-3"
             onPressEnter={(e) => {

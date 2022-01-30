@@ -36,23 +36,32 @@ const MessagePage = () => {
         setClicked(data._id.toString());
       }
     }
+    setLoading(false);
   };
 
   useEffect(() => {
-    setLoading(true);
     getChatRooms();
+  }, []);
+
+  useEffect(() => {
     getChatRoom();
-    setLoading(false);
 
     const dev = process.env.NODE_ENV === "development";
     const socket = dev ? io("http://localhost:8000") : io();
     socketRef.current = socket;
     socket.emit("join", { roomId });
+    socket.emit("user_listen", { userId: getUserId() });
     socket.on("new_message", (message) => {
       setMessages((messages) => [...messages, message.message]);
     });
+    socket.on("new_chat_room", ({ chatRoom }) => {
+      setChatRooms((chatRooms) => [...chatRooms, chatRoom]);
+      socketRef.current.emit("join", { roomId: chatRoom._id });
+    });
+
     return () => {
       socket.emit("leave", { roomId });
+      socket.emit("user_leave", { userId: getUserId() });
       socket.disconnect();
     };
   }, [roomId]);
