@@ -4,7 +4,6 @@ import {
   LoginOutlined,
   UserAddOutlined,
   TeamOutlined,
-  SearchOutlined,
   CrownOutlined,
   DesktopOutlined,
   UserOutlined,
@@ -13,10 +12,8 @@ import {
   MessageOutlined,
 } from "@ant-design/icons";
 import { Context } from "../../global/Context";
-import axios from "axios";
 import { useRouter } from "next/router";
-import { Avatar, Input, Menu } from "antd";
-import { toast } from "react-toastify";
+import { Avatar, Menu } from "antd";
 
 const { Item, SubMenu, ItemGroup } = Menu;
 
@@ -25,7 +22,7 @@ const TopNav = () => {
 
   const { state, dispatch } = useContext(Context);
 
-  const { user, page, limit } = state;
+  const { user } = state;
 
   const router = useRouter();
 
@@ -38,31 +35,6 @@ const TopNav = () => {
     window.localStorage.removeItem("user");
     window.localStorage.removeItem("token");
     router.push("/login");
-  };
-
-  const handleSearchCourses = async (e) => {
-    try {
-      const searchTerm = e.target.value;
-      dispatch({ type: "LOADING", payload: true });
-      const { data } = await axios.get(
-        `api/courses?page=${page}&limit=${limit}&term=${searchTerm}`
-      );
-      dispatch({
-        type: "UPDATE_COURSE_LIST",
-        payload: {
-          courses: data.courses,
-          total: data.total,
-          term: searchTerm,
-          page,
-          limit,
-        },
-      });
-      dispatch({ type: "LOADING", payload: false });
-    } catch (err) {
-      console.log(err);
-      dispatch({ type: "LOADING", payload: false });
-      toast.error(err.response.data);
-    }
   };
 
   return (
@@ -81,16 +53,6 @@ const TopNav = () => {
           <a></a>
         </Link>
       </Item>
-      {current === "/" && (
-        <Item className="search-bar-item" key="search-bar-item">
-          <Input
-            placeholder="Search..."
-            className="search-bar"
-            suffix={<SearchOutlined />}
-            onPressEnter={handleSearchCourses}
-          />
-        </Item>
-      )}
 
       {user && user.role && !user.role.includes("Instructor") && (
         <Item

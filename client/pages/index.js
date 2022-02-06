@@ -3,48 +3,50 @@ import { Context } from "../global/Context";
 import axios from "axios";
 import CourseCard from "../components/cards/CourseCard";
 import { SearchOutlined } from "@ant-design/icons";
-import { Pagination } from "antd";
+import { Input, Pagination } from "antd";
 import { toast } from "react-toastify";
 import Loading from "../components/others/Loading";
 
-const Index = ({ initialCourses, initialTotal }) => {
+const { Search } = Input;
+
+const Index = () => {
   const [publishedCourses, setPublishedCourses] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(0);
+  const [term, setTerm] = useState("");
+  const limit = 12;
 
   const {
-    state: { courses, total, page, limit, term, loading },
+    state: { pageLoading: loading },
     dispatch,
   } = useContext(Context);
 
   useEffect(() => {
-    if (courses === null) {
-      setPublishedCourses(initialCourses);
-    } else {
-      setPublishedCourses(courses);
-    }
-  }, [courses]);
+    loadPublishedCourses();
+  }, [page, term]);
 
-  const handleSearchCourses = async (newPage) => {
-    dispatch({ type: "LOADING", payload: true });
+  const loadPublishedCourses = async () => {
     try {
+      dispatch({ type: "LOADING", payload: true });
       const { data } = await axios.get(
-        `api/courses?page=${newPage - 1}&limit=${limit}&term=${term}`
+        `api/courses?page=${page}&limit=${limit}&term=${term}`
       );
-      dispatch({
-        type: "UPDATE_COURSE_LIST",
-        payload: {
-          courses: data.courses,
-          total: data.total,
-          page: newPage - 1,
-          limit,
-          term,
-        },
-      });
+      setPublishedCourses(data.courses);
+      setTotal(data.total);
       dispatch({ type: "LOADING", payload: false });
     } catch (err) {
       console.log(err);
       dispatch({ type: "LOADING", payload: false });
       if (err.response) toast.error(err.response.data);
     }
+  };
+
+  const handleChangePage = (newPage) => {
+    setPage(newPage - 1);
+  };
+
+  const handleSearch = (value) => {
+    setTerm(value);
   };
 
   return (
@@ -63,6 +65,12 @@ const Index = ({ initialCourses, initialTotal }) => {
           <p className="text-white">- Kamari</p>
         </div>
       </div>
+      <Search
+        className="ms-auto me-3 mb-3"
+        style={{ width: "15%" }}
+        placeholder="Search for courses..."
+        onSearch={handleSearch}
+      />
       {loading ? (
         <Loading />
       ) : (
@@ -93,25 +101,13 @@ const Index = ({ initialCourses, initialTotal }) => {
             defaultCurrent={1}
             current={page + 1}
             pageSize={limit}
-            onChange={handleSearchCourses}
-            total={total === null ? initialTotal : total}
+            onChange={handleChangePage}
+            total={total}
           />
         </div>
       )}
     </>
   );
 };
-
-export async function getServerSideProps() {
-  const { data } = await axios.get(
-    `${process.env.API}/courses?page=0&limit=12`
-  );
-  return {
-    props: {
-      initialCourses: data.courses,
-      initialTotal: data.total,
-    },
-  };
-}
 
 export default Index;

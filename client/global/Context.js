@@ -7,10 +7,6 @@ React.useLayoutEffect = React.useEffect;
 const initialState = {
   user: null,
   courses: null,
-  page: 0,
-  limit: 12,
-  total: null,
-  term: ".*",
   pageLoading: false,
 };
 
@@ -24,15 +20,6 @@ const rootReducer = (state, action) => {
       return { ...state, user: action.payload };
     case "LOGOUT":
       return { ...state, user: null };
-    case "UPDATE_COURSE_LIST":
-      return {
-        ...state,
-        courses: action.payload.courses,
-        total: action.payload.total,
-        page: action.payload.page,
-        limit: action.payload.limit,
-        term: action.payload.term,
-      };
     case "LOADING":
       return { ...state, pageLoading: action.payload };
     default:

@@ -305,7 +305,6 @@ export const getPublishedCourses = async (req, res, next) => {
       published: true,
       $or: [{ name: new RegExp(term) }, { tags: new RegExp(term) }],
     });
-
     res.json({ courses, total });
   } catch (err) {
     next(err);

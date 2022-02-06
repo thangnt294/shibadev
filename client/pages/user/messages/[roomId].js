@@ -56,7 +56,7 @@ const MessagePage = () => {
     });
     socket.on("new_chat_room", ({ chatRoom }) => {
       setChatRooms((chatRooms) => [...chatRooms, chatRoom]);
-      socketRef.current.emit("join", { roomId: chatRoom._id });
+      socketRef.current?.emit("join", { roomId: chatRoom._id });
     });
 
     return () => {
@@ -69,7 +69,7 @@ const MessagePage = () => {
   const sendMessage = () => {
     if (socketRef.current) {
       const userId = getUserId();
-      socketRef.current.emit("message", { roomId, userId, message });
+      socketRef.current?.emit("message", { roomId, userId, message });
       setMessage("");
     }
   };

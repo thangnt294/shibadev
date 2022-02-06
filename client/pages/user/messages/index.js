@@ -41,7 +41,6 @@ const Messages = () => {
     // setup socket
     console.log("SETUP A NEW SOCKET CONNECTION!");
     const dev = process.env.NEXT_PUBLIC_SOCKET === "development";
-    console.log("SETUP AS DEV: ", dev);
     const socket = dev ? io("http://localhost:8000") : io();
     socketRef.current = socket;
     data.forEach((chatRoom) => {
@@ -61,7 +60,7 @@ const Messages = () => {
     socket.on("new_chat_room", ({ chatRoom }) => {
       setChatRooms((chatRooms) => [chatRoom, ...chatRooms]);
       data.unshift(chatRoom);
-      socketRef.current.emit("join", { roomId: chatRoom._id });
+      socketRef.current?.emit("join", { roomId: chatRoom._id });
     });
   };
 
