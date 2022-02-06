@@ -33,4 +33,4 @@ jobs:
             cd ../server
             npm i
             pm2 restart server.js -i 0
-            echo 'Deployment successful to digital ocean'
+            echo 'Deployment successful to server'
