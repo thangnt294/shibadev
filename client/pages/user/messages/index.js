@@ -40,7 +40,8 @@ const Messages = () => {
 
     // setup socket
     console.log("SETUP A NEW SOCKET CONNECTION!");
-    const dev = process.env.NODE_ENV === "socketdev";
+    const dev = process.env.NEXT_PUBLIC_SOCKET === "development";
+    console.log("SETUP AS DEV: ", dev);
     const socket = dev ? io("http://localhost:8000") : io();
     socketRef.current = socket;
     data.forEach((chatRoom) => {

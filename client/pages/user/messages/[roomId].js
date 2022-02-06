@@ -46,7 +46,7 @@ const MessagePage = () => {
   useEffect(() => {
     getChatRoom();
 
-    const dev = process.env.NODE_ENV === "socketdev";
+    const dev = process.env.NEXT_PUBLIC_SOCKET === "development";
     const socket = dev ? io("http://localhost:8000") : io();
     socketRef.current = socket;
     socket.emit("join", { roomId });
