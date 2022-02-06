@@ -58,8 +58,8 @@ const Messages = () => {
       setChatRooms(cloneChatRooms);
     });
     socket.on("new_chat_room", ({ chatRoom }) => {
-      setChatRooms((chatRooms) => [...chatRooms, chatRoom]);
-      data.push(chatRoom);
+      setChatRooms((chatRooms) => [chatRoom, ...chatRooms]);
+      data.unshift(chatRoom);
       socketRef.current.emit("join", { roomId: chatRoom._id });
     });
   };
@@ -70,6 +70,7 @@ const Messages = () => {
       {chatRooms?.length > 0 ? (
         <List
           dataSource={chatRooms}
+          className="mb-3"
           renderItem={(item) => {
             const target = item?.users?.find(
               (user) => user?._id?.toString() !== getUserId()
