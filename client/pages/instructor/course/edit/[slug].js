@@ -37,7 +37,7 @@ const CourseEdit = () => {
   const [lesson, setLesson] = useState(null);
   const [uploadVideoBtnText, setUploadVideoBtnText] = useState("Upload Video");
   const [savingLesson, setSavingLesson] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
   const [progress, setProgress] = useState(0);
 
   const { dispatch } = useContext(Context);
@@ -249,7 +249,7 @@ const CourseEdit = () => {
       // upload new one
       const file = e.target.files[0];
       setUploadVideoBtnText(file.name);
-      setUploading(true);
+      setUploadingVideo(true);
 
       // send video as form data
       const videoData = new FormData();
@@ -273,10 +273,10 @@ const CourseEdit = () => {
         video: data,
       });
       updateLessonUI({ ...lesson, video: data });
-      setUploading(false);
+      setUploadingVideo(false);
     } catch (err) {
       console.log(err);
-      setUploading(false);
+      setUploadingVideo(false);
       if (err.response) toast.error(err.response.data);
     }
   };
@@ -349,7 +349,7 @@ const CourseEdit = () => {
         uploadBtnText={uploadVideoBtnText}
         handleVideo={handleVideo}
         handleRemoveVideo={handleRemoveVideo}
-        uploading={uploading}
+        uploading={uploadingVideo}
         progress={progress}
         page="edit course"
       />
