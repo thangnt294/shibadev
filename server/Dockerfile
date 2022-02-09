@@ -1,4 +1,6 @@
-FROM node:16
+FROM node:16-alpine
+
+RUN apk add --no-cache libc6-compat
 
 WORKDIR /usr/src/app
 

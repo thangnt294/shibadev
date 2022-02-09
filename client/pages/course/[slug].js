@@ -9,18 +9,7 @@ import LessonList from "../../components/others/LessonList";
 import Loading from "../../components/others/Loading";
 
 const SingleCourse = () => {
-  const [course, setCourse] = useState({
-    lessons: [],
-    price: "",
-    name: "",
-    description: "",
-    image: "",
-    updatedAt: "",
-    instructor: {},
-    paid: false,
-    tags: [],
-    avgRatings: "",
-  });
+  const [course, setCourse] = useState(null);
   const [loadingEnrollment, setLoadingEnrollment] = useState(false);
   const [status, setStatus] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -59,9 +48,7 @@ const SingleCourse = () => {
   };
 
   const checkEnrollment = async () => {
-    dispatch({ type: "LOADING", payload: true });
     const { data } = await axios.get(`/api/check-enrollment/${course._id}`);
-    dispatch({ type: "LOADING", payload: false });
     setStatus(data.status);
   };
 
@@ -129,7 +116,7 @@ const SingleCourse = () => {
   ) : (
     <>
       <SingleCourseJumbotron
-        course={course}
+        course={course || {}}
         user={user}
         loadingEnrollment={loadingEnrollment}
         handleEnrollment={handleEnrollment}
@@ -147,18 +134,18 @@ const SingleCourse = () => {
         onCancel={() => setVisible(false)}
       >
         <p>
-          This course will cost {<b>${course.price}</b>} to enroll. Are you sure
-          you want to enroll?
+          This course will cost {<b>${course?.price}</b>} to enroll. Are you
+          sure you want to enroll?
         </p>
       </Modal>
 
-      {course.lessons && (
+      {course?.lessons && (
         <div className="container mt-5 mb-5">
           <div className="row">
             <div className="col">
-              {course.lessons && <h4>{course.lessons.length} Lessons</h4>}
+              {course?.lessons && <h4>{course?.lessons?.length} Lessons</h4>}
               <hr />
-              <LessonList lessons={course.lessons} checkPreview={true} />
+              <LessonList lessons={course?.lessons} checkPreview={true} />
             </div>
           </div>
         </div>

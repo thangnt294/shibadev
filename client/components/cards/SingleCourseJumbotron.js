@@ -1,5 +1,5 @@
 import { currencyFormatter } from "../../utils/helpers";
-import { Badge, Button, Image, Rate, Tooltip } from "antd";
+import { Badge, Button, Image, Rate } from "antd";
 import {
   SafetyOutlined,
   ArrowRightOutlined,
@@ -10,7 +10,7 @@ import {
 import { truncateText } from "../../utils/helpers";
 
 const SingleCourseJumbotron = ({
-  course,
+  course = {},
   user,
   loadingEnrollment,
   handleEnrollment,
@@ -56,7 +56,7 @@ const SingleCourseJumbotron = ({
             />
           )}
 
-          <p>Created by {instructor.name}</p>
+          <p>Created by {instructor?.name}</p>
           <p>Last updated {new Date(updatedAt).toLocaleDateString()}</p>
           <Rate allowHalf disabled value={avgRating} className="mb-3" />
           <h4 className="text-light">
@@ -108,7 +108,7 @@ const SingleCourseJumbotron = ({
               loadingEnrollment ||
               (user &&
                 user._id &&
-                user._id.toString() === instructor._id?.toString())
+                user._id.toString() === instructor?._id?.toString())
             }
             onClick={(e) => handleEnrollment(e, paid)}
           >
