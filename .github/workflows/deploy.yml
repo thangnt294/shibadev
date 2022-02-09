@@ -27,6 +27,7 @@ jobs:
           script: |
             cd shibadev
             git pull
+            docker kill $(docker ps -q)
             docker rmi shibadev-client
             docker rmi shibadev-server
             cd client
