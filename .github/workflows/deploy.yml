@@ -27,14 +27,13 @@ jobs:
           script: |
             cd shibadev
             git pull
-            docker kill $(docker ps -q)
-            docker rmi shibadev-client
-            docker rmi shibadev-server
+            docker rm -f shibadev-client shibadev-server
+            docker rmi shibadev-client shibadev-server
+            docker image prune -f
             cd client
             docker build -t shibadev-client .
             cd ../server
             docker build -t shibadev-server .
-            docker rm -f shibadev-client shibadev-server
             docker run -dp 8000:8000 --name shibadev-server shibadev-server
             docker run -dp 3000:3000 --name shibadev-client shibadev-client
             echo 'Deployment successful to server using docker'
