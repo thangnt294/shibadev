@@ -108,7 +108,7 @@ const SingleCourseJumbotron = ({
               loadingEnrollment ||
               (user &&
                 user._id &&
-                user._id.toString() === instructor._id.toString())
+                user._id.toString() === instructor._id?.toString())
             }
             onClick={(e) => handleEnrollment(e, paid)}
           >

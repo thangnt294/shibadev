@@ -8,7 +8,19 @@ import { Modal } from "antd";
 import LessonList from "../../components/others/LessonList";
 import Loading from "../../components/others/Loading";
 
-const SingleCourse = ({ course }) => {
+const SingleCourse = () => {
+  const [course, setCourse] = useState({
+    lessons: [],
+    price: "",
+    name: "",
+    description: "",
+    image: "",
+    updatedAt: "",
+    instructor: {},
+    paid: false,
+    tags: [],
+    avgRatings: "",
+  });
   const [loadingEnrollment, setLoadingEnrollment] = useState(false);
   const [status, setStatus] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -19,6 +31,13 @@ const SingleCourse = ({ course }) => {
     dispatch,
   } = useContext(Context);
 
+  const router = useRouter();
+  const { slug } = router.query;
+
+  useEffect(() => {
+    getCourse();
+  }, []);
+
   useEffect(() => {
     if (user && course) checkEnrollment();
   }, [user, course]);
@@ -26,6 +45,13 @@ const SingleCourse = ({ course }) => {
   useEffect(() => {
     if (course) checkWishListed();
   }, [course]);
+
+  const getCourse = async () => {
+    dispatch({ type: "LOADING", payload: true });
+    const { data } = await axios.get(`/api/course/${slug}`);
+    setCourse(data);
+    dispatch({ type: "LOADING", payload: false });
+  };
 
   const checkWishListed = async () => {
     const { data } = await axios.get(`/api/check-wishlisted/${course._id}`);
@@ -38,9 +64,6 @@ const SingleCourse = ({ course }) => {
     dispatch({ type: "LOADING", payload: false });
     setStatus(data.status);
   };
-
-  const router = useRouter();
-  const { slug } = router.query;
 
   const handleEnrollment = async (e, paid) => {
     e.preventDefault();
@@ -143,14 +166,5 @@ const SingleCourse = ({ course }) => {
     </>
   );
 };
-
-export async function getServerSideProps({ query }) {
-  const { data } = await axios.get(`${process.env.API}/course/${query.slug}`);
-  return {
-    props: {
-      course: data,
-    },
-  };
-}
 
 export default SingleCourse;
