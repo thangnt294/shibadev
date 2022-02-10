@@ -29,7 +29,6 @@ jobs:
             git pull
             docker rm -f shibadev-client shibadev-server
             docker rmi shibadev-client shibadev-server
-            docker image prune -f
             cd client
             docker build -t shibadev-client .
             cd ../server
