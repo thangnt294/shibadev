@@ -348,7 +348,7 @@ export const enrollCourse = async (req, res, next) => {
       }
 
       // application fee 30%
-      const fee = ((course.price * 30) / 100).toFixed(2);
+      const fee = Number(((course.price * 30) / 100).toFixed(2));
 
       // add fee to admin
       await User.findOneAndUpdate(
@@ -358,7 +358,7 @@ export const enrollCourse = async (req, res, next) => {
 
       // add profit to instructor
       await User.findByIdAndUpdate(course.instructor._id, {
-        $inc: { balance: (course.price - fee).toFixed(2) },
+        $inc: { balance: Number((course.price - fee).toFixed(2)) },
       });
 
       // update daily report
