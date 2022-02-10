@@ -3,7 +3,7 @@
 }
 
 .jumbotron {
-  background-image: linear-gradient(to right, #ff5f6d, #ffc371);
+  background-image: linear-gradient(to right, #fbb040, #f9ed32);
   color: #fff;
   padding: 5rem;
 }
@@ -40,7 +40,7 @@ svg {
 
 @media only screen and (max-width: 500px) {
   .home-page-background {
-    background-image: linear-gradient(to right, #ff5f6d, #ffc371);
+    background-image: linear-gradient(to right, #fbb040, #f9ed32);
     background-size: contain;
     padding: 2rem 3rem;
   }
@@ -91,7 +91,7 @@ svg {
 }
 
 .instructor-course-view-header {
-  background-image: linear-gradient(to right, #ff5f6d, #ffc371);
+  background-image: linear-gradient(to right, #fbb040, #f9ed32);
   padding: 4rem 4rem;
 }
 
