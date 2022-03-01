@@ -43,13 +43,17 @@ const SingleCourse = () => {
   };
 
   const checkWishListed = async () => {
-    const { data } = await axios.get(`/api/check-wishlisted/${course._id}`);
-    setWishListed(data.ok);
+    if (user) {
+      const { data } = await axios.get(`/api/check-wishlisted/${course._id}`);
+      setWishListed(data.ok);
+    }
   };
 
   const checkEnrollment = async () => {
-    const { data } = await axios.get(`/api/check-enrollment/${course._id}`);
-    setStatus(data.status);
+    if (user) {
+      const { data } = await axios.get(`/api/check-enrollment/${course._id}`);
+      setStatus(data.status);
+    }
   };
 
   const handleEnrollment = async (e, paid) => {
@@ -91,6 +95,7 @@ const SingleCourse = () => {
 
   const addToWishList = async () => {
     try {
+      if (!user) router.push("/login");
       await axios.post(`/api/course/${course._id}/add-to-wishlist`);
       setWishListed(true);
       toast.success("Added to wish list successfully");
@@ -102,6 +107,7 @@ const SingleCourse = () => {
 
   const removeFromWishList = async () => {
     try {
+      if (!user) router.push("/login");
       await axios.post(`/api/course/${course._id}/remove-from-wishlist`);
       setWishListed(false);
       toast.success("Removed from wish list successfully");
