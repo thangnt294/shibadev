@@ -25,7 +25,7 @@ const SingleCourse = () => {
 
   useEffect(() => {
     getCourse();
-  }, []);
+  }, [slug]);
 
   useEffect(() => {
     if (user && course) checkEnrollment();

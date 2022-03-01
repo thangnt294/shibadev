@@ -18,7 +18,6 @@ const CommentModal = ({
       onOk={handleSubmit}
     >
       <AddCommentForm
-        handleSubmit={handleSubmit}
         setComment={setComment}
         comment={comment}
         savingComment={savingComment}

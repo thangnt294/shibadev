@@ -13,7 +13,7 @@ const CourseComments = ({ comments, handleAddComment }) => {
 
   useEffect(() => {
     setCurrentComments(comments.slice((page - 1) * 6, page * 6));
-  }, [page]);
+  }, [page, comments]);
 
   const handleCloseModal = () => {
     setComment(null);

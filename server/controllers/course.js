@@ -510,10 +510,10 @@ export const comment = async (req, res, next) => {
   try {
     const { courseId } = req.params;
     const { title, content } = req.body;
-    if (title.length < 1 || title.length > 100) {
-      return res.status(400).send("Title must be less than 100 characters");
+    if (isEmpty(title) || title.length < 1 || title.length > 100) {
+      return res.status(400).send("Title must be between 1 and 100 characters");
     }
-    if (content.length < 20 || content.length > 200) {
+    if (isEmpty(content) || content.length < 20 || content.length > 200) {
       return res
         .status(400)
         .send("Content must be between 20 and 500 characters");

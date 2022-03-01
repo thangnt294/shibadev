@@ -18,7 +18,6 @@ const CourseContent = ({
   handleRateCourse,
 }) => {
   const [current, setCurrent] = useState("about");
-
   const handleChangeTab = (e) => {
     setCurrent(e.key);
   };
